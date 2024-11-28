@@ -29,7 +29,7 @@ function App() {
   };
 
   const handleLogin = () => {
-    loginUser(formData.username, formData.password) //loginUser je servis koji samo salje unesene podatke Serveru
+    loginUser(formData.email, formData.password) //loginUser je servis koji samo salje unesene podatke Serveru
       .then((data) => { //Razlicite poruke u odnosu na to da li je prijava odobrena od strane servera
         if (data.success) { 
             const roleMessage = data.user.is_admin ? "Admin" : "User";

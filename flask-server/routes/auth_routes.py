@@ -7,10 +7,10 @@ auth_routes = Blueprint("auth_routes", __name__)
 @auth_routes.route("/login", methods=["POST"])
 def login():
     data = request.json
-    username = data.get("username")
+    email = data.get("email")
     password = data.get("password")
 
-    user_dto = login_user(username, password)
+    user_dto = login_user(email, password)
 
     if user_dto:
         return jsonify({
@@ -24,7 +24,7 @@ def login():
     else:
         return jsonify({
             "success": False,
-            "message": "Invalid username or password"
+            "message": "Invalid email or password"
         }), 401
 
 

@@ -2,10 +2,10 @@ from flask import jsonify
 from db import get_db_connection
 from models.User import User, UserDTO
 
-def login_user(username, password):
+def login_user(email, password):
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
+    cursor.execute("SELECT * FROM users WHERE email = %s AND password = %s", (email, password))
     user_data = cursor.fetchone()
     cursor.close()
     connection.close()

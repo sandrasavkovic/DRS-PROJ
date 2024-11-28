@@ -6,9 +6,9 @@ const LoginForm = ({ formData, handleChange, handleLogin }) => {
       <h2>Prijava</h2>
       <input
         type="text"
-        name="username"
-        placeholder="Korisničko ime"
-        value={formData.username}
+        name="email"
+        placeholder="E-mail"
+        value={formData.email}
         onChange={handleChange}
       />
       <input
