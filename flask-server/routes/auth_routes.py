@@ -11,19 +11,30 @@ def login():
     password = data.get("password")
 
     user_dto = login_user(username, password)
+
     if user_dto:
-        return jsonify({"success": True, "message": "Login successful", "user": user_dto.name})
+        return jsonify({
+            "success": True,
+            "message": "Login successful",
+            "user": {
+                "name": user_dto.name,
+                "is_admin": user_dto.is_admin
+            }
+        })
     else:
-        return jsonify({"success": False, "message": "Invalid username or password"}), 401
+        return jsonify({
+            "success": False,
+            "message": "Invalid username or password"
+        }), 401
+
 
 @auth_routes.route("/register", methods=["POST"])
 def register():
     data = request.json
-    name = data.get("name")
-    username = data.get("username")
-    password = data.get("password")
-
-    success, message = register_user(name, username, password)
+ 
+    success, message = register_user(data.get("username"), data.get("password"), data.get("name"), data.get("last_name"), data.get("address"),
+                                    data.get("city"), data.get("country"), data.get("phone_number"), data.get("email"))
+    #print(message)
     if success:
         return jsonify({"success": True, "message": "Registration successful"})
     else:

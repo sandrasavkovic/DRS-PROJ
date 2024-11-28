@@ -32,9 +32,20 @@ function App() {
     loginUser(formData.username, formData.password) //loginUser je servis koji samo salje unesene podatke Serveru
       .then((data) => { //Razlicite poruke u odnosu na to da li je prijava odobrena od strane servera
         if (data.success) { 
-          alert(`Prijava uspešna, dobrodošli ${data.user.name}!`); 
-          localStorage.setItem('userName', data.user.name);
-          window.location.href = "/PocetnaStranica";
+            const roleMessage = data.user.is_admin ? "Admin" : "User";
+            alert(`Prijava uspešna, dobrodošli ${data.user.name}! (${roleMessage})`);
+
+            localStorage.setItem('userName', data.user.name);
+            localStorage.setItem('isAdmin', data.user.is_admin);
+            
+            if(roleMessage === "Admin"){
+              //Ispraviti da bude poseban prikaz za admina
+              window.location.href = "/PocetnaStranica"; 
+            }
+            else{
+              window.location.href = "/PocetnaStranica"; 
+            }
+            
         } else {
           alert("Prijava neuspešna. Proverite korisničko ime i lozinku.");
         }
@@ -43,7 +54,17 @@ function App() {
   };
 
   const handleRegister = () => {
-    registerUser(formData.username, formData.password, formData.name)
+    registerUser(
+      formData.username,
+      formData.password,
+      formData.name,
+      formData.last_name,
+      formData.address,
+      formData.city,
+      formData.country,
+      formData.phone_number,
+      formData.email
+    )
       .then((data) => {
         if (data.success) {
           alert("Registracija uspešna!");
@@ -54,6 +75,7 @@ function App() {
       })
       .catch((err) => console.error("Greška:", err));
   };
+  
 
   //Ovo je samo prikaz razlicitih formi
   return (

@@ -12,13 +12,13 @@ export const loginUser = (username, password) => {
     }).then((res) => res.json());
 };
   
-export const registerUser = (username, password, name) => {
+export const registerUser = (username, password, name, last_name, address, city, country, phone_number, email) => {
     return fetch("/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, password, name }),
+      body: JSON.stringify({ username, password, name, last_name, address, city, country, phone_number, email}),
     }).then((res) => res.json());
 };
   

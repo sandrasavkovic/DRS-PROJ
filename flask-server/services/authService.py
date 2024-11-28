@@ -1,3 +1,4 @@
+from flask import jsonify
 from db import get_db_connection
 from models.User import User, UserDTO
 
@@ -9,16 +10,24 @@ def login_user(username, password):
     cursor.close()
     connection.close()
 
-    if user_data:
-        user = User(user_data[1], user_data[2], user_data[3]) 
-        return UserDTO(user.name) #DTO podatak se vraca klijentu
-    return None
+    if user_data: # Paziti - citamo iz baze na user_data[0] je ID
+        user = User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5], 
+                    user_data[6], user_data[7], user_data[8], user_data[9], user_data[10])
+        # Kad pravite .py fajlove za models folder pratite redoslijed polja u bazi
 
-def register_user(name, username, password):
+        user_dto = UserDTO(user.name, user.is_admin)
+        return user_dto
+    return None
+   
+def register_user(username, password, name, last_name, address, city, country, phone_number, email):
     connection = get_db_connection()
     cursor = connection.cursor()
     try:
-        cursor.execute("INSERT INTO users (name, username, password) VALUES (%s, %s, %s)", (name, username, password))
+        cursor.execute("""
+            INSERT INTO users 
+            (username, password, name, last_name, address, city, country, phone_number, email, is_admin) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (username, password, name, last_name, address, city, country, phone_number, email, 0))
         connection.commit()
         return True, "User registered successfully!"
     except Exception as e:
