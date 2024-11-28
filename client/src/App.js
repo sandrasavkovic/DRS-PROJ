@@ -1,37 +1,40 @@
 import React, { useState } from "react";
-//import { useNavigate } from "react-router-dom";
-import "./App.css";
+import { loginUser, registerUser } from "./services/authService";
+import LoginForm from "./components/LoginForm";
+import RegisterForm from "./components/RegisterForm";
+import "./styles/App.css";
 
 function App() {
-  const [isRegistering, setIsRegistering] = useState(false); // Da li korisnik želi da se registruje
+  const [isRegistering, setIsRegistering] = useState(false); //Da li se prijavljujemo ili registrujemo (da znamo koju formu prikazujemo)
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    name: "", // Dodato za registraciju
+    name: "", // polje potrebno za registraciju
   });
 
-  //const navigate = useNavigate();  // Inicijalizujte useNavigate
+  // U components folderu su .html fajlovi sa html elementima (forma, dugme...)
+  // Klijent je u const interakciji sa tim html elementima
+
+  // U tim fajlovima se POZIVA REAKCIJA na interakciju korisnika sa html elementima (npr. klik na login dugme - handleLogin(reakcija))
+  // Ta reakcija je DEFINISANA fjama handleRequest, handleLogin, handleRegister 
+  
+  // Reakcija podrazumijeva:
+  //    - poziv fja iz services foldera (tj. slanje podataka iz forme serveru)
+  //    - obrada odgovora servera
+
+  // components - html elementi (poziv reakcije), app.js - reakcije (poziv servisa, obrada odgovora servera)
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleLogin = () => {
-    fetch("/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username: formData.username, password: formData.password }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          alert("Prijava uspešna!");
-          // Ovde možete preusmeriti korisnika na stranicu za prijavljenog korisnika
-         // navigate("/PocetnaStranica");  // Preusmeravanje na PocetnaStranica
-         window.location.href = "/PocetnaStranica";
-
+    loginUser(formData.username, formData.password) //loginUser je servis koji samo salje unesene podatke Serveru
+      .then((data) => { //Razlicite poruke u odnosu na to da li je prijava odobrena od strane servera
+        if (data.success) { 
+          alert(`Prijava uspešna, dobrodošli ${data.user.name}!`); 
+          localStorage.setItem('userName', data.user.name);
+          window.location.href = "/PocetnaStranica";
         } else {
           alert("Prijava neuspešna. Proverite korisničko ime i lozinku.");
         }
@@ -40,22 +43,11 @@ function App() {
   };
 
   const handleRegister = () => {
-    fetch("/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: formData.username,
-        password: formData.password,
-        name: formData.name,
-      }),
-    })
-      .then((res) => res.json())
+    registerUser(formData.username, formData.password, formData.name)
       .then((data) => {
         if (data.success) {
           alert("Registracija uspešna!");
-          setIsRegistering(false); // Vraćamo korisnika na prijavu
+          setIsRegistering(false);
         } else {
           alert("Greška prilikom registracije.");
         }
@@ -63,62 +55,29 @@ function App() {
       .catch((err) => console.error("Greška:", err));
   };
 
+  //Ovo je samo prikaz razlicitih formi
   return (
     <div className="app-container">
       {isRegistering ? (
-        <div className="form-container">
-          <h2>Registracija</h2>
-          <input
-            type="text"
-            name="name"
-            placeholder="Ime"
-            value={formData.name}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            name="username"
-            placeholder="Korisničko ime"
-            value={formData.username}
-            onChange={handleChange}
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Lozinka"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <button onClick={handleRegister}>Potvrdi registraciju</button>
-          <p className="switch-form">
-            Već imate nalog?{" "}
-            <span onClick={() => setIsRegistering(false)}>Prijavi se</span>
-          </p>
-        </div>
+        <RegisterForm
+          formData={formData}
+          handleChange={handleChange}
+          handleRegister={handleRegister}
+        />
       ) : (
-        <div className="form-container">
-          <h2>Prijava</h2>
-          <input
-            type="text"
-            name="username"
-            placeholder="Korisničko ime"
-            value={formData.username}
-            onChange={handleChange}
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Lozinka"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <button onClick={handleLogin}>Prijavi se</button>
-          <p className="switch-form">
-            Nemaš nalog?{" "}
-            <span onClick={() => setIsRegistering(true)}>Registruj se</span>
-          </p>
-        </div>
+        <LoginForm
+          formData={formData}
+          handleChange={handleChange}
+          handleLogin={handleLogin}
+        />
       )}
+      <p className="switch-form">
+        {isRegistering ? (
+          <>Već imate nalog? <span onClick={() => setIsRegistering(false)}>Prijavi se</span></>
+        ) : (
+          <>Nemaš nalog? <span onClick={() => setIsRegistering(true)}>Registruj se</span></>
+        )}
+      </p>
     </div>
   );
 }
