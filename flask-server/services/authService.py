@@ -2,6 +2,10 @@ from flask import jsonify
 from db import get_db_connection
 from models.User import User, UserDTO
 
+# pravi upit u bazu i vidi koji korisnici koji nisu adminu imaju isApproved = False
+# admin ga odobrava samo prvi put 
+# ?? ako je rejected onda ga izbaci iz baze
+
 def login_user(email, password):
     connection = get_db_connection()
     cursor = connection.cursor()
@@ -36,3 +40,26 @@ def register_user(username, password, name, last_name, address, city, country, p
     finally:
         cursor.close()
         connection.close()
+
+# funkicja za odobravanje
+def user_approving(email, is_approved):
+    # pristup bazi i promena is_approved
+    return True
+
+# funkcija za dobavljanje user-a na osnovu mejl adrese
+def get_user_by_email(email):
+   
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)  # `dictionary=True` za vraćanje rezultata kao rečnik
+    try:
+        query = "SELECT * FROM users WHERE email = %s"
+        cursor.execute(query, (email,))
+        user = cursor.fetchone()  # Dohvata prvi rezultat (korisnika)
+    except Exception as e:
+        connection.rollback()
+        user = None
+        return False, str(e)
+    finally:
+        cursor.close()
+        connection.close()
+    return user

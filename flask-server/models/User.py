@@ -1,5 +1,7 @@
+# PAZI KADA PRAVIS KONSTRUKTORE DA PRATI REDOSLED U BAZI
+
 class User:
-    def __init__(self, username, password, name, last_name, address, city, country, phone_number, email, is_admin=False):
+    def __init__(self, username, password, name, last_name, address, city, country, phone_number, email, is_admin=False, is_approved=False):
         self.username = username
         self.password = password
         self.name = name
@@ -10,6 +12,7 @@ class User:
         self.phone_number = phone_number
         self.email = email
         self.is_admin = is_admin
+        self.is_approved = is_approved
 
     def __repr__(self):
         user_type = "Administrator" if self.is_admin else "User"
@@ -26,3 +29,10 @@ class UserDTO:
 
     def __repr__(self):
         return f"UserDTO(name={self.name}, is_admin={self.is_admin})"
+
+class UserApprovingDTO:
+    def __init__(self, name, last_name, email, is_approved):
+        self.name = name
+        self.last_name = last_name
+        self.email = email
+        self.is_approved = is_approved
