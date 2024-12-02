@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from app_init import socketio 
 from services.authService import login_user, register_user
 
 # Pomocu Blueprint se samo grupisu rute - treba nam jer rute ne pisemo u server.py fajlu
@@ -10,16 +11,18 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
-    user_dto = login_user(email, password)
+    result = login_user(email, password)
 
-    if user_dto:
+    if result: 
+        user_dto, access_token = result
         return jsonify({
             "success": True,
             "message": "Login successful",
             "user": {
                 "name": user_dto.name,
                 "is_admin": user_dto.is_admin
-            }
+            },
+            "access_token": access_token
         })
     else:
         return jsonify({
@@ -34,7 +37,6 @@ def register():
  
     success, message = register_user(data.get("username"), data.get("password"), data.get("name"), data.get("last_name"), data.get("address"),
                                     data.get("city"), data.get("country"), data.get("phone_number"), data.get("email"))
-    #print(message)
     if success:
         return jsonify({"success": True, "message": "Registration successful"})
     else:

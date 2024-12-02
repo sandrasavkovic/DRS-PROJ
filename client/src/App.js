@@ -1,56 +1,48 @@
 import React, { useState } from "react";
-import { loginUser, registerUser } from "./services/authService";
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
+import Admin from "./components/Admin";
+import User from "./components/User";
+import PrivateRoute from "./components/PrivateRoute"; // For protected routes
+import { loginUser, registerUser } from "./services/authService";
 import "./styles/App.css";
 
 function App() {
-  const [isRegistering, setIsRegistering] = useState(false); //Da li se prijavljujemo ili registrujemo (da znamo koju formu prikazujemo)
+  const [isRegistering, setIsRegistering] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    name: "", // polje potrebno za registraciju
+    name: "",
+    email: "",
   });
 
-  // U components folderu su .html fajlovi sa html elementima (forma, dugme...)
-  // Klijent je u const interakciji sa tim html elementima
+  const navigate = useNavigate();
 
-  // U tim fajlovima se POZIVA REAKCIJA na interakciju korisnika sa html elementima (npr. klik na login dugme - handleLogin(reakcija))
-  // Ta reakcija je DEFINISANA fjama handleRequest, handleLogin, handleRegister 
-  
-  // Reakcija podrazumijeva:
-  //    - poziv fja iz services foldera (tj. slanje podataka iz forme serveru)
-  //    - obrada odgovora servera
-
-  // components - html elementi (poziv reakcije), app.js - reakcije (poziv servisa, obrada odgovora servera)
+  const toggleForm = () => {
+    setIsRegistering(!isRegistering);
+    import("./styles/loginRegister.css");
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleLogin = () => {
-    loginUser(formData.email, formData.password) //loginUser je servis koji samo salje unesene podatke Serveru
-      .then((data) => { //Razlicite poruke u odnosu na to da li je prijava odobrena od strane servera
-        if (data.success) { 
-            const roleMessage = data.user.is_admin ? "Admin" : "User";
-            alert(`Prijava uspešna, dobrodošli ${data.user.name}! (${roleMessage})`);
-
-            localStorage.setItem('userName', data.user.name);
-            localStorage.setItem('isAdmin', data.user.is_admin);
-            
-            if(roleMessage === "Admin"){
-              //Ispraviti da bude poseban prikaz za admina
-              window.location.href = "/PocetnaStranica"; 
-            }
-            else{
-              window.location.href = "/PocetnaStranica"; 
-            }
-            
+    loginUser(formData.email, formData.password)
+      .then((data) => {
+        if (data.success) {
+          alert("Login je uspjesan!");
+          localStorage.setItem("access_token", data.access_token);
+          localStorage.setItem("userName", data.user.name);
+          localStorage.setItem("isAdmin", JSON.stringify(data.user.is_admin));
+          const redirectPath = data.user.is_admin ? "/admin" : "/user";
+          navigate(redirectPath);
         } else {
-          alert("Prijava neuspešna. Proverite korisničko ime i lozinku.");
+          alert("Login failed. Please check your username and password.");
         }
       })
-      .catch((err) => console.error("Greška:", err));
+      .catch((err) => console.error("Error:", err));
   };
 
   const handleRegister = () => {
@@ -58,48 +50,90 @@ function App() {
       formData.username,
       formData.password,
       formData.name,
-      formData.last_name,
-      formData.address,
-      formData.city,
-      formData.country,
-      formData.phone_number,
       formData.email
     )
       .then((data) => {
         if (data.success) {
-          alert("Registracija uspešna!");
-          setIsRegistering(false);
+          alert("Registration successful!");
+          setIsRegistering(false); 
         } else {
-          alert("Greška prilikom registracije.");
+          alert("Registration failed. Please try again.");
         }
       })
-      .catch((err) => console.error("Greška:", err));
+      .catch((err) => console.error("Error:", err));
   };
-  
 
-  //Ovo je samo prikaz razlicitih formi
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("isAdmin");
+    localStorage.removeItem("userName");
+    navigate("/login");
+  };
+
   return (
     <div className="app-container">
-      {isRegistering ? (
-        <RegisterForm
-          formData={formData}
-          handleChange={handleChange}
-          handleRegister={handleRegister}
+      <Routes>
+       
+        <Route
+          path="/login"
+          element={
+            localStorage.getItem("access_token") ? (
+              <Navigate
+                to={
+                  JSON.parse(localStorage.getItem("isAdmin"))
+                    ? "/admin"
+                    : "/user"
+                }
+              />
+            ) : (
+              <div>
+              
+                {isRegistering ? (
+                  <RegisterForm
+                    formData={formData}
+                    handleChange={handleChange}
+                    handleRegister={handleRegister}
+                  />
+                ) : (
+                  <LoginForm
+                    formData={formData}
+                    handleChange={handleChange}
+                    handleLogin={handleLogin}
+                  />
+                )}
+
+               
+                <button onClick={toggleForm} className="switch-button">
+                  {isRegistering ? "Switch to Login" : "Switch to Register"}
+                </button>
+              </div>
+            )
+          }
         />
-      ) : (
-        <LoginForm
-          formData={formData}
-          handleChange={handleChange}
-          handleLogin={handleLogin}
+
+    
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute allowedRole="admin">
+              <Admin handleLogout={handleLogout} />
+            </PrivateRoute>
+          }
         />
-      )}
-      <p className="switch-form">
-        {isRegistering ? (
-          <>Već imate nalog? <span onClick={() => setIsRegistering(false)}>Prijavi se</span></>
-        ) : (
-          <>Nemaš nalog? <span onClick={() => setIsRegistering(true)}>Registruj se</span></>
-        )}
-      </p>
+
+     
+        <Route
+          path="/user"
+          element={
+            <PrivateRoute allowedRole="user">
+              <User handleLogout={handleLogout} />
+            </PrivateRoute>
+          }
+        />
+
+      
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
     </div>
   );
 }
