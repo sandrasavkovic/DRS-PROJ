@@ -2,8 +2,8 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 
 const PrivateRoute = ({ children, allowedRole }) => {
-  const token = localStorage.getItem("access_token");
-  const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
+  const token = sessionStorage.getItem("access_token");
+  const isAdmin = JSON.parse(sessionStorage.getItem("isAdmin"));
 
   if (!token) {
     return <Navigate to="/login" />;

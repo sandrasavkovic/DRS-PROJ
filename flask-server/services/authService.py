@@ -12,8 +12,10 @@ def login_user(email, password):
     connection = get_db_connection()
     cursor = connection.cursor()
     try:
-        cursor.execute("SELECT * FROM users WHERE email = %s AND password = %s", (email, password))
+        cursor.execute("SELECT * FROM users WHERE email = %s AND password = %s AND is_approved = %s", 
+                       (email, password, 'APPROVED'))
         user_data = cursor.fetchone()
+        print("Rezultat upita:", user_data)
         if user_data: # Paziti - citamo iz baze na user_data[0] je ID
             user = User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5], 
                     user_data[6], user_data[7], user_data[8], user_data[9], user_data[10])

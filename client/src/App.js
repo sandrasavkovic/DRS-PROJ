@@ -3,10 +3,12 @@ import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import Admin from "./components/Admin";
+
 import User from "./components/User";
 import PrivateRoute from "./components/PrivateRoute"; // For protected routes
 import { loginUser, registerUser } from "./services/authService";
 import "./styles/App.css";
+
 
 function App() {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -32,10 +34,13 @@ function App() {
     loginUser(formData.email, formData.password)
       .then((data) => {
         if (data.success) {
-          alert("Login je uspjesan!");
-          localStorage.setItem("access_token", data.access_token);
-          localStorage.setItem("userName", data.user.name);
-          localStorage.setItem("isAdmin", JSON.stringify(data.user.is_admin));
+          alert("Login je uspješan!");
+          
+          
+          sessionStorage.setItem("access_token", data.access_token);
+          sessionStorage.setItem("userName", data.user.name);
+          sessionStorage.setItem("isAdmin", JSON.stringify(data.user.is_admin));
+  
           const redirectPath = data.user.is_admin ? "/admin" : "/user";
           navigate(redirectPath);
         } else {
@@ -44,6 +49,7 @@ function App() {
       })
       .catch((err) => console.error("Error:", err));
   };
+  
 
   const handleRegister = () => {
     registerUser(
@@ -63,13 +69,13 @@ function App() {
       .catch((err) => console.error("Error:", err));
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("isAdmin");
-    localStorage.removeItem("userName");
+  const handleLogout = () => { 
+    sessionStorage.removeItem("access_token");
+    sessionStorage.removeItem("isAdmin");
+    sessionStorage.removeItem("userName");
     navigate("/login");
   };
-
+  
   return (
     <div className="app-container">
       <Routes>
@@ -77,10 +83,10 @@ function App() {
         <Route
           path="/login"
           element={
-            localStorage.getItem("access_token") ? (
+            sessionStorage.getItem("access_token") ? (
               <Navigate
                 to={
-                  JSON.parse(localStorage.getItem("isAdmin"))
+                  JSON.parse(sessionStorage.getItem("isAdmin"))
                     ? "/admin"
                     : "/user"
                 }

@@ -7,28 +7,37 @@ auth_routes = Blueprint("auth_routes", __name__)
 
 @auth_routes.route("/login", methods=["POST"])
 def login():
-    data = request.json
-    email = data.get("email")
-    password = data.get("password")
+    try:
+        data = request.json
+        email = data.get("email")
+        password = data.get("password")
 
-    result = login_user(email, password)
+        print("Primljeni podaci:", email, password)
 
-    if result: 
-        user_dto, access_token = result
-        return jsonify({
-            "success": True,
-            "message": "Login successful",
-            "user": {
-                "name": user_dto.name,
-                "is_admin": user_dto.is_admin
-            },
-            "access_token": access_token
-        })
-    else:
+        result = login_user(email, password)
+
+        if result: 
+            user_dto, access_token = result
+            return jsonify({
+                "success": True,
+                "message": "Login successful",
+                "user": {
+                    "name": user_dto.name,
+                    "is_admin": user_dto.is_admin
+                },
+                "access_token": access_token
+            })
+        else:
+            return jsonify({
+                "success": False,
+                "message": "Invalid email or password"
+            }), 401
+    except Exception as e:
+        print("Greška na serveru:", e)
         return jsonify({
             "success": False,
-            "message": "Invalid email or password"
-        }), 401
+            "message": "Internal server error"
+        }), 500
 
 
 @auth_routes.route("/register", methods=["POST"])
