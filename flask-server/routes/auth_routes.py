@@ -43,7 +43,6 @@ def login():
 @auth_routes.route("/register", methods=["POST"])
 def register():
     data = request.json
- 
     success, message = register_user(data.get("username"), data.get("password"), data.get("name"), data.get("last_name"), data.get("address"),
                                     data.get("city"), data.get("country"), data.get("phone_number"), data.get("email"))
     if success:

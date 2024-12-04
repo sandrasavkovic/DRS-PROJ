@@ -16,8 +16,14 @@ function App() {
     username: "",
     password: "",
     name: "",
+    last_name: "",
+    address: "",
+    city: "",
+    country: "",
+    phone_number: "",
     email: "",
   });
+  
 
   const navigate = useNavigate();
 
@@ -56,9 +62,16 @@ function App() {
       formData.username,
       formData.password,
       formData.name,
+      formData.last_name,
+      formData.address,
+      formData.city,
+      formData.country,
+      formData.phone_number,
       formData.email
     )
       .then((data) => {
+        console.log("Form data being sent:", formData);
+
         if (data.success) {
           alert("Registration successful!");
           setIsRegistering(false); 

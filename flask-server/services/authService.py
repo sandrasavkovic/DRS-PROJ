@@ -36,11 +36,13 @@ def register_user(username, password, name, last_name, address, city, country, p
     connection = get_db_connection()
     cursor = connection.cursor()
     try:
+        print("***********************")
+        print(username, name, last_name, address, city, country, phone_number, email)
         cursor.execute("""
             INSERT INTO users 
-            (username, password, name, last_name, address, city, country, phone_number, email, is_admin) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (username, password, name, last_name, address, city, country, phone_number, email, 0))
+            (username, password, name, last_name, address, city, country, phone_number, email, is_admin, is_approved) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (username, password, name, last_name, address, city, country, phone_number, email, 0, 'PENDING'))
         connection.commit()
         
         return True, "User registered successfully!"
