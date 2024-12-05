@@ -1,100 +1,84 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./AdminSidebar";
 import "../styles/Admin.css";
-import { fetchPendingRequests, acceptRequest, declineRequest } from "../services/approvingService";
-import io from "socket.io-client";
 
-const Admin = ({ handleLogout }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
+const Admin = ({ socket, handleLogout }) => {
   const [pendingRequests, setPendingRequests] = useState([]);
 
-  const handleSidebarSelect = (option) => {
-    setSelectedOption(option);
+  const handleAcceptRequest = (userId) => {
+    console.log("Accepting request for user: " + userId);
+    //socket.emit("accept_request", { userId }); //necemo ovdje emitovati EVENT (saljemo HTTP)
+    fetch(`/approving/accept-request/${userId}`, { method: "PUT" })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Request accepted:", data);
+      })
+      .catch((error) => console.error("Error accepting request:", error));
+  };
+
+  const handleRejectRequest = (userId) => {
+    console.log("Rejecting request for user: " + userId);
+    //socket.emit("reject_request", { userId }); //necemo ovdje emitovati EVENT (saljemo HTTP)
+    fetch(`/approving/decline-request/${userId}`, { method: "PUT" })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Request accepted:", data);
+    })
+    .catch((error) => console.error("Error accepting request:", error));
   };
 
   useEffect(() => {
-    const socket = io("http://localhost:5000");
-    
-    socket.on("pending_requests_updated", (data) => {
-      console.log("Received event", data);
-      if (data && data.pending_users) {
-        console.log("Received updated pending requests:", data.pending_users);
-        setPendingRequests(data.pending_users);
-      }
+    console.log(socket);
+
+    if (!socket) return;
+     // Učitavanje pending requests na početku
+    fetch("/approving/pending-requests") 
+      .then((response) => response.json())
+      .then((data) => {
+        setPendingRequests(data);
+      })
+      .catch((error) => console.error("Error fetching requests:", error));
+
+    socket.on("pendingRequestsUpdate", (data) => {
+        console.log("Pending requests updated:", data);
+        setPendingRequests(data); 
     });
-  
+
     return () => {
-      socket.disconnect(); // Čišćenje efekta: zatvaranje WebSocket veze kad komponenta bude demontirana
+      socket.off("updateRequest");
     };
-  }, []); // Ovaj useEffect bi trebalo da se izvrši samo jednom (na mount-u)
-  
-
-  useEffect(() => {
-    let isMounted = true; // Ova promenljiva osigurava da samo montirani efekti mogu ažurirati stanje
-    
-    if (selectedOption === "pendingRequests") {
-      const getRequests = async () => {
-        const requests = await fetchPendingRequests();
-        if (isMounted) {
-          console.log("Fetched pending requests:", requests);
-          setPendingRequests(requests);
-        }
-      };
-      getRequests();
-    }
-  
-    return () => {
-      isMounted = false; // Kada se komponenta demontira, postavljamo isMounted na false
-    };
-  }, [selectedOption]); // Efekat zavisi od selectedOption
-  
-
-  const handleAccept = async (userId) => {
-    const result = await acceptRequest(userId);
-    if (result.success) {
-      console.log(`Request for user ${userId} accepted.`);
-      // RUCNI POZIV A TREBA WEBSOCKET
-      const requests = await fetchPendingRequests();
-      setPendingRequests(requests);
-    }
-  };
-
-  const handleDecline = async (userId) => {
-    const result = await declineRequest(userId);
-    if (result.success) {
-      console.log(`Request for user ${userId} declined.`);
-      // Oslanjamo se na WebSocket za osvežavanje liste
-    }
-  };
+  }, [socket]);
 
   return (
-    <div className="admin-page">
+     <div className="admin-page">
       <button onClick={handleLogout} className="logout-btn">
         Logout
       </button>
-      <Sidebar onSelect={handleSidebarSelect} />
+      <Sidebar /> {/* Sidebar komponenta */}
       <div className="content">
-        <h1>Welcome Admin</h1>
-        {selectedOption === "pendingRequests" && (
-          <div>
-            <h2>Pending Registration Requests</h2>
-            {pendingRequests.length === 0 ? (
-              <p>No pending requests.</p>
-            ) : (
-              <ul>
-                {pendingRequests.map((request) => (
-                  <li key={request[0]}>
-                    <span>
-                      {request[3]} {request[4]} ({request[9]})
-                    </span>
-                    <button onClick={() => handleAccept(request[0])}>Accept</button>
-                    <button onClick={() => handleDecline(request[0])}>Decline</button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
+        <h1>Dobrodošli na Admin stranicu</h1>
+        <div>
+          <h2>Pending Registration Requests</h2>
+          {pendingRequests.length === 0 ? (
+            <p>No pending requests.</p>
+          ) : (
+            <ul>
+              {pendingRequests.map((request) => (
+                <li key={request[0]}>
+                  <span>
+                    {request[3]} {request[4]} ({request[9]})
+                  </span>
+                  <button onClick={() => handleAcceptRequest(request[0])}>
+                    Accept
+                  </button>
+                  <button onClick={() => handleRejectRequest(request[0])}>
+                    Decline
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );
