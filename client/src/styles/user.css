@@ -1,0 +1,115 @@
+/* Struktura stranice */
+.page-container {
+    display: flex;
+    height: 100vh;
+    justify-content: space-between;
+  }
+  
+  /* Sidebar sa temama (leva strana) */
+  .sidebar-left {
+    width: 300px;
+    background-color: #007bff;
+    padding: 20px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    color: #ffffff;
+    overflow-y: auto; /* Omogućava skrolovanje kada ima puno tema */
+  }
+  
+  /* Polje za pretragu */
+  .search-bar input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  /* Lista tema */
+  .theme-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .theme-item {
+    background-color: #ffffff;
+    color: #333;
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .theme-item:hover {
+    background-color: #e9ecef;
+  }
+  
+  .theme-item.selected {
+    background-color: #0056b3;
+    color: #ffffff;
+  }
+  
+  /* Sidebar za diskusiju (desna strana) */
+  /* Sidebar za diskusiju (desna strana) */
+.sidebar-right {
+    width: 350px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    border-left: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    color: #333;
+  }
+  
+  /* Centriranje sadržaja u desnom sidebar-u */
+  .discussion-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+  }
+  
+  select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+    font-size: 16px;
+    height: 200px; /* Povećana visina textarea */
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+ 
