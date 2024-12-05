@@ -14,43 +14,56 @@ const Admin = ({ handleLogout }) => {
 
   useEffect(() => {
     const socket = io("http://localhost:5000");
- 
-    socket.on("request_approved", (data) => {
-      setPendingRequests((prevRequests) =>
-        prevRequests.filter((request) => request[0] !== data.user_id) 
-      );
+    
+    socket.on("pending_requests_updated", (data) => {
+      console.log("Received event", data);
+      if (data && data.pending_users) {
+        console.log("Received updated pending requests:", data.pending_users);
+        setPendingRequests(data.pending_users);
+      }
     });
   
     return () => {
-      socket.disconnect();
+      socket.disconnect(); // Čišćenje efekta: zatvaranje WebSocket veze kad komponenta bude demontirana
     };
-  }, []);
+  }, []); // Ovaj useEffect bi trebalo da se izvrši samo jednom (na mount-u)
   
 
   useEffect(() => {
+    let isMounted = true; // Ova promenljiva osigurava da samo montirani efekti mogu ažurirati stanje
+    
     if (selectedOption === "pendingRequests") {
       const getRequests = async () => {
-        const requests = await fetchPendingRequests(); 
-        console.log("Fetched pending requests:", requests);
-        setPendingRequests(requests);
+        const requests = await fetchPendingRequests();
+        if (isMounted) {
+          console.log("Fetched pending requests:", requests);
+          setPendingRequests(requests);
+        }
       };
       getRequests();
     }
-  }, [selectedOption]);
+  
+    return () => {
+      isMounted = false; // Kada se komponenta demontira, postavljamo isMounted na false
+    };
+  }, [selectedOption]); // Efekat zavisi od selectedOption
+  
 
   const handleAccept = async (userId) => {
     const result = await acceptRequest(userId);
     if (result.success) {
-  
       console.log(`Request for user ${userId} accepted.`);
+      // RUCNI POZIV A TREBA WEBSOCKET
+      const requests = await fetchPendingRequests();
+      setPendingRequests(requests);
     }
   };
 
   const handleDecline = async (userId) => {
-    const result = await declineRequest(userId); 
+    const result = await declineRequest(userId);
     if (result.success) {
-     
       console.log(`Request for user ${userId} declined.`);
+      // Oslanjamo se na WebSocket za osvežavanje liste
     }
   };
 
@@ -72,7 +85,7 @@ const Admin = ({ handleLogout }) => {
                 {pendingRequests.map((request) => (
                   <li key={request[0]}>
                     <span>
-                      {request[3]} {request[4]} ({request[9]}) 
+                      {request[3]} {request[4]} ({request[9]})
                     </span>
                     <button onClick={() => handleAccept(request[0])}>Accept</button>
                     <button onClick={() => handleDecline(request[0])}>Decline</button>

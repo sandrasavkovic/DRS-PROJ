@@ -20,6 +20,7 @@ def accept_request(user_id):
     try:
         success = approve_request(user_id)
         if success:
+            print(f"approve_request result: {success}")  # Dodajte log ispise TRUE!!!
             return jsonify({"success": True, "message": "Request accepted successfully"}), 200
         else:
             return jsonify({"success": False, "message": "Failed to accept request"}), 400
