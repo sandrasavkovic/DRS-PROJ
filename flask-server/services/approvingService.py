@@ -4,6 +4,7 @@ from flask_mail import Message, Mail
 from utils.email_utils import send_email
 import logging
 
+email_sent_cache = set()
 def get_pending_requests():
     connection = get_db_connection()
     cursor = connection.cursor()
@@ -31,9 +32,10 @@ def approve_request(user_id):
         connection.commit()
         print(cursor.rowcount)
         if cursor.rowcount > 0:
-            subject = "Uspesno ste prijavljeni na aplikaciju za diskusije!"
-            body = f"Poštovani {user[3]} {user[4]},\n\nVaša prijava je uspešno prihvaćena!\n\nPozdrav,\nAdministrator"
-            send_email(subject, user[9], body)  
+            subject = "Vas zahtev za registraciju je uspesno poslat!"
+            body = f"Poštovani {user[3]} {user[4]},\n\nRegistracija je prihvaćena! Mozete se prijaviti\n\nPozdrav,\nAdministrator"
+            send_email(subject, user[9], body) 
+            email_sent_cache.add(user_id) 
             return True
         return False
     except Exception as e:
@@ -57,11 +59,12 @@ def reject_request(user_id):
             (user_id,),
         )
         connection.commit()
-
         if cursor.rowcount > 0:
-             #socketio.emit('pending_requests_updated', {'pending_users': get_pending_requests()})
-             return True
-        
+            subject = "Zahtev za registraciju je odbijen!"
+            body = f"Poštovani {user[3]} {user[4]},\n\nVaša registracija je neuspesna! Pokušajte ponovo!\n\nPozdrav,\nAdministrator"
+            send_email(subject, user[9], body)  
+            email_sent_cache.add(user_id)
+            return True
         return False
     except Exception as e:
         print(f"Error occurred: {str(e)}") 

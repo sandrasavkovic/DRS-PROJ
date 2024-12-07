@@ -1,7 +1,7 @@
 # PAZI KADA PRAVIS KONSTRUKTORE DA PRATI REDOSLED U BAZI
 
 class User:
-    def __init__(self, username, password, name, last_name, address, city, country, phone_number, email, is_admin=False, is_approved=False):
+    def __init__(self, username, password, name, last_name, address, city, country, phone_number, email, is_admin=False, is_approved=False, first_login = True):
         self.username = username
         self.password = password
         self.name = name
@@ -13,7 +13,7 @@ class User:
         self.email = email
         self.is_admin = is_admin
         self.is_approved = is_approved
-
+        self.first_login = first_login
     def __repr__(self):
         user_type = "Administrator" if self.is_admin else "User"
         return (

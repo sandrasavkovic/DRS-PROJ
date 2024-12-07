@@ -115,10 +115,11 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `is_admin` tinyint(1) DEFAULT '0',
   `is_approved` varchar(20) DEFAULT NULL,
+  `first_login` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +128,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (11,'user','user123','Sandra','Savkovic','ulica123','Novi Sad','Srbija','0987654321','sandrasavkovic86@gmail.com',0,'PENDING'),(12,'user1','user321','Duska','Muncan','Ulica321','Novi Sad','Srbija','1234567890','duskamuncan113@gmail.com',0,'PENDING'),(14,'admin','admin123','Diana','Hodzic','ulica123','Novi Sad','Srbija','1234567890','projekat.drs6@gmail.com',1,'APPROVED');
+INSERT INTO `users` VALUES (11,'user','user123','Sandra','Savkovic','ulica123','Novi Sad','Srbija','0987654321','sandrasavkovic86@gmail.com',0,'APPROVED',0),(12,'user1','user321','Duska','Muncan','Ulica321','Novi Sad','Srbija','1234567890','duskamuncan113@gmail.com',0,'PENDING',1),(14,'admin','admin123','Diana','Hodzic','ulica123','Novi Sad','Srbija','1234567890','projekat.drs6@gmail.com',1,'APPROVED',0),(16,'registrovani1','loz1','ime1','pr1','ad1','gr1','dz','0030303','fsdsds@gmail.com',0,'APPROVED',1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -140,4 +141,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-05 21:23:52
+-- Dump completed on 2024-12-07 10:48:45
