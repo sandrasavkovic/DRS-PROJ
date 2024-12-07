@@ -3,7 +3,12 @@ import Sidebar from "./AdminSidebar";
 import "../styles/Admin.css";
 
 const Admin = ({ socket, handleLogout }) => {
+  const[selectedOption, setSelectedOption] = useState(null)
   const [pendingRequests, setPendingRequests] = useState([]);
+
+  const handleSidebarSelect = (option) =>{
+    setSelectedOption(option)
+  }
 
   const handleAcceptRequest = (userId) => {
     console.log("Accepting request for user: " + userId);
@@ -44,17 +49,29 @@ const Admin = ({ socket, handleLogout }) => {
         setPendingRequests(data); 
     });
 
+    if (selectedOption === "pendingRequests") {
+      fetch("/approving/pending-requests") 
+      .then((response) => response.json())
+      .then((data) => {
+        setPendingRequests(data);
+      })
+      .catch((error) => console.error("Error fetching requests:", error));
+    }
+    else if (selectedOption === "nekaOpcija") {
+      alert("Kliknuli ste na neku opciju!")
+    }
+
     return () => {
       socket.off("updateRequest");
     };
-  }, [socket]);
+  }, [socket, selectedOption]);
 
   return (
      <div className="admin-page">
       <button onClick={handleLogout} className="logout-btn">
         Logout
       </button>
-      <Sidebar /> {/* Sidebar komponenta */}
+      <Sidebar onSelect={handleSidebarSelect} /> {/* Sidebar komponenta */}
       <div className="content">
         <h1>Dobrodošli na Admin stranicu</h1>
         <div>
