@@ -2,6 +2,7 @@ from app_init import create_app, create_socketio, mail, socketio  # Import initi
 from routes.auth_routes import auth_routes  # Import blueprints
 from routes.approving_routes import approving_routes
 from routes.theme_routes import theme_routes
+from routes.discussion_routes import discussion_routes
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS  # Import CORS
 
@@ -15,6 +16,8 @@ CORS(app)
 app.register_blueprint(auth_routes, url_prefix="/auth")
 app.register_blueprint(approving_routes, url_prefix="/approving")
 app.register_blueprint(theme_routes, url_prefix='/theme')
+app.register_blueprint(discussion_routes, url_prefix='/discussion')
+
 
 @app.route("/")
 def home():

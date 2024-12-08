@@ -27,31 +27,73 @@
     margin-bottom: 20px;
   }
   
-  /* Lista tema */
-  .theme-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .theme-item {
-    background-color: #ffffff;
-    color: #333;
-    padding: 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .theme-item:hover {
-    background-color: #e9ecef;
-  }
-  
-  .theme-item.selected {
-    background-color: #0056b3;
-    color: #ffffff;
-  }
-  
+ /* Lista tema */
+.theme-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.theme-item {
+  background-color: #ffffff;
+  color: #000000; /* Crna boja teksta */
+  padding: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.theme-item:hover {
+  background-color: #e9ecef;
+}
+
+.theme-item.selected {
+  background-color: #0056b3;
+  color: #ffffff;
+}
+
+
+.discussions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.discussion-item {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 250%; /* Pravougaonik koji zauzima širinu roditeljskog elementa */
+  max-width: 5000px; /* Postavlja maksimalnu širinu, možeš prilagoditi po želji */
+  margin: 0 auto;
+}
+
+.discussion-item h6 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  margin-top: 5px;
+}
+
+.discussion-item p {
+  font-size: 16px;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.discussion-item small {
+  font-size: 14px;
+  color: #555;
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+}
+
+
   /* Sidebar za diskusiju (desna strana) */
   /* Sidebar za diskusiju (desna strana) */
 .sidebar-right {

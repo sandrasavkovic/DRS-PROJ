@@ -1,30 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/user.css';
-import { fetchThemes } from '../services/themeService';
-// socket i handleLogout se prosl kao props, tj to je nesto definisano u visoj komponenti (App.js)
-// Kako se var/kod ne bi duplicirao proslijedimo vec postojece
-
-// Primjer kako se koristi socket (nije dio implementacije)!
-  // Pogledati kako server odgovara na event klijenta u server.py 
-  
-  // Dakle u ovom jednostavnom primjeru:
-    // korisnik na pritisak dugmeta salje event trigger serveru, 
-    // koji odgovara na event
-    // korisnik ima listen fju na taj odgovor 
-  
-    // i na taj nacin zavrsi ciklus event-response-event(listener)
+import { fetchThemes, fetchDiscussions } from '../services/themeService';
 
 const User = ({ socket, handleLogout }) => {
-    const [themes, setThemes] = useState([]); // Lista tema
-    const [filteredThemes, setFilteredThemes] = useState([]); // Filtrirane teme
-    const [searchTerm, setSearchTerm] = useState(''); // Unos u polje za pretragu
-    const [selectedTheme, setSelectedTheme] = useState(null); // Selektovana tema
-    const [discussionText, setDiscussionText] = useState(''); // Tekst diskusije
-
-  const handleButtonClick = () => {
-    console.log("Button clicked, emitting event to server...");
-    socket.emit("button_click"); // Na pritisak dugmeta generisi event (trigger)
-  };
+  const [themes, setThemes] = useState([]); // Lista tema
+  const [filteredThemes, setFilteredThemes] = useState([]); // Filtrirane teme
+  const [searchTerm, setSearchTerm] = useState(''); // Unos u polje za pretragu
+  const [selectedTheme, setSelectedTheme] = useState(null); // Selektovana tema
+  const [discussionText, setDiscussionText] = useState(''); // Tekst diskusije
+  const [discussions, setDiscussions] = useState([]); // Diskusije za selektovanu temu
 
   // Rukovanje promenom u polju za pretragu
   const handleSearchChange = (e) => {
@@ -36,11 +20,22 @@ const User = ({ socket, handleLogout }) => {
     setFilteredThemes(filtered);
   };
 
-  // Rukovanje promenom u padajućem meniju za izbor teme
-  const handleSelectTheme = (e) => {
-    const selectedThemeId = e.target.value;
-    const theme = themes.find((t) => t.id === selectedThemeId);
+  // Rukovanje klikom na temu u levom sidebaru
+  const handleSelectTheme = (theme) => {
     setSelectedTheme(theme);
+    // Dohvatanje diskusija za selektovanu temu
+    handleFetchDiscussions(theme.id);
+  };
+
+  // Dohvatanje diskusija za selektovanu temu
+  const handleFetchDiscussions = (themeId) => {
+    fetchDiscussions(themeId) // Pretpostavljam da fetchDiscussions uzima id teme i vraća diskusije
+      .then((response) => {
+        setDiscussions(response.data); // Stavljanje diskusija u state
+      })
+      .catch((error) => {
+        console.error('Greška pri dohvatiti diskusije:', error);
+      });
   };
 
   // Rukovanje unosom diskusije
@@ -62,95 +57,83 @@ const User = ({ socket, handleLogout }) => {
   };
 
   useEffect(() => {
-    
-    console.log(socket);
-    if (!socket) return;
-
     fetchThemes()
-    .then((response) => {
-      const sortedThemes = response.data.sort(
-        (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
-      );
-      setThemes(sortedThemes);
-      setFilteredThemes(sortedThemes);
-    })
-    .catch((error) => console.error('Error fetching themes:', error));
+      .then((response) => {
+        const sortedThemes = response.data.sort(
+          (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
+        );
+        setThemes(sortedThemes);
+        setFilteredThemes(sortedThemes);
+      })
+      .catch((error) => console.error('Error fetching themes:', error));
 
-    //OVO je listener korisnika (na odgovor servera)
-    socket.on("serverReaction", (msg) => {
-      alert("Poruka primljena od SERVERA: " + msg.message);
-      console.log("Poruka primljena od SERVERA: ", msg);
-    });
-
-    //OVO jeste dio implementacije (kasnije cemo uraditi)
-    socket.on("mention_notification", (msg) => {
-      alert(`Spomenuo vas je korisnik: ${msg.message}`);
-    });
-
-    // JAKO bitno - sa .off socket otkazuje pretplatu na dogadjaje - po gasenju komponente sve se pretplate trebaju otkazati!
+    // Ovde možete dodati socket logiku, ako je potrebno
     return () => {
       socket.off("serverReaction");
       socket.off("mention_notification");
     };
-
   }, [socket]);
 
   return (
-  <div className="page-container">
-  {/*<button onClick={handleButtonClick}>Pozdrav</button>  ... Ovo odkomentarisite ako zelite isprobati socket */}
-  <div className="sidebar-left">
-    <div className="search-bar">
-      <input
-        type="text"
-        placeholder="Pretraži teme..."
-        value={searchTerm}
-        onChange={handleSearchChange}
-      />
-    </div>
-    <div className="theme-list">
-      {filteredThemes.map((theme) => (
-        <div
-          key={theme.id}
-          className={`theme-item ${
-            selectedTheme && selectedTheme.id === theme.id ? 'selected' : ''
-          }`}
-          onClick={() => setSelectedTheme(theme)}
-        >
-          <h4>{theme.title}</h4>
-          <p>{theme.description}</p>
-          <small>{new Date(theme.publishedAt).toLocaleString()}</small>
+    <div className="page-container">
+      <div className="sidebar-left">
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Pretraži teme..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
         </div>
-      ))}
-    </div>
-  </div>
+        <div className="theme-list">
+          {filteredThemes.map((theme) => (
+            <div
+              key={theme.id}
+              className={`theme-item ${
+                selectedTheme && selectedTheme.id === theme.id ? 'selected' : ''
+              }`}
+              onClick={() => handleSelectTheme(theme)} // Dodavanje handlera na klik
+            >
+              <h4>{theme.id}</h4>
+              <p>{theme.theme_name}</p>
+              <p>{theme.date_time}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="discussion-list">
+      {discussions.length > 0 && (
+            <div className="discussions-list">
+              <h5>Diskusije:</h5>
+              {discussions.map((discussion) => (
+                <div key={discussion.id} className="discussion-item">
+                  <h6>{discussion.title}</h6>
+                  <p>{discussion.content}</p>
+                  <small>{discussion.user_id}</small>
+                </div>
+              ))}
+            </div>
+          )}
+      </div>
+      <div className="sidebar-right">
+        <div className="discussion-section">
+          {selectedTheme ? (
+            <h4>Diskusija za temu: {selectedTheme.theme_name}</h4>
+          ) : (
+            <h4>Izaberite temu za diskusiju</h4>
+          )}
 
-  <div className="sidebar-right">
-    <div className="discussion-section">
-      {selectedTheme ? (
-        <h4>Diskusija za temu: {selectedTheme.title}</h4>
-      ) : (
-        <h4>Izaberite temu za diskusiju</h4>
-      )}
-    
-      <select onChange={handleSelectTheme} value={selectedTheme ? selectedTheme.id : ''}>
-        <option value="">Izaberite temu...</option>
-        {themes.map((theme) => (
-          <option key={theme.id} value={theme.id}>
-            {theme.title}
-          </option>
-        ))}
-      </select>
+          <textarea
+            value={discussionText}
+            onChange={(e) => setDiscussionText(e.target.value)}
+            placeholder="Unesite svoju diskusiju ovde..."
+            rows="5"
+          />
+          <button onClick={handlePublishDiscussion}>Objavi</button>
 
-      <textarea
-        value={discussionText}
-        onChange={(e) => setDiscussionText(e.target.value)}
-        placeholder="Unesite svoju diskusiju ovde..."
-        rows="5"
-      />
-      <button onClick={handlePublishDiscussion}>Objavi</button>
+        </div>
+      </div>
     </div>
-  </div>
-  </div>
   );
 };
 

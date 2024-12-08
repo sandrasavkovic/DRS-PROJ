@@ -6,7 +6,7 @@ from db import get_db_connection
 def get_all_themes():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM themes ORDER BY id DESC')  # Uzimanje tema po ID-u
+    cursor.execute('SELECT * FROM themes ORDER BY id ASC')  # Uzimanje tema po ID-u
     themes = cursor.fetchall()  # Vraća sve teme
     cursor.close()
     connection.close()

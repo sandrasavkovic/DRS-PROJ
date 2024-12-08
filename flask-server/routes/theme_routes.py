@@ -4,7 +4,7 @@ from services.userService import get_all_themes, add_new_theme, get_theme_by_id
 theme_routes = Blueprint("theme_routes", __name__)
 
 # Endpoint za preuzimanje svih tema
-@theme_routes.route('/api/themes', methods=['GET'])
+@theme_routes.route('/theme', methods=['GET'])
 def themes():
     try:
         themes = get_all_themes()  # Dobijanje svih tema iz baze
@@ -13,7 +13,7 @@ def themes():
         return jsonify({'error': str(e)}), 500
 
 # Endpoint za dodavanje nove teme
-@theme_routes.route('/api/themes', methods=['POST'])
+@theme_routes.route('/theme', methods=['POST'])
 def create_theme():
     try:
         data = request.get_json()
@@ -24,7 +24,7 @@ def create_theme():
         return jsonify({'error': str(e)}), 500
 
 # Endpoint za dobijanje jedne teme po ID-u
-@theme_routes.route('/api/themes/<int:theme_id>', methods=['GET'])
+@theme_routes.route('/theme/<int:theme_id>', methods=['GET'])
 def theme_by_id(theme_id):
     try:
         theme = get_theme_by_id(theme_id)

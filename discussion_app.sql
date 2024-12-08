@@ -27,9 +27,12 @@ CREATE TABLE `discussions` (
   `title` varchar(100) NOT NULL,
   `content` text NOT NULL,
   `user_id` int DEFAULT NULL,
+  `theme_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `discussions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `theme_id` (`theme_id`),
+  CONSTRAINT `discussions_ibfk_1` FOREIGN KEY (`theme_id`) REFERENCES `themes` (`id`),
+  CONSTRAINT `discussions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -38,6 +41,9 @@ CREATE TABLE `discussions` (
 --
 
 LOCK TABLES `discussions` WRITE;
+INSERT INTO `discussions` (`id`,`title`, `content`, `user_id`, `theme_id`)
+VALUES (1,'diskusija1', 'Sadržaj diskusije1', 11, 1), (2,'diskusija2', 'Sadržaj diskusije2', 12, 2);
+
 /*!40000 ALTER TABLE `discussions` DISABLE KEYS */;
 /*!40000 ALTER TABLE `discussions` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -82,6 +88,7 @@ DROP TABLE IF EXISTS `themes`;
 CREATE TABLE `themes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `theme_name` varchar(255) NOT NULL,
+  `date_time` DATETIME,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -91,6 +98,7 @@ CREATE TABLE `themes` (
 --
 
 LOCK TABLES `themes` WRITE;
+INSERT INTO themes VALUES(1,"Tema 1", '2024-12-08 14:30:00'),(2,"Tema 2", '2023-11-01 08:15:45'),(3,"Tema 3", '2022-06-25 23:59:59'),(4,"Tema 4", '2024-01-01 00:00:00');
 /*!40000 ALTER TABLE `themes` DISABLE KEYS */;
 /*!40000 ALTER TABLE `themes` ENABLE KEYS */;
 UNLOCK TABLES;
