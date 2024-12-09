@@ -43,3 +43,5 @@ def search_discussions_by_theme(theme_id):
     cursor.close()
     connection.close()
     return discussions
+
+

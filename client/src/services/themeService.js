@@ -6,7 +6,8 @@
 // export const fetchThemes = () => {
 //   //sreturn get(API_URL);
 // };
-
+// ovo cemo slati funkcijama u bekendu 
+const username = sessionStorage.getItem("user_name");
 
 export const fetchThemes = () => {
     return fetch("/theme/theme", {
@@ -54,4 +55,21 @@ export const fetchThemes = () => {
       });
   };
   
+
+  // dodavanje diskusije na neku temu
+export const addDiscussion = (theme, discussionText) => {
+  console.log("Dodajem diskusiju na temu : ", theme.theme_name)
+  console.log("Tekst diskusije : ", discussionText)
+  return fetch(`/theme/addDiscussion`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username: username,  // Pass the username from sessionStorage
+      theme: theme,
+      discussionText: discussionText
+  }),
+  }).then((res) => res.json());
   
+};

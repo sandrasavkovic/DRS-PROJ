@@ -4,6 +4,7 @@ import { fetchThemes, fetchDiscussions } from '../services/themeService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { getUserByUsername, updateUser } from '../services/authService';
+import { addDiscussion } from '../services/themeService';
 const User = ({ socket, handleLogout }) => {
   const [themes, setThemes] = useState([]); // Lista tema
   const [filteredThemes, setFilteredThemes] = useState([]); // Filtrirane teme
@@ -130,7 +131,9 @@ const User = ({ socket, handleLogout }) => {
     }
 
     // Simulacija dodavanja diskusije u selektovanu temu
-    console.log(`Diskusija za temu "${selectedTheme.title}":`, discussionText);
+    console.log(`Diskusija za temu "${selectedTheme.theme_name}":`, discussionText);
+    // diskusija treba biti za temu sa odredjenim id-em
+    addDiscussion(selectedTheme, discussionText)
 
     // Resetovanje unosa nakon objave
     setDiscussionText('');

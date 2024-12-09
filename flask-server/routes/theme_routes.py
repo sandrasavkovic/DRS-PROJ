@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request,Blueprint
 from services.userService import get_all_themes, add_new_theme, get_theme_by_id
-
+from services.themeService import add_discussion_service
 theme_routes = Blueprint("theme_routes", __name__)
 
 # Endpoint za preuzimanje svih tema
@@ -37,3 +37,24 @@ def theme_by_id(theme_id):
 
 #if __name__ == '__main__':
  #   app.run(debug=True, port=5000)  # Pokrećemo server na portu 5000
+
+@theme_routes.route('/addDiscussion', methods=['POST'])
+def add_discussion():
+    try:
+        print("Usao u funkciju za dodavanje diskusije")
+        # kroz data.themeId ..
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "message": "No data provided for update"}), 400
+
+        print(f"Received data: {data}")
+        username = data.get('username')
+        print(username)
+        theme = data.get('theme')
+        print(theme)
+        discussion_text = data.get('discussionText')
+        print(discussion_text)
+        response, status_code = add_discussion_service(username, theme, discussion_text)
+        return jsonify(response), status_code
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500  
