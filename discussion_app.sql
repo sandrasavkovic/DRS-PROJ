@@ -33,7 +33,7 @@ CREATE TABLE `discussions` (
   KEY `theme_id` (`theme_id`),
   CONSTRAINT `discussions_ibfk_1` FOREIGN KEY (`theme_id`) REFERENCES `themes` (`id`),
   CONSTRAINT `discussions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,10 +41,8 @@ CREATE TABLE `discussions` (
 --
 
 LOCK TABLES `discussions` WRITE;
-INSERT INTO `discussions` (`id`,`title`, `content`, `user_id`, `theme_id`)
-VALUES (1,'diskusija1', 'Sadržaj diskusije1', 11, 1), (2,'diskusija2', 'Sadržaj diskusije2', 12, 2);
-
 /*!40000 ALTER TABLE `discussions` DISABLE KEYS */;
+INSERT INTO `discussions` VALUES (1,'diskusija1','Sadržaj diskusije1',11,1),(2,'diskusija2','Sadržaj diskusije2',12,2),(3,'Tema 3','popppp',NULL,NULL),(4,'Tema 1','w',11,NULL),(5,'Tema 2','nova diskusija',11,NULL),(6,'Tema 2','ppp',11,NULL),(7,'Tema 1','ppp',11,1);
 /*!40000 ALTER TABLE `discussions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -88,9 +86,9 @@ DROP TABLE IF EXISTS `themes`;
 CREATE TABLE `themes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `theme_name` varchar(255) NOT NULL,
-  `date_time` DATETIME,
+  `date_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,8 +96,8 @@ CREATE TABLE `themes` (
 --
 
 LOCK TABLES `themes` WRITE;
-INSERT INTO themes VALUES(1,"Tema 1", '2024-12-08 14:30:00'),(2,"Tema 2", '2023-11-01 08:15:45'),(3,"Tema 3", '2022-06-25 23:59:59'),(4,"Tema 4", '2024-01-01 00:00:00');
 /*!40000 ALTER TABLE `themes` DISABLE KEYS */;
+INSERT INTO `themes` VALUES (1,'Tema 1','2024-12-08 14:30:00'),(2,'Tema 2','2023-11-01 08:15:45'),(3,'Tema 3','2022-06-25 23:59:59'),(4,'Tema 4','2024-01-01 00:00:00');
 /*!40000 ALTER TABLE `themes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -136,7 +134,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (11,'user','user123','Sandra','Savkovic','ulica123','Novi Sad','Srbija','0987654321','sandrasavkovic86@gmail.com',0,'APPROVED',0),(12,'user1','user321','Duska','Muncan','Ulica321','Novi Sad','Srbija','1234567890','duskamuncan113@gmail.com',0,'PENDING',1),(14,'admin','admin123','Diana','Hodzic','ulica123','Novi Sad','Srbija','1234567890','projekat.drs6@gmail.com',1,'APPROVED',0),(16,'registrovani1','loz1','ime1','pr1','ad1','gr1','dz','0030303','fsdsds@gmail.com',0,'APPROVED',1);
+INSERT INTO `users` VALUES (11,'user','user123','Sandraa','Savkovicc','ulica123','Novi Sadd','Srbijaa','098765432111','sandrasavkovic86@gmail.com',0,'APPROVED',0),(12,'user1','user321','Duska','Muncan','Ulica321','Novi Sad','Srbija','1234567890','duskamuncan113@gmail.com',0,'PENDING',1),(14,'admin','admin123','Diana','Hodzic','ulica123','Novi Sad','Srbija','1234567890','projekat.drs6@gmail.com',1,'APPROVED',0),(16,'registrovani1','loz1','ime1','pr1','ad1','gr1','dz','0030303','fsdsds@gmail.com',0,'APPROVED',1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -149,4 +147,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-07 10:48:45
+-- Dump completed on 2024-12-09 18:01:22
