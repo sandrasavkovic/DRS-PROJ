@@ -154,4 +154,42 @@
     background-color: #0056b3;
   }
   
+  .edit-icon {
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+  
+  .edit-icon {
+    font-size: 24px;
+    cursor: pointer;
+    position: fixed; /* Use fixed position to keep it in place when scrolling */
+    transform: translateX(-50%); /* Adjust the element back by 50% of its width */
+  } 
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal-content label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+  }
+  
+  .modal-content button {
+    margin-right: 10px;
+  }
+  
  

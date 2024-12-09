@@ -70,10 +70,11 @@ function App() {
         console.log('Zahtjev obradjen');
         if (data.success) {
           alert("Login je uspješan!");
-
+          console.log( data.user.username)
           sessionStorage.setItem("access_token", data.access_token);
           sessionStorage.setItem("userName", data.user.name);
           sessionStorage.setItem("isAdmin", JSON.stringify(data.user.is_admin));
+          sessionStorage.setItem("user_name", data.user.username);
 
           const redirectPath = data.user.is_admin ? "/admin" : "/user";
           navigate(redirectPath);

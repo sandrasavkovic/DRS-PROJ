@@ -23,9 +23,10 @@ class User:
 
 # UserDTO
 class UserDTO:
-    def __init__(self, name, is_admin):
+    def __init__(self, name, is_admin, username):
         self.name = name
         self.is_admin = is_admin
+        self.username = username
 
     def __repr__(self):
         return f"UserDTO(name={self.name}, is_admin={self.is_admin})"

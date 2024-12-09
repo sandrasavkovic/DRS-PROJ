@@ -10,6 +10,7 @@ from utils.email_utils import send_email
 cashe_for_admin = set()
 
 def login_user(email, password):
+    print("EEVO ME")
     connection = get_db_connection()
     cursor = connection.cursor()
     try:
@@ -18,10 +19,11 @@ def login_user(email, password):
         user_data = cursor.fetchone()
         print("Rezultat upita:", user_data)
         if user_data: # Paziti - citamo iz baze na user_data[0] je ID
+            print("****************")
             user = User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5], 
                     user_data[6], user_data[7], user_data[8], user_data[9], user_data[10], user_data[12])
             # Kad pravite .py fajlove za models folder pratite redoslijed polja u bazi
-            user_dto = UserDTO(user.name, user.is_admin)
+            user_dto = UserDTO(user.name, user.is_admin, user.username)
             print("da li je admin : ? %s", user.is_admin)
             print("prva prijava? :%s", user.first_login)
             if user.is_admin == 0 and user_data[12] == 1:
@@ -95,3 +97,73 @@ def get_user_by_email(email):
         cursor.close()
         connection.close()
     return user
+
+
+def get_user_by_username_service(username):
+    print("TUUUUUUUUUUUU")
+
+    if not username:
+        return {"error": "Username is required"}, 400  # Return an error if username is not provided
+    
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)  # `dictionary=True` to get results as a dictionary
+    
+    try:
+        query = "SELECT * FROM users WHERE username = %s"
+        cursor.execute(query, (username,))
+        user = cursor.fetchone()  # Fetch the first result (user)
+        
+        if user:
+            return {"user": user}, 200  # Return the user data if found
+        else:
+            return {"error": "User not found"}, 404  # Return an error if no user found
+    
+    except Exception as e:
+        connection.rollback()
+        return {"error": str(e)}, 500  # Return an error message if any exception occurs
+    
+    finally:
+        cursor.close()
+        connection.close()
+
+
+def update_user_service(username, updated_user_data):
+    print("TUUUSAMMM")
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    try:
+
+        cursor.execute("""
+            UPDATE users 
+            SET username = %s, 
+            password = %s, 
+            name = %s, 
+            last_name = %s, 
+            address = %s, 
+            city = %s, 
+            country = %s, 
+            phone_number = %s, 
+            email = %s, 
+            is_admin = %s, 
+            is_approved = %s, 
+            first_login = %s 
+            WHERE username = %s
+        """, (updated_user_data["username"], updated_user_data["password"], updated_user_data["name"], 
+            updated_user_data["last_name"], updated_user_data["address"], updated_user_data["city"], 
+            updated_user_data["country"], updated_user_data["phone_number"], updated_user_data["email"], 
+            updated_user_data["is_admin"], updated_user_data["is_approved"], updated_user_data["first_login"], username))
+
+       # cursor.execute(query, tuple(values)))
+        connection.commit()
+        
+        # Check if any row was updated
+        if cursor.rowcount == 0:
+            return {"success": False, "message": "User not found"}, 404
+
+        return {"success": True, "message": "User updated successfully"}, 200
+    except Exception as e:
+        connection.rollback()
+        return {"success": False, "message": str(e)}, 500
+    finally:
+        cursor.close()
+        connection.close()
