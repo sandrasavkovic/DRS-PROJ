@@ -8,6 +8,8 @@
 // };
 // ovo cemo slati funkcijama u bekendu 
 const username = sessionStorage.getItem("user_name");
+const discussionId = parseInt(sessionStorage.getItem("id"), 10);
+
 
 export const fetchThemes = () => {
     return fetch("/theme/theme", {
@@ -72,4 +74,49 @@ export const addDiscussion = (theme, discussionText) => {
   }),
   }).then((res) => res.json());
   
+};
+
+
+export const getDiscussionById = (discussionId) => {
+  console.log("disc je tu");
+  console.log("Sending request for id:", discussionId);  // Add logging to verify the request
+
+  return fetch(`/discussion/${discussionId}`, {  // Pass username as a query parameter
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",  // You can still include headers, but no body for GET
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error fetching discussion:", error);
+      throw error;
+    });
+};
+
+export const updatedDiscussions = (discussionId, updatedDiscussion) => {
+  console.log("EDITUJEM : ", discussionId)
+  console.log(updatedDiscussion)
+  return fetch(`/discussion/${discussionId}`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedDiscussion),
+  })
+  .then((response) => {
+      if (!response.ok) {
+          throw new Error('Error updating discussion');
+      }
+      return response.json(); // Parse and return the JSON response
+  })
+  .catch((error) => {
+      console.error('Error in updatedDiscussion:', error);
+      throw error; // Re-throw to propagate the error to the calling function
+  });
 };

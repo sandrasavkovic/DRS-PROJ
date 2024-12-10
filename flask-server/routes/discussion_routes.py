@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, Blueprint
-from services.discussionService import get_discussions_by_theme, add_new_discussion, get_discussion_by_id, search_discussions_by_theme
+from services.discussionService import get_discussions_by_theme, add_new_discussion, get_discussion_by_id, search_discussions_by_theme,update_discussion_service
 
 discussion_routes = Blueprint("discussion_routes", __name__)
 
@@ -47,3 +47,18 @@ def search_discussions(theme_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@discussion_routes.route("/discussion/<int:id>", methods=["POST"])
+def update_discussion(id):
+    try:
+        print("EDIT ::: %d" , id)
+        updated_discussion_data = request.json
+        print("PODACI : ", updated_discussion_data)
+        if not updated_discussion_data:
+            return jsonify({"success": False, "message": "No data provided for update"}), 400
+
+        response, status_code = update_discussion_service(id, updated_discussion_data)
+        return jsonify(response), status_code
+
+    except Exception as e:
+        print(f"Error updating user: {e}")
+        return jsonify({"success": False, "message": "Internal server error"}), 500

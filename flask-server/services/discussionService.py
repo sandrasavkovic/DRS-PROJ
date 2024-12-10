@@ -25,7 +25,7 @@ def add_new_discussion(id, title, content, user_id, theme_id):
 def get_discussion_by_id(id):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM discussions WHERE id = %d', (id,))
+    cursor.execute('SELECT * FROM discussions WHERE id = %d', (id))
     discussion = cursor.fetchone()  # Vraća samo jednu diskusiju
     cursor.close()
     connection.close()
@@ -45,3 +45,29 @@ def search_discussions_by_theme(theme_id):
     return discussions
 
 
+def update_discussion_service(id, updated_discussion_data):
+    print("Update discussion with ID:", id)
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    try:
+        # Ažuriramo samo title i content za zadati ID
+        cursor.execute("""
+            UPDATE discussions
+            SET title = %s, 
+                content = %s
+            WHERE id = %d
+        """, (updated_discussion_data["title"], updated_discussion_data["content"], id))
+
+        connection.commit()
+
+        # Proveravamo da li je ažuriran neki red
+        if cursor.rowcount == 0:
+            return {"success": False, "message": "Discussion not found"}, 404
+
+        return {"success": True, "message": "Discussion updated successfully"}, 200
+    except Exception as e:
+        connection.rollback()
+        return {"success": False, "message": str(e)}, 500
+    finally:
+        cursor.close()
+        connection.close()

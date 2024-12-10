@@ -5,6 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { getUserByUsername, updateUser } from '../services/authService';
 import { addDiscussion } from '../services/themeService';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { getDiscussionById, updatedDiscussions } from '../services/themeService';
+
+
+
 const User = ({ socket, handleLogout }) => {
   const [themes, setThemes] = useState([]); // Lista tema
   const [filteredThemes, setFilteredThemes] = useState([]); // Filtrirane teme
@@ -14,6 +19,81 @@ const User = ({ socket, handleLogout }) => {
   const [discussions, setDiscussions] = useState([]); // Diskusije za selektovanu temu
   const [editUser, setEditUser] = useState(null); // Podaci o korisniku za uređivanje
   const [isEditModalOpen, setEditModalOpen] = useState(false); // Modal za uređivanje
+  const [editDiscussion, setEditDiscussion] = useState(null);
+  const [isEditDiscussionModalOpen, setEditDiscussionModalOpen] = useState(false); // Modal za uređivanje
+
+
+  const openEditDiscussionModal = async () => {
+    //const discussionString = sessionStorage.getItem("id");
+    const discussionId = parseInt(sessionStorage.getItem("id"), 10);
+    console.log(discussionId);
+    
+    if (!discussionId) {
+      alert('Nema podataka o diskusiji.');
+      return;
+    }
+  
+    try {
+      // treba dobaviti po id-u, jer se id ne menja, medjutim greska kod tokena
+      const response = await getDiscussionById(discussionId);
+      console.log(response.discussion); // Logs the response
+      if (response) {
+        setEditDiscussion(response.discussion);  // Update state with the response
+      } else {
+        alert('Diskusija nije pronađen.');
+      }
+    } catch (error) {
+      console.error('Greška pri parsiranju podataka o diskusiji:', error);
+      alert('Došlo je do greške pri učitavanju podataka o diskusiji.');
+    }
+  };
+
+  useEffect(() => {
+    if (editDiscussion) {
+      setEditDiscussionModalOpen(true); // Open modal only when editUser is updated
+    }
+  }, [editDiscussion]);
+  
+  
+  const handleInputDiscussionChange = (e) => {
+    const { name, value } = e.target;
+    setEditDiscussion((prevDiscussion) => ({ ...prevDiscussion, [name]: value }));
+  };
+
+  const handleEditDiscussion = () => {
+    if (!editDiscussion) {
+        alert('Nema podataka za ažuriranje disksuije.');
+        return;
+    }
+
+    const id = sessionStorage.getItem("id");
+    console.log("ddd")
+    console.log(editDiscussion.id)
+    if (!id) {
+        alert('Id diskusije nije pronađen.');
+        return;
+    }
+      // poziva se funkcija iz servisa react-a
+      // koja salje id i editovanogUsera
+    //const discussionString = sessionStorage.getItem("id");
+    const discussionId = parseInt(sessionStorage.getItem("id"), 10);
+    updatedDiscussions(discussionId, editDiscussion)
+        .then((updatedDiscussion) => {
+            console.log('Diskusija uspešno ažurirana:', updatedDiscussion);
+            alert('Diskusija uspešno ažurirana.');
+            closeEditDiscussionModal(); // Close the modal after successful update
+        })
+        .catch((error) => {
+            console.error('Greška pri ažuriranju diskusije:', error);
+            alert('Došlo je do greške pri ažuriranju diskusije.');
+        });
+};
+
+
+  const closeEditDiscussionModal = () => {
+    setEditDiscussionModalOpen(false);
+    setEditDiscussion(null);
+  };
 
   // novi kod , ZA EDITOVANJE KORISNIKA 
    // za edit korisnika : 
@@ -194,7 +274,38 @@ const User = ({ socket, handleLogout }) => {
               <div key={discussion.id} className="discussion-item">
                 <h6>{discussion.title}</h6>
                 <p>{discussion.content}</p>
-                <small>{discussion.user_id}</small>
+                <FontAwesomeIcon
+                  icon={faPen}
+                  className="edit-icon1"
+                  onClick={openEditDiscussionModal}
+                />
+                {isEditDiscussionModalOpen && (
+                  <div className="edit-modal1">
+                  <div className="modal-content1">
+                  <h4>edit discussion</h4>
+                  <form>
+                    <label>
+                      Title:
+                      <input type="text"
+                      name="title"
+                      value={editDiscussion.title || ""}
+                      onChange={handleInputDiscussionChange}>
+                      </input>
+                    </label>
+                    <label>
+                      Content:
+                      <input type="text"
+                      name="content"
+                      value={editDiscussion.content || ""}
+                      onChange={handleInputDiscussionChange}>
+                      </input>
+                    </label>
+                  </form>
+                  <button onClick={handleEditDiscussion}>Save</button>
+                  <button onClick={closeEditDiscussionModal}>Close</button>
+                  </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -296,5 +407,6 @@ const User = ({ socket, handleLogout }) => {
     </div>
   );
 };
+
 
 export default User;

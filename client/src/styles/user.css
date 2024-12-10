@@ -60,6 +60,7 @@
 }
 
 .discussion-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   border: 1px solid #ddd;
@@ -93,6 +94,19 @@
   left: 15px;
 }
 
+.edit-icon1 {
+  color: gray;
+  transition: color 0.3s;
+  position: absolute;
+  top: 5px; 
+  right: 5px;
+  font-size: 12px; 
+  cursor: pointer;
+}
+
+.edit-icon:hover {
+  color: black;
+}
 
   /* Sidebar za diskusiju (desna strana) */
   /* Sidebar za diskusiju (desna strana) */
