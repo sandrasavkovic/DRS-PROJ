@@ -1,6 +1,6 @@
 from app_init import socketio 
 from db import get_db_connection
-
+from services.themeService import get_current_user_id;
 # Funkcija za preuzimanje svih diskusija za specifičnu temu
 def get_discussions_by_theme(theme_id):
     connection = get_db_connection()
@@ -22,14 +22,15 @@ def add_new_discussion(id, title, content, user_id, theme_id):
     connection.close()
 
 # Funkcija za dobijanje diskusije prema ID-u
-def get_discussion_by_id(id):
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM discussions WHERE id = %d', (id))
-    discussion = cursor.fetchone()  # Vraća samo jednu diskusiju
-    cursor.close()
-    connection.close()
-    return discussion
+# prekopirana dole sa dopunom za try i catch!
+# def get_discussion_by_id(id):
+#     connection = get_db_connection()
+#     cursor = connection.cursor(dictionary=True)
+#     cursor.execute('SELECT * FROM discussions WHERE id = %d', (id))
+#     discussion = cursor.fetchone()  # Vraća samo jednu diskusiju
+#     cursor.close()
+#     connection.close()
+#     return discussion
 
 # Funkcija za pretragu diskusija po temi (ako je potrebno)
 def search_discussions_by_theme(theme_id):
@@ -47,16 +48,22 @@ def search_discussions_by_theme(theme_id):
 
 def update_discussion_service(id, updated_discussion_data):
     print("Update discussion with ID:", id)
+    try:
+        id = int(id)  # Convert to integer explicitly
+    except ValueError:
+        return {"success": False, "message": "Invalid ID format"}, 400
     connection = get_db_connection()
     cursor = connection.cursor()
+    print(updated_discussion_data['title'])
+    # pazi!!! i za id ide %s!!!
     try:
         # Ažuriramo samo title i content za zadati ID
         cursor.execute("""
             UPDATE discussions
             SET title = %s, 
                 content = %s
-            WHERE id = %d
-        """, (updated_discussion_data["title"], updated_discussion_data["content"], id))
+            WHERE id = %s
+        """, (updated_discussion_data['title'], updated_discussion_data['content'], id))
 
         connection.commit()
 
@@ -71,3 +78,89 @@ def update_discussion_service(id, updated_discussion_data):
     finally:
         cursor.close()
         connection.close()
+
+def get_discussions_for_user_service(username):
+    print("DOBAVLJAM DISKUSIJE ZA :", username)
+    
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)  
+    user_id = get_current_user_id(username)
+
+    if not user_id:
+        return {"success": False, "message": "User not found"}, 404
+
+    try:
+        cursor.execute('SELECT * FROM discussions WHERE user_id = %s', (user_id,))
+        discussions = cursor.fetchall()
+
+        if not discussions:  
+            return {"success": False, "message": "No discussions found for the user"}, 404
+
+        return {"success": True, "discussions": discussions}, 200
+
+    except Exception as e:
+        print(f"Error while fetching discussions: {e}")
+        return {"success": False, "message": str(e)}, 500
+
+    finally:
+        cursor.close()
+        connection.close()
+
+def get_discussion_by_id_service(id):
+    print("DOBAVLJAM DISKUSIJU SA ID-em:")
+    print(id)
+    
+    # Ensure `id` is an integer
+    try:
+        id = int(id)  # Convert to integer explicitly
+    except ValueError:
+        return {"success": False, "message": "Invalid ID format"}, 400
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    try:
+        # Wrap `id` in a tuple
+        cursor.execute('SELECT * FROM discussions WHERE id = %s', (id,))
+        discussion = cursor.fetchone()  # Fetch a single discussion
+        if not discussion:
+            return {"success": False, "message": "No discussions found with the given ID"}, 404
+
+        return {"success": True, "discussion": discussion}, 200
+    except Exception as e:
+        print(f"Error while fetching discussion: {e}")
+        return {"success": False, "message": str(e)}, 500
+    finally:
+        cursor.close()
+        connection.close()
+
+def delete_discussion_by_id_service(id):
+    print("DOBAVLJAM DISKUSIJU ZA BRISANJE SA ID-em:")
+    print(id)
+    try:
+        id = int(id)  # Convert to integer explicitly
+    except ValueError:
+        return {"success": False, "message": "Invalid ID format"}, 400
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        # Check if the discussion exists before deletion
+        cursor.execute('SELECT * FROM discussions WHERE id = %s', (id,))
+        discussion = cursor.fetchone()  # Fetch the discussion
+        if not discussion:
+            return {"success": False, "message": "No discussions found with the given ID"}, 404
+
+        # Proceed with deletion
+        cursor.execute('DELETE FROM discussions WHERE id = %s', (id,))
+        connection.commit()  # Commit the deletion
+
+        return {"success": True, "message": "Delete action successful!"}, 200
+    except Exception as e:
+        print(f"Error while deleting discussion: {e}")
+        return {"success": False, "message": str(e)}, 500
+    finally:
+        cursor.close()
+        connection.close()
+
+       

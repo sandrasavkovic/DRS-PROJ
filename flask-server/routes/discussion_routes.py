@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, Blueprint
-from services.discussionService import get_discussions_by_theme, add_new_discussion, get_discussion_by_id, search_discussions_by_theme,update_discussion_service
+from services.discussionService import get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, delete_discussion_by_id_service
 
 discussion_routes = Blueprint("discussion_routes", __name__)
 
@@ -27,16 +27,16 @@ def create_discussion():
         return jsonify({'error': str(e)}), 500
 
 # Endpoint za dobijanje jedne diskusije po ID-u
-@discussion_routes.route('/discussion/<int:discussion_id>', methods=['GET'])
-def discussion_by_id(discussion_id):
-    try:
-        discussion = get_discussion_by_id(discussion_id)
-        if discussion:
-            return jsonify(discussion), 200
-        else:
-            return jsonify({'error': 'Diskusija nije pronađena'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+# @discussion_routes.route('/discussion/<int:discussion_id>', methods=['GET'])
+# def discussion_by_id(discussion_id):
+#     try:
+#         discussion = get_discussion_by_id(discussion_id)
+#         if discussion:
+#             return jsonify(discussion), 200
+#         else:
+#             return jsonify({'error': 'Diskusija nije pronađena'}), 404
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
 # Endpoint za pretragu diskusija po temi 
 @discussion_routes.route('/discussion/search/<int:theme_id>', methods=['GET'])
@@ -47,18 +47,83 @@ def search_discussions(theme_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@discussion_routes.route("/discussion/<int:id>", methods=["POST"])
-def update_discussion(id):
+@discussion_routes.route("/editDiscussion", methods=["POST"])
+def update_discussion():
     try:
-        print("EDIT ::: %d" , id)
-        updated_discussion_data = request.json
-        print("PODACI : ", updated_discussion_data)
+        # Extract query parameter
+        print("EDITUJEM DISKUSIJU")
+        
+        discussion_id = request.args.get('id')
+        if not discussion_id:
+            return jsonify({"success": False, "message": "Discussion ID is missing"}), 400
+
+        # Extract JSON body
+        updated_discussion_data = request.json  # or request.get_json()
         if not updated_discussion_data:
             return jsonify({"success": False, "message": "No data provided for update"}), 400
 
-        response, status_code = update_discussion_service(id, updated_discussion_data)
+        print(f"EDITING DISCUSSION: {discussion_id}")
+        print(f"UPDATED DATA: {updated_discussion_data}")
+
+        # Call the service with extracted data
+        response, status_code = update_discussion_service(discussion_id, updated_discussion_data)
         return jsonify(response), status_code
 
     except Exception as e:
-        print(f"Error updating user: {e}")
+        print(f"Error updating discussion: {e}")
         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+@discussion_routes.route("/get_discussions_for", methods=['GET'])
+def get_discussions_for_user():
+    try:
+        print("TRAZIM DISKUSIJE KORISNIKA!")
+        # Get the username from the query parameters
+        username = request.args.get('username')
+        if not username:
+            return jsonify({"error": "Username is required"}), 400
+
+        # Call the service function
+        response, status_code = get_discussions_for_user_service(username)
+        print(response)
+        # Return the response and the appropriate status code
+        return jsonify(response), status_code
+
+    except Exception as e:
+        print(f"Error in get_discussions_for_user: {e}")
+        return jsonify({"error": "An error occurred while fetching discussions"}), 500
+
+@discussion_routes.route("/get_discussion_by_id", methods=['GET'])
+def get_discussion_for_id():
+    try:
+        print("TRAZIM DISKUSIJE KORISNIKA!")
+        # Get the username from the query parameters
+        discussionId = request.args.get('discussionId')
+        if not discussionId:
+            return jsonify({"error": "discussionId is required"}), 400
+
+        # Call the service function
+        response, status_code = get_discussion_by_id_service(discussionId)
+        print(response)
+        # Return the response and the appropriate status code
+        return jsonify(response), status_code
+
+    except Exception as e:
+        print(f"Error in get_discussions_for_user: {e}")
+        return jsonify({"error": "An error occurred while fetching discussions"}), 500
+    
+@discussion_routes.route("/deleteDiscussion",methods =['POST'])
+def delete_discussion_by_id():
+    try:
+        print("TRAZIM DISKUSIJE KORISNIKA!")
+        # Get the username from the query parameters
+        # Call the service function
+        discussionId = request.json
+        response, status_code = delete_discussion_by_id_service(discussionId)
+        print(response)
+        # Return the response and the appropriate status code
+        return jsonify(response), status_code
+
+    except Exception as e:
+        print(f"Error in get_discussions_for_user: {e}")
+        return jsonify({"error": "An error occurred while fetching discussions"}), 500
+    

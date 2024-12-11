@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/user.css';
-import { fetchThemes, fetchDiscussions } from '../services/themeService';
+import { fetchThemes, fetchDiscussions, fetchDiscussionsOfUser } from '../services/themeService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { getUserByUsername, updateUser } from '../services/authService';
 import { addDiscussion } from '../services/themeService';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
-import { getDiscussionById, updatedDiscussions } from '../services/themeService';
+import { getDiscussionById, updateDiscussion, deleteDiscussion } from '../services/themeService';
+import { faList } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons'; // Import the delete icon
 
 
 
@@ -21,32 +23,34 @@ const User = ({ socket, handleLogout }) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false); // Modal za uređivanje
   const [editDiscussion, setEditDiscussion] = useState(null);
   const [isEditDiscussionModalOpen, setEditDiscussionModalOpen] = useState(false); // Modal za uređivanje
+  const [userDiscussions, setUserDiscussions] = useState([]); // Discussions of the logged-in user
 
 
-  const openEditDiscussionModal = async () => {
-    //const discussionString = sessionStorage.getItem("id");
-    const discussionId = parseInt(sessionStorage.getItem("id"), 10);
-    console.log(discussionId);
-    
-    if (!discussionId) {
-      alert('Nema podataka o diskusiji.');
+  // ****ZA EDIT DISKUSIJA KORISNIKA KOJI JE TRENUTNO LOGOVAN 
+    // dobavicemo sve diskusije trenutno logovanog korisnika (iz sessionStorage-a)
+ const handleFetchUserDiscussions = async() => {
+    const username = sessionStorage.getItem("user_name");
+
+    if (!username) {
+      alert('Nema podataka o korisniku u sesiji.');
       return;
     }
-  
-    try {
-      // treba dobaviti po id-u, jer se id ne menja, medjutim greska kod tokena
-      const response = await getDiscussionById(discussionId);
-      console.log(response.discussion); // Logs the response
-      if (response) {
-        setEditDiscussion(response.discussion);  // Update state with the response
-      } else {
-        alert('Diskusija nije pronađen.');
-      }
-    } catch (error) {
-      console.error('Greška pri parsiranju podataka o diskusiji:', error);
-      alert('Došlo je do greške pri učitavanju podataka o diskusiji.');
-    }
+
+    fetchDiscussionsOfUser(username) // Assuming fetchDiscussions can handle fetching by username
+      .then((response) => {
+        if (response) {
+          console.log(response.discussions); // You might also want to log response.data here
+          setUserDiscussions(response.discussions); // This should be an array
+        } else {
+          console.error('Nema diskusija u odgovoru');
+        }
+      })
+      .catch((error) => {
+        console.error('Greška pri dohvatiti diskusije korisnika:', error);
+        alert('Došlo je do greške pri učitavanju diskusija korisnika.');
+      });
   };
+
 
   useEffect(() => {
     if (editDiscussion) {
@@ -57,36 +61,28 @@ const User = ({ socket, handleLogout }) => {
   
   const handleInputDiscussionChange = (e) => {
     const { name, value } = e.target;
-    setEditDiscussion((prevDiscussion) => ({ ...prevDiscussion, [name]: value }));
-  };
+  setEditDiscussion((prevDiscussion) => ({ ...prevDiscussion, [name]: value }));
+  }
 
   const handleEditDiscussion = () => {
-    if (!editDiscussion) {
-        alert('Nema podataka za ažuriranje disksuije.');
-        return;
-    }
-
-    const id = sessionStorage.getItem("id");
-    console.log("ddd")
-    console.log(editDiscussion.id)
-    if (!id) {
-        alert('Id diskusije nije pronađen.');
-        return;
-    }
-      // poziva se funkcija iz servisa react-a
-      // koja salje id i editovanogUsera
-    //const discussionString = sessionStorage.getItem("id");
-    const discussionId = parseInt(sessionStorage.getItem("id"), 10);
-    updatedDiscussions(discussionId, editDiscussion)
-        .then((updatedDiscussion) => {
-            console.log('Diskusija uspešno ažurirana:', updatedDiscussion);
-            alert('Diskusija uspešno ažurirana.');
-            closeEditDiscussionModal(); // Close the modal after successful update
-        })
-        .catch((error) => {
-            console.error('Greška pri ažuriranju diskusije:', error);
-            alert('Došlo je do greške pri ažuriranju diskusije.');
-        });
+   // salje izmenjeni objekat bekendu 
+   if (!editDiscussion) {
+    alert('No discussion to update.');
+    return;
+  }
+  console.log("SALJEM NA IZMENU OVU DISKUSIJU  ID:", editDiscussion.id)
+  console.log(editDiscussion)
+  updateDiscussion(editDiscussion.id, editDiscussion)
+    .then(() => {
+      alert('Discussion updated successfully.');
+      setEditDiscussionModalOpen(false); // Close modal
+      setEditDiscussion(null); // Reset state
+      handleFetchUserDiscussions(); // Refresh user's discussions
+    })
+    .catch((error) => {
+      console.error('Error updating discussion:', error);
+      alert('Failed to update discussion.');
+    });
 };
 
 
@@ -95,6 +91,44 @@ const User = ({ socket, handleLogout }) => {
     setEditDiscussion(null);
   };
 
+  // prosledimo diskusiju kao parametr, klikom na edit button se salje kao parametar u ovu funkciju
+  const handleUserDiscussionEdit = (discussion) =>{
+    console.log(discussion.id)
+    console.log(discussion.content)
+    
+    // poziva se na klik pen-a
+    // treba da dobavimo diskusiju po prosledjenom id-u
+    // u modalu za edit prosledimo dobavljenu diskusiju
+    getDiscussionById(discussion.id)
+    .then((response) => {
+      console.log(response.discussion);
+      setEditDiscussion(response.discussion); // Set the discussion data in state
+    })
+    .catch((error) => {
+      console.error('Error fetching discussion:', error);
+      alert('Failed to fetch the discussion for editing.');
+    });
+    // klikom na save handleEditDiscussion 
+    
+  }
+
+//******************BRISANJE DISKUSIJE */
+// Function to handle discussion deletion
+const handleDeleteDiscussion = (discussionId) => {
+  console.log(`Deleting discussion with ID: ${discussionId}`);
+  // Assuming you have a service function `deleteDiscussion`
+  deleteDiscussion(discussionId)
+    .then(() => {
+      alert('Discussion deleted successfully.');
+      handleFetchUserDiscussions(); // Refresh user's discussions
+    })
+    .catch((error) => {
+      console.error('Error deleting discussion:', error);
+      alert('Failed to delete discussion.');
+    });
+};
+
+///////////////////////////////////
   // novi kod , ZA EDITOVANJE KORISNIKA 
    // za edit korisnika : 
    const openEditModal = async () => {
@@ -237,6 +271,10 @@ const User = ({ socket, handleLogout }) => {
     };
   }, [socket]);
 
+
+
+  
+
   return (
     <div className="page-container">
   
@@ -265,7 +303,68 @@ const User = ({ socket, handleLogout }) => {
           ))}
         </div>
       </div>
-  
+      
+      {/* Discussions List */}
+      <div className="discussion-list">
+        
+          <div className="discussions-list">
+            <h5>Moje diskusije:</h5>
+            
+            {userDiscussions.map((discussion) => (
+              <div key={discussion.id} className="discussion-item">
+                <h6>{discussion.title}</h6>
+                <p>{discussion.content}</p>
+                <FontAwesomeIcon
+                  icon={faPen}
+                  className="edit-icon1"
+                  onClick={() => handleUserDiscussionEdit(discussion)}
+                />
+                <FontAwesomeIcon
+                  icon={faTimes}
+                  className="delete-icon"
+                  onClick={() => handleDeleteDiscussion(discussion.id)}
+                />
+              </div>
+            ))}
+          </div>
+        
+        <FontAwesomeIcon
+          icon={faList}
+          className="fetch-icon"
+          onClick={handleFetchUserDiscussions}
+        />
+      </div>
+      
+      {isEditDiscussionModalOpen && (
+      <div className="edit-modal">
+        <div className="modal-content">
+            <h4>Uredi diskusiju</h4>
+            <form>
+                <label>
+                    Naslov:
+                    <input
+                        type="text"
+                        name="title"
+                        value={editDiscussion?.title || ''}
+                        onChange={handleInputDiscussionChange}
+                    />
+                </label>
+                <label>
+                    Sadržaj:
+                    <textarea
+                        name="content"
+                        value={editDiscussion?.content || ''}
+                        onChange={handleInputDiscussionChange}
+                        rows="5"
+                    />
+                </label>
+            </form>
+            <button onClick={handleEditDiscussion}>Sačuvaj</button>
+            <button onClick={closeEditDiscussionModal}>Zatvori</button>
+        </div>
+      </div>
+      )}
+
       <div className="discussion-list">
         {discussions.length > 0 && (
           <div className="discussions-list">
@@ -274,38 +373,7 @@ const User = ({ socket, handleLogout }) => {
               <div key={discussion.id} className="discussion-item">
                 <h6>{discussion.title}</h6>
                 <p>{discussion.content}</p>
-                <FontAwesomeIcon
-                  icon={faPen}
-                  className="edit-icon1"
-                  onClick={openEditDiscussionModal}
-                />
-                {isEditDiscussionModalOpen && (
-                  <div className="edit-modal1">
-                  <div className="modal-content1">
-                  <h4>edit discussion</h4>
-                  <form>
-                    <label>
-                      Title:
-                      <input type="text"
-                      name="title"
-                      value={editDiscussion.title || ""}
-                      onChange={handleInputDiscussionChange}>
-                      </input>
-                    </label>
-                    <label>
-                      Content:
-                      <input type="text"
-                      name="content"
-                      value={editDiscussion.content || ""}
-                      onChange={handleInputDiscussionChange}>
-                      </input>
-                    </label>
-                  </form>
-                  <button onClick={handleEditDiscussion}>Save</button>
-                  <button onClick={closeEditDiscussionModal}>Close</button>
-                  </div>
-                  </div>
-                )}
+                <small>{discussion.user_id}</small>
               </div>
             ))}
           </div>

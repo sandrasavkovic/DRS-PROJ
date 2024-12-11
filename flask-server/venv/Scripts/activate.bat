@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\Duska\Desktop\drs_projekat\DRS-PROJ\flask-server\venv
+set VIRTUAL_ENV=C:\Users\ASUS\OneDrive\Desktop\DRS-PROJ-1\flask-server\venv
 
 if not defined PROMPT set PROMPT=$P$G
 

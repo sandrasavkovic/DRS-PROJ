@@ -76,7 +76,7 @@ export const addDiscussion = (theme, discussionText) => {
   
 };
 
-
+/*
 export const getDiscussionById = (discussionId) => {
   console.log("disc je tu");
   console.log("Sending request for id:", discussionId);  // Add logging to verify the request
@@ -98,16 +98,18 @@ export const getDiscussionById = (discussionId) => {
       throw error;
     });
 };
+*/
 
-export const updatedDiscussions = (discussionId, updatedDiscussion) => {
-  console.log("EDITUJEM : ", discussionId)
-  console.log(updatedDiscussion)
-  return fetch(`/discussion/${discussionId}`, {
+export const updateDiscussion = (discussionId, updatedDiscussion) => {
+  console.log("EDITING: ", discussionId);
+  console.log("UPDATED DATA: ", updatedDiscussion);
+
+  return fetch(`/discussion/editDiscussion?id=${discussionId}`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedDiscussion),
+      body: JSON.stringify(updatedDiscussion), // Send updated data in the request body
   })
   .then((response) => {
       if (!response.ok) {
@@ -120,3 +122,64 @@ export const updatedDiscussions = (discussionId, updatedDiscussion) => {
       throw error; // Re-throw to propagate the error to the calling function
   });
 };
+
+export const fetchDiscussionsOfUser = (username) =>{
+  console.log("Trazim diskusije usera : ", username)
+  return fetch(`/discussion/get_discussions_for?username=${username}`, {  
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",  // You can still include headers, but no body for GET
+    },  
+  })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .catch((error) => {
+    console.error("Error fetching user:", error);
+    throw error;
+  });
+}; 
+ 
+export const getDiscussionById = (discussionId) =>{
+  console.log("PROSLEDJEN ID DISKUSIJE : ", discussionId)
+  return fetch(`/discussion/get_discussion_by_id?discussionId=${discussionId}`, {  
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",  // You can still include headers, but no body for GET
+    },  
+  })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .catch((error) => {
+    console.error("Error fetching user:", error);
+    throw error;
+  });
+};
+
+export const deleteDiscussion = (discussionId) =>{
+  console.log("PROSLEDJEN ID DISKUSIJE : ", discussionId)
+  return fetch(`/discussion/deleteDiscussion`, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(discussionId), // Send updated data in the request body
+  })
+  .then((response) => {
+    if (!response.ok) {
+        throw new Error('Error deleting discussion');
+    }
+    return response.json(); // Parse and return the JSON response 
+  })
+  .catch((error) => {
+    console.error('Error in deleteDiscussion:', error);
+    throw error; // Re-throw to propagate the error to the calling function
+  });
+}; 
