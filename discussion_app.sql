@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 9.1.0, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
 -- Host: localhost    Database: discussion_app
 -- ------------------------------------------------------
--- Server version	9.1.0
+-- Server version	8.0.40
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -87,8 +87,9 @@ CREATE TABLE `themes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `theme_name` varchar(255) NOT NULL,
   `date_time` datetime DEFAULT NULL,
+  `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +98,7 @@ CREATE TABLE `themes` (
 
 LOCK TABLES `themes` WRITE;
 /*!40000 ALTER TABLE `themes` DISABLE KEYS */;
-INSERT INTO `themes` VALUES (1,'Tema 1','2024-12-08 14:30:00'),(2,'Tema 2','2023-11-01 08:15:45'),(3,'Tema 3','2022-06-25 23:59:59'),(4,'Tema 4','2024-01-01 00:00:00');
+INSERT INTO `themes` VALUES (1,'Tema 1','2024-12-08 14:30:00',NULL),(2,'Tema 2','2023-11-01 08:15:45',NULL),(3,'Tema 3','2022-06-25 23:59:59',NULL),(4,'Tema 4','2024-01-01 00:00:00',NULL),(7,'nova tema','2024-12-13 00:19:12','opis teme blabla');
 /*!40000 ALTER TABLE `themes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,4 +148,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-09 18:01:22
+-- Dump completed on 2024-12-13  0:28:43
