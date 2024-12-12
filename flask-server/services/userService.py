@@ -13,7 +13,7 @@ def get_all_themes():
     return themes
 
 # Funkcija za dodavanje nove teme
-def add_new_theme(theme_name):
+def add_new_theme(theme_name, description):
     connection = get_db_connection()
     cursor = connection.cursor()
     cursor.execute('INSERT INTO themes (theme_name) VALUES (%s)', (theme_name,))

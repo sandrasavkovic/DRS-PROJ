@@ -1,6 +1,77 @@
 from app_init import socketio 
 from db import get_db_connection
 from flask import jsonify
+
+# Funkcija za preuzimanje svih tema
+def get_all_themes():
+    try:
+        print("TEME GET")
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute('SELECT * FROM themes ORDER BY id ASC') 
+        themes = cursor.fetchall()  
+        print(themes)
+        return themes
+    except Exception as e:
+        print(f"Error fetching themes: {e}")
+        return [] 
+    finally:
+        cursor.close()
+        connection.close()
+from datetime import datetime
+
+def add_new_theme(theme_name, description):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
+    try:
+        cursor.execute('INSERT INTO themes (theme_name, description, date_time) VALUES (%s, %s, %s)', 
+                       (theme_name, description, current_time))
+        connection.commit()
+    except Exception as e:
+        connection.rollback()
+        print(f"Error while adding theme: {e}")
+    finally:
+        cursor.close()
+        connection.close()
+
+
+def modify_existing_theme(theme_id, theme_name, description):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute('UPDATE themes SET theme_name = %s, description = %s WHERE id = %s', 
+                       (theme_name, description, theme_id))
+        connection.commit()
+        
+    except Exception as e:
+        connection.rollback()  
+        raise Exception(f"Failed to modify theme with id {theme_id}: {str(e)}")  
+    
+    finally:
+        cursor.close()
+        connection.close()
+
+def delete_existing_theme(theme_id):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute('DELETE FROM themes WHERE id = %s', (theme_id,))
+        connection.commit()  
+        
+    except Exception as e:
+        connection.rollback()  
+        raise Exception(f"Failed to delete theme with id {theme_id}: {str(e)}")  
+    
+    finally:
+        cursor.close()
+        connection.close()
+
+
 def get_current_user_id(username):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)

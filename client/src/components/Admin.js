@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./AdminSidebar";
+import ThemePanel from "./AdminThemes";
 import "../styles/Admin.css";
 
 const Admin = ({ socket, handleLogout }) => {
@@ -75,6 +76,7 @@ const Admin = ({ socket, handleLogout }) => {
       <div className="content">
         <h1>Dobrodošli na Admin stranicu</h1>
         <div>
+          <ThemePanel/>
           <h2>Pending Registration Requests</h2>
           {pendingRequests.length === 0 ? (
             <p>No pending requests.</p>

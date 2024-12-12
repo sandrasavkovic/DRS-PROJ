@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchThemes, addTheme, deleteTheme, modifyTheme } from "./themeService"; 
+import { fetchThemes, addTheme, deleteTheme, modifyTheme } from "../services/themeService"; 
 
 const ThemePanel = () => {
   const [themes, setThemes] = useState([]);
@@ -15,13 +15,13 @@ const ThemePanel = () => {
       return;
     }
 
-    addTheme({ theme_name: themeName, theme_description: themeDescription })
+    addTheme({ theme_name: themeName, description: themeDescription })
       .then(() => {
-        fetchThemes() 
-          .then((response) => {
-            const sortedThemes = response.sort(
-              (a, b) => new Date(b.date_time) - new Date(a.date_time)
-            );
+        fetchThemes()
+    .then((response) => {
+      const sortedThemes = response.data.sort(
+        (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
+      );
             setThemes(sortedThemes); 
             setThemeName(""); // reset polja za unos
             setThemeDescription(""); // reset polja za opis
@@ -35,10 +35,10 @@ const ThemePanel = () => {
     deleteTheme(themeId)
       .then(() => {
         fetchThemes()
-          .then((response) => {
-            const sortedThemes = response.sort(
-              (a, b) => new Date(b.date_time) - new Date(a.date_time)
-            );
+    .then((response) => {
+      const sortedThemes = response.data.sort(
+        (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
+      );
             setThemes(sortedThemes);
           })
           .catch((error) => console.error("Error fetching themes:", error));
@@ -54,17 +54,17 @@ const ThemePanel = () => {
 
     const updatedTheme = {
       theme_name: themeName,
-      theme_description: themeDescription, 
+      description: themeDescription, 
       date_time: new Date().toISOString(),
     };
 
     modifyTheme(selectedThemeId, updatedTheme)
       .then(() => {
         fetchThemes()
-          .then((response) => {
-            const sortedThemes = response.sort(
-              (a, b) => new Date(b.date_time) - new Date(a.date_time)
-            );
+    .then((response) => {
+      const sortedThemes = response.data.sort(
+        (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
+      );
             setThemes(sortedThemes); 
             setThemeName(""); 
             setThemeDescription(""); 
@@ -78,19 +78,21 @@ const ThemePanel = () => {
 
   useEffect(() => {
     fetchThemes()
-      .then((response) => {
-        const sortedThemes = response.sort(
-          (a, b) => new Date(b.date_time) - new Date(a.date_time)
-        );
-        setThemes(sortedThemes);
-      })
-      .catch((error) => console.error("Error fetching themes:", error));
+    .then((response) => {
+      const sortedThemes = response.data.sort(
+        (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
+      );
+      console.log(sortedThemes)
+      setThemes(sortedThemes);
+    })
+    .catch((error) => console.error('Error fetching themes:', error));
+
   }, []);
 
   const handleEditClick = (theme) => {
     setSelectedThemeId(theme.id);
     setThemeName(theme.theme_name);
-    setThemeDescription(theme.theme_description);
+    setThemeDescription(theme.description);
     setIsEditing(true); 
   };
 

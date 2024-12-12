@@ -38,7 +38,7 @@ export const modifyTheme = (themeId, updatedTheme) => {
     },
     body: JSON.stringify({
       theme_name: updatedTheme.theme_name,
-      theme_description: updatedTheme.description, 
+      description: updatedTheme.description, 
       date_time: updatedTheme.date_time, 
     }),
   })
@@ -55,6 +55,7 @@ export const modifyTheme = (themeId, updatedTheme) => {
 };
 
 export const addTheme = (newTheme) => {
+  console.log(newTheme)
   return fetch("/theme/add_theme", {
     method: "POST",
     headers: {
@@ -62,7 +63,7 @@ export const addTheme = (newTheme) => {
     },
     body: JSON.stringify({
       theme_name: newTheme.theme_name,
-      theme_description: newTheme.description, 
+      description: newTheme.description, 
     }),
   })
     .then((response) => {
@@ -92,6 +93,7 @@ export const fetchThemes = () => {
       })
       .then((data) => {
         // Pretpostavljamo da API vraća listu tema u JSON formatu
+        console.log(data)
         return { data };
       })
       .catch((error) => {
