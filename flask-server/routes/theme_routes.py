@@ -13,7 +13,7 @@ def themes():
         return jsonify({'error': str(e)}), 500
 
 # Endpoint za dodavanje nove teme
-@theme_routes.route('/theme', methods=['POST'])
+@theme_routes.route('/add_theme', methods=['POST'])
 def create_theme():
     try:
         data = request.get_json()

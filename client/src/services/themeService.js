@@ -7,9 +7,75 @@
 //   //sreturn get(API_URL);
 // };
 // ovo cemo slati funkcijama u bekendu 
+
 const username = sessionStorage.getItem("user_name");
 const discussionId = parseInt(sessionStorage.getItem("id"), 10);
 
+export const deleteTheme = (themeId) => {
+  return fetch(`/theme/delete_theme/${themeId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to delete theme with id ${themeId}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error deleting theme:", error);
+      throw error;
+    });
+};
+
+export const modifyTheme = (themeId, updatedTheme) => {
+  return fetch(`/theme/modify_theme/${themeId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      theme_name: updatedTheme.theme_name,
+      theme_description: updatedTheme.description, 
+      date_time: updatedTheme.date_time, 
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to modify theme with id ${themeId}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error modifying theme:", error);
+      throw error;
+    });
+};
+
+export const addTheme = (newTheme) => {
+  return fetch("/theme/add_theme", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      theme_name: newTheme.theme_name,
+      theme_description: newTheme.description, 
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to add theme");
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error adding theme:", error);
+      throw error;
+    });
+};
 
 export const fetchThemes = () => {
     return fetch("/theme/theme", {

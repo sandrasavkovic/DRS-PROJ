@@ -13,10 +13,12 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'; // Import the delet
 
 
 const User = ({ socket, handleLogout }) => {
+  //Teme
   const [themes, setThemes] = useState([]); // Lista tema
   const [filteredThemes, setFilteredThemes] = useState([]); // Filtrirane teme
   const [searchTerm, setSearchTerm] = useState(''); // Unos u polje za pretragu
   const [selectedTheme, setSelectedTheme] = useState(null); // Selektovana tema
+
   const [discussionText, setDiscussionText] = useState(''); // Tekst diskusije
   const [discussions, setDiscussions] = useState([]); // Diskusije za selektovanu temu
   const [editUser, setEditUser] = useState(null); // Podaci o korisniku za uređivanje
@@ -205,16 +207,6 @@ const handleDeleteDiscussion = (discussionId) => {
   };
 ////////
 
-  // Rukovanje promenom u polju za pretragu
-  const handleSearchChange = (e) => {
-    const value = e.target.value.toLowerCase();
-    setSearchTerm(value);
-    const filtered = themes.filter((theme) =>
-      theme.title.toLowerCase().includes(value)
-    );
-    setFilteredThemes(filtered);
-  };
-
   // Rukovanje klikom na temu u levom sidebaru
   const handleSelectTheme = (theme) => {
     setSelectedTheme(theme);
@@ -253,12 +245,35 @@ const handleDeleteDiscussion = (discussionId) => {
     setDiscussionText('');
   };
 
+  // Rukovanje promenom u polju za pretragu - ispravljen exception
+  const handleSearchChange = (e) => {
+    const value = e.target.value; 
+    setSearchTerm(value);
+  
+    if (!value.trim()) {
+      setFilteredThemes(themes);
+      return;
+    }
+    //admin mijenja, dodaje i brise teme, koristii socket da obavijestimo korisnika o promjeni
+    //ovako samo jednom trazimo listu tema i ne azuriramo je nikad - kad se implementira to kod admina
+    const filtered = themes.filter(
+      (theme) =>
+        theme &&
+        theme.theme_name &&
+        theme.theme_name.toLowerCase().includes(value.toLowerCase()) 
+    );
+    console.log(filtered);
+
+    setFilteredThemes(filtered);
+  };
+
   useEffect(() => {
     fetchThemes()
       .then((response) => {
         const sortedThemes = response.data.sort(
           (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
         );
+        console.log(sortedThemes)
         setThemes(sortedThemes);
         setFilteredThemes(sortedThemes);
       })
