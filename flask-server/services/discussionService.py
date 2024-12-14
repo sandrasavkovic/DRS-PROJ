@@ -12,6 +12,7 @@ def get_discussions_by_theme(theme_id):
     return discussions
 
 # Funkcija za dodavanje nove diskusije
+# druga funkcija u themeService!
 def add_new_discussion(id, title, content, user_id, theme_id):
     connection = get_db_connection()
     cursor = connection.cursor()
@@ -61,7 +62,8 @@ def update_discussion_service(id, updated_discussion_data):
         cursor.execute("""
             UPDATE discussions
             SET title = %s, 
-                content = %s
+                content = %s,
+                datetime = NOW()
             WHERE id = %s
         """, (updated_discussion_data['title'], updated_discussion_data['content'], id))
 

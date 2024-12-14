@@ -118,8 +118,8 @@ def add_discussion_service(username, theme, discussionText):
 
     # SQL query to insert the new discussion
     sql = """
-        INSERT INTO discussions (title, content, user_id, theme_id)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO discussions (title, content, user_id, theme_id, datetime)
+        VALUES (%s, %s, %s, %s, NOW())
     """
 
     # Execute the query

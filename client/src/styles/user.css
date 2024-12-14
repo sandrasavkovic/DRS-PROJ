@@ -68,9 +68,9 @@
   padding: 15px;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 250%; /* Pravougaonik koji zauzima širinu roditeljskog elementa */
-  max-width: 5000px; /* Postavlja maksimalnu širinu, možeš prilagoditi po želji */
-  margin: 0 auto;
+  width: 200%; /* Pravougaonik koji zauzima širinu roditeljskog elementa */
+  max-width: 400px; /* Postavlja maksimalnu širinu, možeš prilagoditi po želji */
+  margin: 20;
 }
 
 .discussion-item h6 {
@@ -111,7 +111,7 @@
   /* Sidebar za diskusiju (desna strana) */
   /* Sidebar za diskusiju (desna strana) */
 .sidebar-right {
-    width: 350px;
+    width: 300px;
     background-color: #f8f9fa;
     padding: 20px;
     position: fixed;

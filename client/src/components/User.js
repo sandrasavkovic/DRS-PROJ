@@ -329,6 +329,7 @@ const handleDeleteDiscussion = (discussionId) => {
               <div key={discussion.id} className="discussion-item">
                 <h6>{discussion.title}</h6>
                 <p>{discussion.content}</p>
+                <p>{discussion.datetime}</p>
                 <FontAwesomeIcon
                   icon={faPen}
                   className="edit-icon1"
@@ -388,6 +389,7 @@ const handleDeleteDiscussion = (discussionId) => {
               <div key={discussion.id} className="discussion-item">
                 <h6>{discussion.title}</h6>
                 <p>{discussion.content}</p>
+                <p>{discussion.datetime}</p>
                 <small>{discussion.user_id}</small>
               </div>
             ))}
