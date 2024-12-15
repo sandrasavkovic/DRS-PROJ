@@ -98,10 +98,25 @@
   color: gray;
   transition: color 0.3s;
   position: absolute;
-  top: 5px; 
-  right: 5px;
+  top: 6px; 
+  right: 30px;
   font-size: 12px; 
   cursor: pointer;
+}
+
+.delete-icon {
+  color: gray;
+  transition: color 0.3s;
+  position: absolute;
+  top: 5px; 
+  right: 5px;
+  font-size: 15px; 
+  cursor: pointer;
+}
+
+.delete-icon:hover
+{
+  color:black;
 }
 
 .edit-icon:hover {
@@ -196,6 +211,16 @@
     align-items: center;
     justify-content: center;
   }
+
+  .fetch-icon {
+    font-size: 24px;
+    cursor: pointer;
+    position: fixed; /* Use fixed position to keep it in place when scrolling */
+    transform: translateX(-50%); /* Adjust the element back by 50% of its width */
+    top: 10px;
+    right: 60px;
+  } 
+  
   
   .modal-content {
     background: white;

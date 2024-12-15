@@ -27,6 +27,9 @@ const User = ({ socket, handleLogout }) => {
   const [isEditDiscussionModalOpen, setEditDiscussionModalOpen] = useState(false); // Modal za uređivanje
   const [userDiscussions, setUserDiscussions] = useState([]); // Discussions of the logged-in user
 
+  const [isUserDiscussionsVisible, setUserDiscussionsVisible] = useState(false); // New state
+  const [isDiscussionsVisible, setDiscussionsVisible] = useState(false); // New state
+
 
   // ****ZA EDIT DISKUSIJA KORISNIKA KOJI JE TRENUTNO LOGOVAN 
     // dobavicemo sve diskusije trenutno logovanog korisnika (iz sessionStorage-a)
@@ -43,6 +46,8 @@ const User = ({ socket, handleLogout }) => {
         if (response) {
           console.log(response.discussions); // You might also want to log response.data here
           setUserDiscussions(response.discussions); // This should be an array
+          setUserDiscussionsVisible(!isUserDiscussionsVisible); // Toggle visibility
+          setDiscussionsVisible(false);
         } else {
           console.error('Nema diskusija u odgovoru');
         }
@@ -212,6 +217,8 @@ const handleDeleteDiscussion = (discussionId) => {
     setSelectedTheme(theme);
     // Dohvatanje diskusija za selektovanu temu
     handleFetchDiscussions(theme.id);
+    setUserDiscussionsVisible(false);
+    setDiscussionsVisible(true);
   };
 
   // Dohvatanje diskusija za selektovanu temu
@@ -319,37 +326,7 @@ const handleDeleteDiscussion = (discussionId) => {
         </div>
       </div>
       
-      {/* Discussions List */}
-      <div className="discussion-list">
-        
-          <div className="discussions-list">
-            <h5>Moje diskusije:</h5>
-            
-            {userDiscussions.map((discussion) => (
-              <div key={discussion.id} className="discussion-item">
-                <h6>{discussion.title}</h6>
-                <p>{discussion.content}</p>
-                <p>{discussion.datetime}</p>
-                <FontAwesomeIcon
-                  icon={faPen}
-                  className="edit-icon1"
-                  onClick={() => handleUserDiscussionEdit(discussion)}
-                />
-                <FontAwesomeIcon
-                  icon={faTimes}
-                  className="delete-icon"
-                  onClick={() => handleDeleteDiscussion(discussion.id)}
-                />
-              </div>
-            ))}
-          </div>
-        
-        <FontAwesomeIcon
-          icon={faList}
-          className="fetch-icon"
-          onClick={handleFetchUserDiscussions}
-        />
-      </div>
+      
       
       {isEditDiscussionModalOpen && (
       <div className="edit-modal">
@@ -382,9 +359,9 @@ const handleDeleteDiscussion = (discussionId) => {
       )}
 
       <div className="discussion-list">
-        {discussions.length > 0 && (
+        {discussions.length > 0 && isDiscussionsVisible && (
           <div className="discussions-list">
-            <h5>Diskusije:</h5>
+            <h5></h5>
             {discussions.map((discussion) => (
               <div key={discussion.id} className="discussion-item">
                 <h6>{discussion.title}</h6>
@@ -419,6 +396,11 @@ const handleDeleteDiscussion = (discussionId) => {
           icon={faUserEdit}
           className="edit-icon"
           onClick={openEditModal}
+        />
+        <FontAwesomeIcon
+          icon={faList}
+          className="fetch-icon"
+          onClick={handleFetchUserDiscussions}
         />
        </div>
       </div>
@@ -489,6 +471,34 @@ const handleDeleteDiscussion = (discussionId) => {
           </div>
         </div>
       )}
+
+
+      {/* Discussions List */}
+      <div className="discussion-list">
+        {isUserDiscussionsVisible && (
+          <div className="discussions-list">
+            <h5></h5>
+            
+            {userDiscussions.map((discussion) => (
+              <div key={discussion.id} className="discussion-item">
+                <h6>{discussion.title}</h6>
+                <p>{discussion.content}</p>
+                <p>{discussion.datetime}</p>
+                <FontAwesomeIcon
+                  icon={faPen}
+                  className="edit-icon1"
+                  onClick={() => handleUserDiscussionEdit(discussion)}
+                />
+                <FontAwesomeIcon
+                  icon={faTimes}
+                  className="delete-icon"
+                  onClick={() => handleDeleteDiscussion(discussion.id)}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
