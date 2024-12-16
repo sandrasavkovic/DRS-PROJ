@@ -298,10 +298,17 @@ const handleDeleteDiscussion = (discussionId) => {
   
 
   return (
-    <div className="d-flex flex-column w-100 vh-100">
-    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-      <Discussions className="w-60 bg-light" style={{ minHeight: '100vh' }} />
+    <div className="d-flex flex-column w-100" style={{ height: '100vh' }}>
+    {/* Logout Button */}
+    <button onClick={handleLogout} className="logout-btn">
+      Logout
+    </button>
+  
+    {/* Centrirana Discussions komponenta sa 70% visine */}
+    <div className="d-flex justify-content-center align-items-start" style={{ height: '70vh' }}>
+      <Discussions className="w-60 bg-light" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} />
     </div>
+
     <div className="sidebar-left">
         <div className="search-bar">
           <input

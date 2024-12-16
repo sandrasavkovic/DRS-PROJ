@@ -42,8 +42,8 @@ const Discussions = () => {
               <div className="card shadow-sm" style={{ border: 'none' }}>
                 {/* Header: User ID */}
                 <div className="card-header d-flex justify-content-between align-items-center" style={{ backgroundColor: '#f7f7f7', border: 'none' }}>
-                  <small className="text-muted">ID Korisnika: {discussion.username}</small>
-                  <small className="text-muted">Tema ID: {discussion.theme_name}</small>
+                  <small className="text-muted">Username: {discussion.username}</small>
+                  <small className="text-muted">Tema: {discussion.theme_name}</small>
                 </div>
 
                 {/* Naslov diskusije */}
