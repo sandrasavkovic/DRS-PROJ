@@ -3,19 +3,14 @@ import { fetchAllDiscussions } from "../services/discussionService";
 import 'font-awesome/css/font-awesome.min.css'; // Uključivanje FontAwesome ikona
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'; // Tooltip iz React-Bootstrap
 
-const Discussions = ({ selectedTheme }) => {
+const Discussions = () => {
   const [discussions, setDiscussions] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [filters, setFilters] = useState({
+    searchBy: 'theme_name',  // Default filter: 'theme_name'
+    searchValue: '',
+  });
 
   useEffect(() => {
-    const adminStatus = localStorage.getItem('isAdmin');
-    if (adminStatus === 'true') {
-      alert("Prikaz diskusija adminu");
-      setIsAdmin(true);
-    } else {
-      alert("Prikaz diskusija korisniku");
-    }
-
     fetchAllDiscussions()
       .then((response) => {
         const diskusije = response.data;
@@ -25,10 +20,41 @@ const Discussions = ({ selectedTheme }) => {
       .catch((error) => console.error('Error fetching discussions:', error));
   }, []);
 
-  // Filter diskusija na osnovu selektovane teme
-  const filteredDiscussions = selectedTheme
-    ? discussions.filter(discussion => discussion.theme_name === selectedTheme.theme_name)
-    : discussions;
+  // Filter diskusija na osnovu vrednosti pretrage
+  const filteredDiscussions = discussions.filter(discussion => {
+    const searchValueLower = filters.searchValue.toLowerCase();
+
+    let matchesSearch = false;
+    if (filters.searchBy === 'theme_name') {
+      matchesSearch = discussion.theme_name.toLowerCase().includes(searchValueLower);
+    } else if (filters.searchBy === 'name') {
+      matchesSearch = discussion.name.toLowerCase().includes(searchValueLower);
+    } else if (filters.searchBy === 'surname' && discussion.surname) {
+      matchesSearch = discussion.surname.toLowerCase().includes(searchValueLower);
+    } else if (filters.searchBy === 'email' && discussion.email) {
+      matchesSearch = discussion.email.toLowerCase().includes(searchValueLower);
+    }
+
+    return matchesSearch;
+  });
+
+  // Funkcija za update filtera
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  // Funkcija za promenu vrste pretrage (radio dugmadi)
+  const handleRadioChange = (e) => {
+    setFilters((prevState) => ({
+      ...prevState,
+      searchBy: e.target.value,
+      searchValue: '', // resetujemo vrednost kada se promeni kriterijum
+    }));
+  };
 
   // Tooltip za buttons
   const renderTooltip = (props, text) => (
@@ -40,6 +66,67 @@ const Discussions = ({ selectedTheme }) => {
   return (
     <div className="container mt-4">
       <h2 className="text-center mb-4">Diskusije</h2>
+
+      {/* Pretraga */}
+      <div className="d-flex justify-content-center mb-4">
+        <div className="form-group mx-2">
+          <div className="btn-group" role="group" aria-label="Search by">
+            <label className="btn btn-outline-primary">
+              <input
+                type="radio"
+                name="searchBy"
+                value="theme_name"
+                checked={filters.searchBy === 'theme_name'}
+                onChange={handleRadioChange}
+              />
+              Tema
+            </label>
+            <label className="btn btn-outline-primary">
+              <input
+                type="radio"
+                name="searchBy"
+                value="name"
+                checked={filters.searchBy === 'name'}
+                onChange={handleRadioChange}
+              />
+              Ime korisnika
+            </label>
+            <label className="btn btn-outline-primary">
+              <input
+                type="radio"
+                name="searchBy"
+                value="surname"
+                checked={filters.searchBy === 'surname'}
+                onChange={handleRadioChange}
+              />
+              Prezime korisnika
+            </label>
+            <label className="btn btn-outline-primary">
+              <input
+                type="radio"
+                name="searchBy"
+                value="email"
+                checked={filters.searchBy === 'email'}
+                onChange={handleRadioChange}
+              />
+              Email korisnika
+            </label>
+          </div>
+        </div>
+
+        {/* Input polje za unos vrednosti pretrage */}
+        <div className="form-group mx-2" style={{ maxWidth: '300px' }}>
+          <input
+            type="text"
+            name="searchValue"
+            value={filters.searchValue}
+            onChange={handleFilterChange}
+            className="form-control"
+            placeholder="Unesite tekst za pretragu..."
+          />
+        </div>
+      </div>
+
       <div className="d-flex flex-column align-items-center">
         {filteredDiscussions.length > 0 ? (
           filteredDiscussions.map((discussion) => (
@@ -109,7 +196,7 @@ const Discussions = ({ selectedTheme }) => {
             </div>
           ))
         ) : (
-          <p>No discussions available for the selected theme.</p>
+          <p>No discussions found matching your search criteria.</p>
         )}
       </div>
     </div>

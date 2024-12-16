@@ -303,7 +303,7 @@ const handleDeleteDiscussion = (discussionId) => {
   
     {/* Centrirana Discussions komponenta sa 70% visine */}
     <div className="d-flex justify-content-center align-items-start" style={{ height: '70vh' }}>
-      <Discussions selectedTheme={selectedTheme} className="w-60 bg-light" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} />
+      <Discussions className="w-60 bg-light" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} />
     </div>
 
     <div className="sidebar-left">
