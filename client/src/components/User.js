@@ -30,7 +30,52 @@ const User = ({ socket, handleLogout }) => {
   const [isUserDiscussionsVisible, setUserDiscussionsVisible] = useState(false); // New state
   const [isDiscussionsVisible, setDiscussionsVisible] = useState(false); // New state
 
+  // za dodavanje diskusije
+  const [selectedFromList, setSelectedFromList] = useState(null); // Selected theme for new discussion
+  const [newDiscussionText, setNewDiscussionText] = useState(''); // New discussion text
+  const [isAddModalOpen, setAddModalOpen] = useState(false); // Modal for adding a new discussion
 
+
+
+  //***ZA DODAVANJE DISKUSIJE */
+
+  // Open the "Add Discussion" modal
+  const openAddModal = () => {
+    setAddModalOpen(true);
+  };
+
+  // Close the "Add Discussion" modal
+  const closeAddModal = () => {
+    setAddModalOpen(false);
+    setNewDiscussionText('');
+    setSelectedFromList(null);
+  };
+
+  // Handle new discussion submission
+  const handleAddDiscussion = () => {
+    if (!selectedFromList) {
+      alert('Please select a theme.');
+      return;
+    }
+
+    if (newDiscussionText.trim() === '') {
+      alert('Discussion text cannot be empty.');
+      return;
+    }
+
+    // Call the addDiscussion service
+    addDiscussion(selectedFromList, newDiscussionText)
+      .then(() => {
+        alert('Discussion added successfully.');
+        closeAddModal(); // Close the modal after submission
+      })
+      .catch((error) => {
+        console.error('Error adding discussion:', error);
+        alert('Failed to add discussion.');
+      });
+  };
+
+  
   // ****ZA EDIT DISKUSIJA KORISNIKA KOJI JE TRENUTNO LOGOVAN 
     // dobavicemo sve diskusije trenutno logovanog korisnika (iz sessionStorage-a)
  const handleFetchUserDiscussions = async() => {
@@ -303,10 +348,10 @@ const handleDeleteDiscussion = (discussionId) => {
   
     {/* Centrirana Discussions komponenta sa 70% visine */}
     <div className="d-flex justify-content-center align-items-start" style={{ height: '70vh' }}>
-      <Discussions className="w-60 bg-light" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} />
+      <Discussions className="w-60 bg-light" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column'}} />
     </div>
 
-    <div className="sidebar-left">
+    {/* <div className="sidebar-left">
         <div className="search-bar">
           <input
             type="text"
@@ -331,7 +376,7 @@ const handleDeleteDiscussion = (discussionId) => {
           ))}
         </div>
       </div>
-      
+       */}
       
       
       {isEditDiscussionModalOpen && (
@@ -364,40 +409,75 @@ const handleDeleteDiscussion = (discussionId) => {
       </div>
       )}
 
-      <div className="discussion-list">
-        {discussions.length > 0 && isDiscussionsVisible && (
-          <div className="discussions-list">
-            <h5></h5>
-            {discussions.map((discussion) => (
-              <div key={discussion.id} className="discussion-item">
-                <h6>{discussion.title}</h6>
-                <p>{discussion.content}</p>
-                <p>{discussion.datetime}</p>
-                <small>{discussion.user_id}</small>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-  
+    <div className="d-flex flex-column w-100" style={{ height: '100vh' }}>
+      {/* Right Sidebar */}
       <div className="sidebar-right">
-        <div className="discussion-section">
-          {selectedTheme ? (
-            <h4>Diskusija za temu: {selectedTheme.theme_name}</h4>
-          ) : (
-            <h4>Izaberite temu za diskusiju</h4>
-          )}
-  
-          <textarea
-            value={discussionText}
-            onChange={(e) => setDiscussionText(e.target.value)}
-            placeholder="Unesite svoju diskusiju ovde..."
-            rows="5"
-          />
-          <button onClick={handlePublishDiscussion}>Objavi</button>
-          
+        <div className="adding">
+        <button
+          className="btn btn-info"
+          onClick={openAddModal}
+          style={{ margin: '1rem' }}
+        >
+        Add
+        </button>
         </div>
-        <div className="header">
+      
+
+        {/* Add Discussion Modal */}
+        {isAddModalOpen && (
+          <div className="edit-modal">
+           <div className="modal-content">
+              <h4>Add Discussion</h4>
+              <form>
+                <label htmlFor="themeDropdown">Select Theme:</label>
+                <select
+                id="themeDropdown"
+                className="form-select"
+                value={selectedFromList ? selectedFromList.id : ''}
+                onChange={(e) =>
+                  setSelectedFromList(
+                    themes.find((theme) => theme.id === parseInt(e.target.value))
+                  )
+                }
+              >
+                <option value="" disabled>
+                  Choose a theme...
+                </option>
+                {themes.map((theme) => (
+                  <option key={theme.id} value={theme.id}>
+                    {theme.theme_name}
+                  </option>
+                ))}
+              </select>
+
+              <label htmlFor="discussionText" className="mt-3">
+                Discussion Text:
+              </label>
+              <textarea
+                id="discussionText"
+                className="form-control"
+                rows="5"
+                value={newDiscussionText}
+                onChange={(e) => setNewDiscussionText(e.target.value)}
+                placeholder="Enter your discussion here..."
+              ></textarea>
+            </form>
+
+            <div className="mt-3">
+              <button
+                className="btn btn-info me-2"
+                onClick={handleAddDiscussion}
+              >
+                Add
+              </button>
+              <button className="btn btn-secondary" onClick={closeAddModal}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+       <div className="header">
         <FontAwesomeIcon
           icon={faUserEdit}
           className="edit-icon"
@@ -409,7 +489,10 @@ const handleDeleteDiscussion = (discussionId) => {
           onClick={handleFetchUserDiscussions}
         />
        </div>
-      </div>
+    </div>
+
+    </div>
+
 
       {/* Modal for Editing User */}
       {isEditModalOpen && (
