@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./AdminSidebar";
 import ThemePanel from "./AdminThemes";
 import "../styles/Admin.css";
+import ThemePanel2 from "./AdminManageTopics";
 
 const Admin = ({ socket, handleLogout }) => {
   const[selectedOption, setSelectedOption] = useState(null)
@@ -68,36 +69,69 @@ const Admin = ({ socket, handleLogout }) => {
   }, [socket, selectedOption]);
 
   return (
-     <div className="admin-page">
+    <div className="admin-page">
       <button onClick={handleLogout} className="logout-btn">
         Logout
       </button>
-      <Sidebar onSelect={handleSidebarSelect} /> {/* Sidebar komponenta */}
+      <Sidebar onSelect={handleSidebarSelect} /> {/* Sidebar component */}
+      
       <div className="content">
         <h1>Dobrodošli na Admin stranicu</h1>
-        <div>
-          <ThemePanel/>
-          <h2>Pending Registration Requests</h2>
+
+        {/* Conditionally render content based on selectedOption */}
+        {selectedOption === "pendingRequests" && (
+          <div className="container mt-4">
+          <h2 className="mb-4">Pending Registration Requests</h2>
           {pendingRequests.length === 0 ? (
             <p>No pending requests.</p>
           ) : (
-            <ul>
-              {pendingRequests.map((request) => (
-                <li key={request[0]}>
-                  <span>
-                    {request[3]} {request[4]} ({request[9]})
-                  </span>
-                  <button onClick={() => handleAcceptRequest(request[0])}>
-                    Accept
-                  </button>
-                  <button onClick={() => handleRejectRequest(request[0])}>
-                    Decline
-                  </button>
-                </li>
-              ))}
-            </ul>
+            
+              <ul className="list-group">
+                {pendingRequests.map((request) => (
+                  <li key={request[0]} className="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                      {request[3]} {request[4]} ({request[9]})
+                    </span>
+                    <div>
+                      <button
+                        className="btn btn-info"
+                        onClick={() => handleAcceptRequest(request[0])}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => handleRejectRequest(request[0])}
+                      >
+                        Decline
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+           
           )}
         </div>
+      )}
+
+        {selectedOption === "addTopic" && (
+          <div>
+           
+            <ThemePanel /> {/* Render ThemePanel for adding a new topic */}
+          </div>
+        )}
+
+        {/* Handle other options if needed */}
+        {selectedOption === "manageTopics" && (
+          <div className="divForTopics">
+            <ThemePanel2/>
+          </div>
+        )}
+        {selectedOption === "addDiscussion" &&(
+          <div>
+            <p>Add discussion</p>
+          </div>
+        )}
       </div>
     </div>
   );
