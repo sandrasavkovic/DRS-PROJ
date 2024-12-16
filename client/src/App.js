@@ -28,13 +28,10 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-
-    //SOCKET ---> pogledati u html kodu dolje kako se proslijedi komponentama (Admin i User)
-    const newSocket = io('http://localhost:5000'); 
-    console.log('Socket.IO JE inicijaliziran', newSocket); 
+    const newSocket = io('http://localhost:5000');
+    console.log('Socket.IO JE inicijaliziran', newSocket);
     setSocket(newSocket);
 
-    // Pretplata na dogadjaje - sa socket.on
     newSocket.on("connect", () => {
       console.log("Socket.IO je ukljucen.");
     });
@@ -44,14 +41,12 @@ function App() {
     });
 
     return () => {
-      // Otkazivanje pretplate na ove dogadjaje - sa socket.off
       newSocket.off("connect");
       newSocket.off("disconnect");
       newSocket.off("serverReaction");
 
       console.log('Cleaning up socket');
-      newSocket.close(); // zatvaranje socket-a
-      
+      newSocket.close();
     };
   }, []);
 
@@ -64,13 +59,10 @@ function App() {
   };
 
   const handleLogin = () => {
-    console.log('loginnnnn');
     loginUser(formData.email, formData.password)
       .then((data) => {
-        console.log('Zahtjev obradjen');
         if (data.success) {
           alert("Login je uspješan!");
-          console.log( data.user.username)
           sessionStorage.setItem("access_token", data.access_token);
           sessionStorage.setItem("userName", data.user.name);
           sessionStorage.setItem("isAdmin", JSON.stringify(data.user.is_admin));
@@ -79,7 +71,7 @@ function App() {
           const redirectPath = data.user.is_admin ? "/admin" : "/user";
           navigate(redirectPath);
         } else {
-          alert("Login je neuspjesan. Provjerite email i lozinku.");
+          alert("Login je neuspješan. Provjerite email i lozinku.");
         }
       })
       .catch((err) => console.error("Error:", err));
@@ -98,8 +90,6 @@ function App() {
       formData.email
     )
       .then((data) => {
-        console.log("PODACI koji se salju na server:", formData);
-
         if (data.success) {
           alert("Registracija je uspjesna!");
           setIsRegistering(false);
@@ -118,7 +108,7 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className="d-flex flex-column w-100 vh-100">
       <Routes>
         <Route
           path="/login"
@@ -132,7 +122,8 @@ function App() {
                 }
               />
             ) : (
-              <div>
+            <div className="d-flex flex-column align-items-center justify-content-center w-100 min-vh-100 bg-light">
+              <div style={{ width: "100%", maxWidth: "600px" }}>
                 {isRegistering ? (
                   <RegisterForm
                     formData={formData}
@@ -147,31 +138,34 @@ function App() {
                   />
                 )}
 
-                <button onClick={toggleForm} className="switch-button">
-                  {isRegistering ? "Switch to Login" : "Switch to Register"}
-                </button>
+                <div className="text-center mt-3">
+                  <button onClick={toggleForm} className="btn btn-link">
+                    {isRegistering ? "Prebaci na prijavu" : "Prebaci na registraciju"}
+                  </button>
+                </div>
               </div>
+            </div>
             )
           }
         />
 
-      <Route
-        path="/admin"
-        element={
-          <PrivateRoute allowedRole="admin">
-            {socket ? <Admin socket={socket} handleLogout={handleLogout} /> : <div>Loading...</div>}
-          </PrivateRoute>
-        }
-      />
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute allowedRole="admin">
+              {socket ? <Admin socket={socket} handleLogout={handleLogout} /> : <div>Loading...</div>}
+            </PrivateRoute>
+          }
+        />
 
-      <Route
-        path="/user"
-        element={
-          <PrivateRoute allowedRole="user">
-            {socket ? <User socket={socket} handleLogout={handleLogout} /> : <div>Loading...</div>}
-          </PrivateRoute>
-        }
-      />
+        <Route
+          path="/user"
+          element={
+            <PrivateRoute allowedRole="user">
+              {socket ? <User socket={socket} handleLogout={handleLogout} /> : <div>Loading...</div>}
+            </PrivateRoute>
+          }
+        />
 
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>

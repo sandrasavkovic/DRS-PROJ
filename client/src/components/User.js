@@ -298,7 +298,7 @@ const handleDeleteDiscussion = (discussionId) => {
   
 
   return (
-    <div className="page-container">
+    <div className="d-flex flex-column w-100 vh-100">
   
       <div className="sidebar-left">
         <div className="search-bar">
