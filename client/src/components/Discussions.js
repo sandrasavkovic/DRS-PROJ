@@ -3,7 +3,7 @@ import { fetchAllDiscussions } from "../services/discussionService";
 import 'font-awesome/css/font-awesome.min.css'; // Uključivanje FontAwesome ikona
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'; // Tooltip iz React-Bootstrap
 
-const Discussions = () => {
+const Discussions = ({ selectedTheme }) => {
   const [discussions, setDiscussions] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -25,7 +25,12 @@ const Discussions = () => {
       .catch((error) => console.error('Error fetching discussions:', error));
   }, []);
 
-  // Tooltip za dugmadi
+  // Filter diskusija na osnovu selektovane teme
+  const filteredDiscussions = selectedTheme
+    ? discussions.filter(discussion => discussion.theme_name === selectedTheme.theme_name)
+    : discussions;
+
+  // Tooltip za buttons
   const renderTooltip = (props, text) => (
     <Tooltip id="button-tooltip" {...props}>
       {text}
@@ -36,8 +41,8 @@ const Discussions = () => {
     <div className="container mt-4">
       <h2 className="text-center mb-4">Diskusije</h2>
       <div className="d-flex flex-column align-items-center">
-        {discussions.length > 0 && (
-          discussions.map((discussion) => (
+        {filteredDiscussions.length > 0 ? (
+          filteredDiscussions.map((discussion) => (
             <div key={discussion.id} className="mb-4 w-75">
               <div className="card shadow-sm" style={{ border: 'none' }}>
                 {/* Header: User ID */}
@@ -103,6 +108,8 @@ const Discussions = () => {
               <hr style={{ borderTop: '1px solid #e6e6e6' }} />
             </div>
           ))
+        ) : (
+          <p>No discussions available for the selected theme.</p>
         )}
       </div>
     </div>
