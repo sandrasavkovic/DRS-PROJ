@@ -9,7 +9,7 @@ import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { getDiscussionById, updateDiscussion, deleteDiscussion } from '../services/themeService';
 import { faList } from '@fortawesome/free-solid-svg-icons';
 import { faTimes } from '@fortawesome/free-solid-svg-icons'; // Import the delete icon
-
+import Discussions from "./Discussions";
 
 
 const User = ({ socket, handleLogout }) => {
@@ -299,8 +299,10 @@ const handleDeleteDiscussion = (discussionId) => {
 
   return (
     <div className="d-flex flex-column w-100 vh-100">
-  
-      <div className="sidebar-left">
+    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+      <Discussions className="w-60 bg-light" style={{ minHeight: '100vh' }} />
+    </div>
+    <div className="sidebar-left">
         <div className="search-bar">
           <input
             type="text"

@@ -1,7 +1,15 @@
 from flask import Flask, jsonify, request, Blueprint
-from services.discussionService import get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, delete_discussion_by_id_service
+from services.discussionService import get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, delete_discussion_by_id_service, get_all_discussions
 
 discussion_routes = Blueprint("discussion_routes", __name__)
+
+@discussion_routes.route('/getAllDiscussions', methods=['GET'])
+def getAllDiscussions():
+    try:
+        discussions = get_all_discussions()
+        return jsonify(discussions), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Endpoint za preuzimanje svih diskusija za određenu temu
 @discussion_routes.route('/discussion/<int:theme_id>', methods=['GET'])

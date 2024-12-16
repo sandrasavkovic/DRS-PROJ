@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 9.1.0, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
 -- Host: localhost    Database: discussion_app
 -- ------------------------------------------------------
--- Server version	9.1.0
+-- Server version	8.0.40
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -43,7 +43,7 @@ CREATE TABLE `discussions` (
 
 LOCK TABLES `discussions` WRITE;
 /*!40000 ALTER TABLE `discussions` DISABLE KEYS */;
-INSERT INTO `discussions` VALUES (1,'diskusija1','Sadržaj diskusije1',11,1,'2024-12-14 19:47:38'),(2,'diskusija2','Sadržaj diskusije2',12,2,'2024-12-14 19:47:38'),(3,'Tema 3','popppp',NULL,NULL,'2024-12-14 19:47:38'),(4,'Tema 1','ws',11,NULL,'2024-12-14 19:59:36'),(5,'Tema 2','nova diskusija',11,NULL,'2024-12-14 19:47:38'),(8,'Tema 3','moja nova diskusija',NULL,3,'2024-12-14 19:52:31');
+INSERT INTO `discussions` VALUES (1,'diskusija1','Sadržaj diskusije1',11,1,'2024-12-14 19:47:38'),(2,'diskusija2','Sadržaj diskusije2',12,2,'2024-12-14 19:47:38'),(3,'Tema 3','popppp',11,3,'2024-12-14 19:47:38'),(4,'Tema 1','ws',11,4,'2024-12-14 19:59:36'),(5,'Tema 2','nova diskusija',11,3,'2024-12-14 19:47:38'),(8,'Tema 3','moja nova diskusija',12,3,'2024-12-14 19:52:31');
 /*!40000 ALTER TABLE `discussions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -149,4 +149,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-14 20:11:45
+-- Dump completed on 2024-12-16 18:37:32

@@ -1,6 +1,55 @@
 from app_init import socketio 
 from db import get_db_connection
 from services.themeService import get_current_user_id;
+from models.Discussion import DiscussionDTO
+from flask import jsonify
+
+from flask import jsonify
+
+from flask import jsonify
+
+def get_all_discussions():
+    try:
+        print("DISKUSIJE GET")
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        # SQL upit sa JOIN-om za povezivanje sa korisnicima i temama
+        cursor.execute("""
+            SELECT d.id, d.title, d.content, d.user_id, d.theme_id, u.username, t.theme_name 
+            FROM discussions d
+            LEFT JOIN users u ON d.user_id = u.id
+            LEFT JOIN themes t ON d.theme_id = t.id
+            ORDER BY d.id ASC
+        """)
+
+        discussions = cursor.fetchall()  # Svi podaci uključujući korisničko ime i ime teme
+        print("Fetched discussions:", discussions)
+
+        # Umesto DTO klase, vraćamo listu dictionary objekata
+        discussion_dtos = [
+            {
+                'id': discussion['id'], 
+                'title': discussion['title'], 
+                'content': discussion['content'],
+                'username': discussion['username'], 
+                'theme_name': discussion['theme_name']
+            }
+            for discussion in discussions
+        ]
+        
+        # Vraćamo kao JSON
+        return discussion_dtos
+
+    except Exception as e:
+        print(f"Error fetching discussions: {e}")
+        return []  # Vrati praznu listu u slučaju greške
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
 # Funkcija za preuzimanje svih diskusija za specifičnu temu
 def get_discussions_by_theme(theme_id):
     connection = get_db_connection()
