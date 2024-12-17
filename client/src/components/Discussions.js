@@ -14,7 +14,8 @@ const Discussions = () => {
   const [editDiscussion, setEditDiscussion] = useState(null); // State for discussion to edit
 
   const loggedUser = sessionStorage.getItem("user_name");
-
+  const role = sessionStorage.getItem("isAdmin");
+  console.log("ROLEE: ", role);
   useEffect(() => {
     fetchAllDiscussions()
       .then((response) => {
@@ -180,22 +181,27 @@ const Discussions = () => {
                       <i className="fa fa-comment"></i>
                     </button>
                   </div>
+                  <div>
                   {discussion.username === loggedUser && (
-                    <div>
+                   
                       <button
                         className="btn btn-outline-secondary btn-sm mx-1"
                         onClick={() => handleUserDiscussionEdit(discussion)}
                       >
                         <i className="fa fa-pencil"></i>
                       </button>
+                     
+                  )}
+                  {(discussion.username === loggedUser || Number(role)===1) && (
+                    
                       <button
                         className="btn btn-outline-danger btn-sm mx-1"
                         onClick={() => handleDeleteDiscussion(discussion.id)}
                       >
                         <i className="fa fa-trash"></i>
                       </button>
-                    </div>
                   )}
+                   </div>
                 </div>
               </div>
             </div>

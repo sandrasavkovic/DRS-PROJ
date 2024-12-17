@@ -3,10 +3,13 @@ import Sidebar from "./AdminSidebar";
 import ThemePanel from "./AdminThemes";
 import "../styles/Admin.css";
 import ThemePanel2 from "./AdminManageTopics";
+import Discussions from "./Discussions";
+
 
 const Admin = ({ socket, handleLogout }) => {
   const[selectedOption, setSelectedOption] = useState(null)
   const [pendingRequests, setPendingRequests] = useState([]);
+
 
   const handleSidebarSelect = (option) =>{
     setSelectedOption(option)
@@ -70,10 +73,10 @@ const Admin = ({ socket, handleLogout }) => {
 
   return (
     <div className="admin-page">
-      <button onClick={handleLogout} className="logout-btn">
+      {/* <button onClick={handleLogout} className="logout-btn">
         Logout
-      </button>
-      <Sidebar onSelect={handleSidebarSelect} /> {/* Sidebar component */}
+      </button> */}
+      <Sidebar onSelect={handleSidebarSelect} handleLogout={handleLogout} />
       
       <div className="content">
         <h1>Dobrodošli na Admin stranicu</h1>
@@ -127,9 +130,10 @@ const Admin = ({ socket, handleLogout }) => {
             <ThemePanel2/>
           </div>
         )}
-        {selectedOption === "addDiscussion" &&(
+        {selectedOption === "discussionsView" &&(
           <div>
-            <p>Add discussion</p>
+                  <Discussions className="w-60 bg-light" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column'}} />
+
           </div>
         )}
       </div>
