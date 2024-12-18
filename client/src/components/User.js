@@ -11,8 +11,13 @@ import { faList } from '@fortawesome/free-solid-svg-icons';
 import { faTimes } from '@fortawesome/free-solid-svg-icons'; // Import the delete icon
 import Discussions from "./Discussions";
 
+//treba ovo
+import { getUserIdByUsername } from '../services/discussionService';
 
 const User = ({ socket, handleLogout }) => {
+  //TREBA ZA PROP - kod DISKUSIJA
+  const [userId, setUserId] = useState(null);
+
   //Teme
   const [themes, setThemes] = useState([]); // Lista tema
   const [filteredThemes, setFilteredThemes] = useState([]); // Filtrirane teme
@@ -35,7 +40,18 @@ const User = ({ socket, handleLogout }) => {
   const [newDiscussionText, setNewDiscussionText] = useState(''); // New discussion text
   const [isAddModalOpen, setAddModalOpen] = useState(false); // Modal for adding a new discussion
 
-
+  //treba za PROP ZA diskusije
+  useEffect(() => {
+      const username = sessionStorage.getItem("user_name");
+  
+      if (username) {
+        getUserIdByUsername(username)
+          .then((id) => {
+            setUserId(id);
+          })
+          .catch((error) => console.error("Error fetching userId:", error));
+      }
+    }, []);
 
   //***ZA DODAVANJE DISKUSIJE */
 
@@ -348,7 +364,8 @@ const handleDeleteDiscussion = (discussionId) => {
   
     {/* Centrirana Discussions komponenta sa 70% visine */}
     <div className="d-flex justify-content-center align-items-start" style={{ height: '70vh' }}>
-      <Discussions className="w-60 bg-light" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column'}} />
+      {/* Prosleđivanje samo userId kao prop u Discussions */}
+      {userId && <Discussions userId={userId} />}
     </div>
 
     {/* <div className="sidebar-left">

@@ -4,7 +4,7 @@ import DiscussionDisplay from './DiscussionDisplay'; // Import the new Discussio
 
 // Ovdje se samo filtriraju sve diskusije!
 
-const Discussions = () => {
+const Discussions = ({ userId }) => {
   const [discussions, setDiscussions] = useState([]);
   const [filters, setFilters] = useState({
     searchBy: 'theme_name',
@@ -89,7 +89,11 @@ const Discussions = () => {
       <div className="d-flex flex-column align-items-center">
         {filteredDiscussions.length > 0 ? (
           filteredDiscussions.map((discussion) => (
-            <DiscussionDisplay key={discussion.id} discussion={discussion} />
+            <DiscussionDisplay 
+            key={discussion.id} 
+            discussion={discussion} 
+            userId={userId} // Prosleđivanje userId kao prop
+          />
           ))
         ) : (
           <p>No discussions found matching your search criteria.</p>

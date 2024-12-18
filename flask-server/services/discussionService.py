@@ -2,40 +2,145 @@ from app_init import socketio
 from db import get_db_connection
 from services.themeService import get_current_user_id;
 from models.Discussion import DiscussionDTO
-
-def like_discussion(id):
-    print("Like discussion with ID:", id)
+def get_discussion_reactions(discussionId, userId):
     try:
-        id = int(id)
-    except ValueError:
-        return {"success": False, "message": "Invalid ID format"}, 400
-    
-    connection = get_db_connection()
-    cursor = connection.cursor()
+        print("HELLOOOO")
+        connection = get_db_connection()
+        cursor = connection.cursor()
 
-    try:
-        # Ažuriramo samo polje Emotion
+        # Preuzimanje broja lajkova
         cursor.execute("""
-            UPDATE discussions
-            SET title = %s, 
-                content = %s,
-                datetime = NOW()
-            WHERE id = %s
-        """, (updated_discussion_data['title'], updated_discussion_data['content'], id))
+            SELECT COUNT(*) FROM reactions
+            WHERE discussion_id = %s AND reaction_type = 'like'
+        """, (discussionId,))
+        result = cursor.fetchone()
+        likes = result[0] if result else 0  # Ako je rezultat None, postavi 0
+        print(likes)
 
-        connection.commit()
+        # Preuzimanje broja dislajkova
+        cursor.execute("""
+            SELECT COUNT(*) FROM reactions
+            WHERE discussion_id = %s AND reaction_type = 'dislike'
+        """, (discussionId,))
+        result = cursor.fetchone()
+        dislikes = result[0] if result else 0 
+        print(dislikes)
 
-        # Proveravamo da li je ažuriran neki red
-        if cursor.rowcount == 0:
-            return {"success": False, "message": "Discussion not found"}, 404
+        # Preuzimanje reakcije korisnika (ako postoji)
+        cursor.execute("""
+            SELECT reaction_type FROM reactions
+            WHERE discussion_id = %s AND user_id = %s
+        """, (discussionId, userId))
+       
+        print("KORISNIK ID: ")
+        print(userId)
+       
+        result = cursor.fetchone()
+       
+        print("KORISNIK")
+        print(result)
+        user_reaction = result[0] if result else 'none'  # Ako nema reakcije, postavi 'none'
 
-        return {"success": True, "message": "Discussion updated successfully"}, 200
+        return {
+            'likes': likes,
+            'dislikes': dislikes,
+            'user_reaction': user_reaction
+        }
+
     except Exception as e:
-        connection.rollback()
-        return {"success": False, "message": str(e)}, 500
+        return {"error": f"Error fetching reactions for discussion {discussionId}: {str(e)}"}, 500
     finally:
         cursor.close()
         connection.close()
+
+def get_user_id_from_username(username):
+    try:
+        connection = get_db_connection() 
+        cursor = connection.cursor(dictionary=True)
+        
+        cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
+        result = cursor.fetchone()
+        
+        if result:
+            return result['id']
+        else:
+            return None
+    except Exception as e:
+        print(f"Error fetching user ID: {e}")
+        return None
+    finally:
+        if connection:
+            connection.close()
+
+def process_reaction(discussion_id, user_id, reaction_type):
+    try:
+        print("Izmjena reakcija")
+        print(reaction_type)
+        print(discussion_id)
+        print(user_id)
+        
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        
+        cursor.execute("""
+            SELECT reaction_type 
+            FROM reactions 
+            WHERE discussion_id = %s AND user_id = %s;
+        """, (discussion_id, user_id))
+
+        result = cursor.fetchone()
+        print(result)
+        if result:
+            existing_reaction = result['reaction_type'] 
+            print(existing_reaction)
+                # ako je like/dislike vec bio prisutan obrisi ga
+            if existing_reaction == reaction_type:
+                cursor.execute("""
+                    DELETE FROM reactions 
+                    WHERE discussion_id = %s AND user_id = %s;
+                """, (discussion_id, user_id))
+                print("Uspjesno")
+            else:
+                # ako je promjenjena reakcija azuriraj je
+                cursor.execute("""
+                    UPDATE reactions 
+                    SET reaction_type = %s 
+                    WHERE discussion_id = %s AND user_id = %s;
+                """, (reaction_type, discussion_id, user_id))
+                print("Uspjesno")
+        else:
+            # ako nema reakcije, dodaj novu
+            print("Nema reakcija")
+            cursor.execute("""
+                INSERT INTO reactions (discussion_id, user_id, reaction_type) 
+                VALUES (%s, %s, %s);
+            """, (discussion_id, user_id, reaction_type))
+        
+        connection.commit()
+        print("OVO OK")
+        # izračunaj broj lajkova i dislajkova za diskusiju
+        cursor.execute("""
+            SELECT 
+                SUM(CASE WHEN reaction_type = 'like' THEN 1 ELSE 0 END) AS likes,
+                SUM(CASE WHEN reaction_type = 'dislike' THEN 1 ELSE 0 END) AS dislikes
+            FROM reactions
+            WHERE discussion_id = %s;
+        """, (discussion_id,))
+        print("OVO e")
+        counts = cursor.fetchone()
+        print(counts)
+        likes, dislikes = counts['likes'] or 0, counts['dislikes'] or 0
+
+        return {'likes': likes, 'dislikes': dislikes}
+
+    except Exception as e:
+        print(f"Error processing reaction: {e}")
+        return {'likes': 0, 'dislikes': 0}
+
+    finally:
+        if connection:
+            connection.close()
+
 
 def get_all_discussions():
     try:

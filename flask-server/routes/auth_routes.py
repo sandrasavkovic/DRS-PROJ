@@ -24,7 +24,7 @@ def login():
                 "user": {
                     "name": user_dto.name,
                     "is_admin": user_dto.is_admin,
-                    "username" : user_dto.username
+                    "username" : user_dto.username,
                 },
                 "access_token": access_token
             })

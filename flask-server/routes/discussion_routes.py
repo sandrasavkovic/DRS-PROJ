@@ -1,23 +1,61 @@
 from flask import Flask, jsonify, request, Blueprint
-from services.discussionService import get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, delete_discussion_by_id_service, get_all_discussions, like_discussion, dislike_discussion
+from services.discussionService import get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, get_discussion_reactions, delete_discussion_by_id_service, get_all_discussions, process_reaction, get_user_id_from_username
 
 discussion_routes = Blueprint("discussion_routes", __name__)
 
-@discussion_routes.route('/likeDiscussion/<int:discussionId>', methods=['POST'])
-def likeDiscussion(discussionId):
+@discussion_routes.route('/fetchReactions', methods=['POST'])
+def fetch_reactions():
+    data = request.get_json()
+    discussion_id = data.get('discussionId')
+    user_id = data.get('userId')
+   
+    reactions = get_discussion_reactions(discussion_id, user_id)
+    return jsonify(reactions)
+
+
+@discussion_routes.route('/getUserId/<username>', methods=['GET'])
+def get_user_id_by_username(username):
     try:
-        poruka = like_discussion(discussionId)
-        return jsonify(poruka), 200
+        user_id = get_user_id_from_username(username) 
+        if user_id is not None:
+            return jsonify({'userId': user_id}), 200
+        else:
+            return jsonify({'error': 'User not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@discussion_routes.route('/dislikeDiscussion/<int:discussionId>', methods=['POST'])
-def dislikeDiscussion(discussionId):
+@discussion_routes.route('/react', methods=['POST'])
+def react_to_discussion():
     try:
-        poruka = dislike_discussion(discussionId)
-        return jsonify(poruka), 200
+        data = request.get_json()
+        discussion_id = data.get('discussionId')
+        user_id = data.get('userId')
+        reaction_type = data.get('reactionType')
+
+        if not all([discussion_id, user_id, reaction_type]):
+            return jsonify({'error': 'Missing required fields'}), 400
+
+        response = process_reaction(discussion_id, user_id, reaction_type)
+        return jsonify(response), 200
+   
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+# @discussion_routes.route('/likeDiscussion/<int:discussionId>', methods=['POST'])
+# def likeDiscussion(discussionId):
+#     try:
+#         poruka = like_discussion(discussionId)
+#         return jsonify(poruka), 200
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+# @discussion_routes.route('/dislikeDiscussion/<int:discussionId>', methods=['POST'])
+# def dislikeDiscussion(discussionId):
+#     try:
+#         poruka = dislike_discussion(discussionId)
+#         return jsonify(poruka), 200
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
 
 @discussion_routes.route('/getAllDiscussions', methods=['GET'])

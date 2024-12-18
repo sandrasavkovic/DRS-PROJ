@@ -5,7 +5,7 @@ import DiscussionAction from './DiscussionAction';
 
 // Ovdje se definise izgled pojedinacne diskusije, handle edit, delete
 
-const DiscussionDisplay = ({ discussion }) => {
+const DiscussionDisplay = ({ discussion, userId }) => {
   const [isEditDiscussionModalOpen, setEditDiscussionModalOpen] = useState(false);
   const [editDiscussion, setEditDiscussion] = useState(null);
 
@@ -73,7 +73,10 @@ const DiscussionDisplay = ({ discussion }) => {
         </div>
         <div className="card-footer d-flex justify-content-between">
           {/* Displaying DiscussionAction component */}
-          <DiscussionAction discussion={discussion.id} /> {/* Here, we show like, dislike, comment buttons */}
+          <DiscussionAction 
+            discussionId={discussion.id} 
+            userId={userId}
+          />
           <div>
             {discussion.username === loggedUser && (
               <button
