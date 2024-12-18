@@ -74,7 +74,7 @@ CREATE TABLE `discussions` (
 
 LOCK TABLES `discussions` WRITE;
 /*!40000 ALTER TABLE `discussions` DISABLE KEYS */;
-INSERT INTO `discussions` VALUES (1,'diskusija1','Sadržaj diskusije1',11,1,'2024-12-14 19:47:38'),(2,'diskusija2','Sadržaj diskusije2',12,2,'2024-12-14 19:47:38'),(3,'Tema 3','popppp',11,3,'2024-12-14 19:47:38'),(5,'Tema 2','nova diskusija',11,3,'2024-12-14 19:47:38'),(8,'Tema 3','moja nova diskusija',12,3,'2024-12-14 19:52:31');
+INSERT INTO `discussions` VALUES (1,'diskusija1','Sadržaj diskusije1',11,1,'2024-12-14 19:47:38'),(2,'diskusija2','Sadržaj diskusije2',12,2,'2024-12-14 19:47:38'),(3,'Tema 3','popppp',11,3,'2024-12-14 19:47:38'),(4,'Tema 1','ws',11,4,'2024-12-14 19:59:36'),(5,'Tema 2','nova diskusija',11,3,'2024-12-14 19:47:38'),(8,'Tema 3','moja nova diskusija',12,3,'2024-12-14 19:52:31');
 /*!40000 ALTER TABLE `discussions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -106,36 +106,6 @@ CREATE TABLE `messages` (
 LOCK TABLES `messages` WRITE;
 /*!40000 ALTER TABLE `messages` DISABLE KEYS */;
 /*!40000 ALTER TABLE `messages` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `reactions`
---
-
-DROP TABLE IF EXISTS `reactions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `reactions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `discussion_id` int NOT NULL,
-  `reaction_type` enum('like','dislike') NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `discussion_id` (`discussion_id`),
-  CONSTRAINT `reactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `reactions_ibfk_2` FOREIGN KEY (`discussion_id`) REFERENCES `discussions` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `reactions`
---
-
-LOCK TABLES `reactions` WRITE;
-/*!40000 ALTER TABLE `reactions` DISABLE KEYS */;
-INSERT INTO `reactions` VALUES (6,11,3,'like'),(7,11,5,'dislike'),(30,11,2,'like'),(36,11,1,'like'),(38,11,8,'dislike');
-/*!40000 ALTER TABLE `reactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -210,4 +180,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-18 19:35:10
+-- Dump completed on 2024-12-16 18:37:32

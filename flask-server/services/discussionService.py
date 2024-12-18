@@ -153,6 +153,8 @@ def process_reaction(discussion_id, user_id, reaction_type):
         print(reaction_type)
         print(discussion_id)
         print(user_id)
+
+        reakcija = None
         
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
@@ -183,6 +185,7 @@ def process_reaction(discussion_id, user_id, reaction_type):
                     WHERE discussion_id = %s AND user_id = %s;
                 """, (reaction_type, discussion_id, user_id))
                 print("Uspjesno")
+                reakcija = reaction_type
         else:
             # ako nema reakcije, dodaj novu
             print("Nema reakcija")
@@ -190,7 +193,7 @@ def process_reaction(discussion_id, user_id, reaction_type):
                 INSERT INTO reactions (discussion_id, user_id, reaction_type) 
                 VALUES (%s, %s, %s);
             """, (discussion_id, user_id, reaction_type))
-        
+            reakcija = reaction_type
         connection.commit()
         print("OVO OK")
         # izračunaj broj lajkova i dislajkova za diskusiju
@@ -206,7 +209,7 @@ def process_reaction(discussion_id, user_id, reaction_type):
         print(counts)
         likes, dislikes = counts['likes'] or 0, counts['dislikes'] or 0
 
-        return {'likes': likes, 'dislikes': dislikes}
+        return {'likes': likes, 'dislikes': dislikes, 'user_reaction': reakcija}
 
     except Exception as e:
         print(f"Error processing reaction: {e}")
