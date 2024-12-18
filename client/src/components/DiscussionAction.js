@@ -4,7 +4,8 @@ import {
   fetchDiscussionReactions,
   fetchDiscussionComments,
   postComment,
-  getUserIdByUsername
+  getUserIdByUsername,
+  deleteComment
 } from '../services/discussionService';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -88,6 +89,7 @@ const DiscussionAction = ({ discussionId, userId }) => {
     if (window.confirm('Are you sure you want to delete this comment?')) {
       // Call the service to delete the comment (you need to implement this in your service)
       // deleteComment(discussionId, commentId)
+      deleteComment(commentId)
       //   .then(() => {
       //     setComments(comments.filter((comment) => comment.id !== commentId));
       //   })

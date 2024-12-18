@@ -78,6 +78,28 @@ export const postComment = (discussionId, userId, newComment) => {
 };
 
 
+export const deleteComment = (commentId) =>
+{
+  console.log("BRISEM KOMENTAR SA ID-EM", commentId)
+  return fetch(`/discussion/deleteComment`, {
+    method: "POST", 
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({commentId }), 
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error deleting comment:", error);
+      throw error;
+    });
+}
+
 // u bazi je id pa pomocu username pronalazimo id!
 export const getUserIdByUsername = (username) => {
   return fetch(`/discussion/getUserId/${username}`, {

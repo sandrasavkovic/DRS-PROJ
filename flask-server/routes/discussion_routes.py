@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, Blueprint
-from services.discussionService import get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, get_discussion_reactions, delete_discussion_by_id_service, get_all_discussions, process_reaction, get_user_id_from_username, get_discussion_comments, post_new_comment
+from services.discussionService import get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, get_discussion_reactions, delete_discussion_by_id_service, get_all_discussions, process_reaction, get_user_id_from_username, get_discussion_comments, post_new_comment, delete_comment_service
 
 discussion_routes = Blueprint("discussion_routes", __name__)
 
@@ -13,6 +13,7 @@ def fetch_reactions():
     return jsonify(reactions)
 
 
+# za komentare
 @discussion_routes.route('/fetchComments', methods=['POST'])
 def fetch_comments():
     data = request.get_json()
@@ -31,6 +32,15 @@ def post_comment():
     user_id = data.get('userId')
     response = post_new_comment(discussion_id, newComment, user_id)
     return jsonify(response)
+
+@discussion_routes.route('/deleteComment', methods=['POST'])
+def delete_comment():
+    print("U RUTI ZA DELETE!")
+    data = request.get_json()
+    comment_id = data.get('commentId')
+    response = delete_comment_service(comment_id)
+    return jsonify(response)
+
 
 
 

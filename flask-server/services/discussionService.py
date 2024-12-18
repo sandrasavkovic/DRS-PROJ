@@ -127,7 +127,41 @@ def post_new_comment(discussion_id, new_comment, user_id):
         cursor.close()
         connection.close()
 
+def delete_comment_service(comment_id):
+    print("U SERVISU SAM ZA BRISANJE : %s", comment_id)
+    try:
+        # Convert comment_id to an integer, ensuring it's in the correct format
+        try:
+            comment_id = int(comment_id)
+        except ValueError:
+            return {"success": False, "message": "Invalid comment ID format"}, 400
 
+        connection = get_db_connection()  # Establish connection to the database
+        cursor = connection.cursor(dictionary=True)
+
+        # Check if the comment exists
+        cursor.execute('SELECT * FROM comments WHERE id = %s', (comment_id,))
+        comment = cursor.fetchone()  # Fetch the comment
+        
+        if not comment:
+            return {"success": False, "message": "Comment not found"}, 404
+
+        # Proceed with deleting the comment
+        cursor.execute('DELETE FROM comments WHERE id = %s', (comment_id,))
+        connection.commit()  # Commit the deletion
+
+        return {"success": True, "message": "Comment deleted successfully"}, 200
+
+    except Exception as e:
+        # In case of an error, return the error message
+        return {"success": False, "message": str(e)}, 500
+
+    finally:
+        # Ensure that the cursor and connection are properly closed
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
 
 
 def get_user_id_from_username(username):
