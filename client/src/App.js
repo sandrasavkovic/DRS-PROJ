@@ -103,7 +103,7 @@ function App() {
   const handleLogout = () => {
     sessionStorage.removeItem("access_token");
     sessionStorage.removeItem("isAdmin");
-    sessionStorage.removeItem("userName");
+    sessionStorage.removeItem("user_ame");
     navigate("/login");
   };
 

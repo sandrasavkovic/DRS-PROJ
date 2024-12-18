@@ -41,6 +41,8 @@ def get_user_id_by_username(username):
     try:
         user_id = get_user_id_from_username(username) 
         if user_id is not None:
+        #    print("@@@@@@@@@@@@@@@@@@@@@@@")
+         #   print(user_id)
             return jsonify({'userId': user_id}), 200
         else:
             return jsonify({'error': 'User not found'}), 404

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAllDiscussions } from "../services/discussionService";
 import DiscussionDisplay from './DiscussionDisplay'; // Import the new DiscussionDisplay component
-
 // Ovdje se samo filtriraju sve diskusije!
 
 const Discussions = ({ userId }) => {
@@ -11,13 +10,16 @@ const Discussions = ({ userId }) => {
     searchValue: '',
   });
 
+
   useEffect(() => {
+  
     fetchAllDiscussions()
       .then((response) => {
         setDiscussions(response.data);
       })
       .catch((error) => console.error('Error fetching discussions:', error));
-  }, []);
+  }, []); // This will run once when the component mounts
+
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -92,7 +94,7 @@ const Discussions = ({ userId }) => {
             <DiscussionDisplay 
             key={discussion.id} 
             discussion={discussion} 
-            userId={userId} // Prosleđivanje userId kao prop
+            userId={discussion.user_id} // Prosleđivanje userId kao prop
           />
           ))
         ) : (

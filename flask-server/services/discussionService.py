@@ -61,11 +61,12 @@ def get_discussion_comments(discussionId):
         cursor = connection.cursor()
 
         query = """
-            SELECT comments.id, comments.content, comments.datetime, users.username
-            FROM comments
+             SELECT comments.id, comments.content, comments.datetime, comments.user_id, users.username
+             FROM comments
             JOIN users ON comments.user_id = users.id
-            WHERE comments.discussion_id = %s;
-        """
+             WHERE comments.discussion_id = %s;
+            """
+
         cursor.execute(query, (discussionId,))
         result = cursor.fetchall()
 
@@ -75,7 +76,8 @@ def get_discussion_comments(discussionId):
                 "id": row[0],
                 "content": row[1],
                 "datetime": row[2],
-                "username": row[3]
+                "username": row[4],
+                "user_id" : row[3]
             }
             for row in result
         ]
@@ -259,7 +261,8 @@ def get_all_discussions():
                 'post_time': discussion['datetime'], #myb nam ne treba ovo post time al eto nek se nadje
                 'name': discussion['name'],
                 'surname': discussion['last_name'],
-                'email': discussion['email']
+                'email': discussion['email'],
+                'user_id' : discussion['user_id']
             }
             for discussion in discussions
         ]
