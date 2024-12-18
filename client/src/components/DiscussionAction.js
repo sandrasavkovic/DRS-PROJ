@@ -13,6 +13,7 @@ const DiscussionAction = ({ discussionId, userId }) => {
       .then((data) => {
         setLikesCount(data.likes);
         setDislikesCount(data.dislikes);
+        console.log(data.user_reaction);
         setUserReaction(data.user_reaction);  // Postavljanje početne reakcije
       })
       .catch((error) => {
@@ -20,19 +21,23 @@ const DiscussionAction = ({ discussionId, userId }) => {
       });
   }, [discussionId, userId]);
 
-  const handleReaction = (reactionType) => {
-    const newReaction = reactionType === userReaction ? 'none' : reactionType;
+  useEffect(() => {
+    console.log('User reaction changed to:', userReaction);
+  }, [userReaction]);
 
+  const handleReaction = (reactionType) => {
     if (userId) {
-      reactToDiscussion(discussionId, userId, newReaction)
+      console.log(reactionType)
+      reactToDiscussion(discussionId, userId, reactionType)
         .then((data) => {
           setLikesCount(data.likes);
           setDislikesCount(data.dislikes);
+          console.log(data.user_reaction);
           setUserReaction(data.user_reaction); // Ažuriraj reakciju korisnika nakon promene
         })
         .catch((error) => {
-          console.error(`Error reacting to discussion: ${newReaction}`, error);
-          alert(`Failed to ${newReaction} discussion.`);
+          console.error(`Error reacting to discussion: ${reactionType}`, error);
+          alert(`Failed to ${reactionType} discussion.`);
         });
     } else {
       console.error('User ID is not available');
@@ -44,20 +49,18 @@ const DiscussionAction = ({ discussionId, userId }) => {
     <div>
       <button
         onClick={() => handleReaction('like')}
-        className={`btn btn-sm ${userReaction === 'like' ? 'btn-primary' : 'btn-outline-primary'}`}
-        aria-pressed={userReaction === 'like' ? 'true' : 'false'}
+        className="btn btn-primary" // Bootstrap blue button
       >
         <i className="fa fa-thumbs-up"></i> Like
-        {userReaction === 'like' && <span>({likesCount})</span>}
+        <span>({likesCount})</span>
       </button>
 
       <button
         onClick={() => handleReaction('dislike')}
-        className={`btn btn-sm ${userReaction === 'dislike' ? 'btn-danger' : 'btn-outline-danger'}`}
-        aria-pressed={userReaction === 'dislike' ? 'true' : 'false'}
+        className="btn btn-danger" // Bootstrap red button
       >
         <i className="fa fa-thumbs-down"></i> Dislike
-        {userReaction === 'dislike' && <span>({dislikesCount})</span>}
+        <span>({dislikesCount})</span>
       </button>
 
       <button onClick={() => console.log('Commented on:', discussionId)}>Comment</button>
