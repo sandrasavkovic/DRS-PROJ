@@ -1,7 +1,24 @@
 from flask import Flask, jsonify, request, Blueprint
-from services.discussionService import get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, delete_discussion_by_id_service, get_all_discussions
+from services.discussionService import get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, delete_discussion_by_id_service, get_all_discussions, like_discussion, dislike_discussion
 
 discussion_routes = Blueprint("discussion_routes", __name__)
+
+@discussion_routes.route('/likeDiscussion/<int:discussionId>', methods=['POST'])
+def likeDiscussion(discussionId):
+    try:
+        poruka = like_discussion(discussionId)
+        return jsonify(poruka), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@discussion_routes.route('/dislikeDiscussion/<int:discussionId>', methods=['POST'])
+def dislikeDiscussion(discussionId):
+    try:
+        poruka = dislike_discussion(discussionId)
+        return jsonify(poruka), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @discussion_routes.route('/getAllDiscussions', methods=['GET'])
 def getAllDiscussions():

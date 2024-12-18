@@ -3,6 +3,40 @@ from db import get_db_connection
 from services.themeService import get_current_user_id;
 from models.Discussion import DiscussionDTO
 
+def like_discussion(id):
+    print("Like discussion with ID:", id)
+    try:
+        id = int(id)
+    except ValueError:
+        return {"success": False, "message": "Invalid ID format"}, 400
+    
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Ažuriramo samo polje Emotion
+        cursor.execute("""
+            UPDATE discussions
+            SET title = %s, 
+                content = %s,
+                datetime = NOW()
+            WHERE id = %s
+        """, (updated_discussion_data['title'], updated_discussion_data['content'], id))
+
+        connection.commit()
+
+        # Proveravamo da li je ažuriran neki red
+        if cursor.rowcount == 0:
+            return {"success": False, "message": "Discussion not found"}, 404
+
+        return {"success": True, "message": "Discussion updated successfully"}, 200
+    except Exception as e:
+        connection.rollback()
+        return {"success": False, "message": str(e)}, 500
+    finally:
+        cursor.close()
+        connection.close()
+
 def get_all_discussions():
     try:
         print("DISKUSIJE GET")

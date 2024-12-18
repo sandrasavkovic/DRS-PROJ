@@ -1,17 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { reactToDiscussion, getDiscussionReactions } from '../services/discussionService';
 
-// ovdje je handle like, dislike i comment za pojedinacu diskusiju
+const DiscussionAction = ({ discussionId, userId }) => {
+  const [likesCount, setLikesCount] = useState(0);
+  const [dislikesCount, setDislikesCount] = useState(0);
 
-const DiscussionAction = ({ discussion }) => {
-  const handleLike = () => console.log('Liked:', discussion.id);
-  const handleDislike = () => console.log('Disliked:', discussion.id);
-  const handleComment = () => console.log('Commented on:', discussion.id);
+  useEffect(() => {
+    getDiscussionReactions(discussionId)
+      .then((data) => {
+        setLikesCount(data.likes);
+        setDislikesCount(data.dislikes);
+      })
+      .catch((error) => console.error('Error fetching reactions:', error));
+  }, [discussionId]);
+
+  const handleReaction = (reactionType) => {
+    reactToDiscussion(discussionId, userId, reactionType)
+      .then((data) => {
+        setLikesCount(data.likes);
+        setDislikesCount(data.dislikes);
+      })
+      .catch((error) => {
+        console.error(`Error reacting to discussion: ${reactionType}`, error);
+        alert(`Failed to ${reactionType} discussion.`);
+      });
+  };
 
   return (
     <div>
-      <button onClick={handleLike}>Like</button>
-      <button onClick={handleDislike}>Dislike</button>
-      <button onClick={handleComment}>Comment</button>
+      <button onClick={() => handleReaction('like')}>
+        Like <span>({likesCount})</span>
+      </button>
+      <button onClick={() => handleReaction('dislike')}>
+        Dislike <span>({dislikesCount})</span>
+      </button>
+      <button onClick={() => console.log('Commented on:', discussionId)}>Comment</button>
     </div>
   );
 };

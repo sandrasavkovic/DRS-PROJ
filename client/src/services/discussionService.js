@@ -22,3 +22,23 @@ export const fetchAllDiscussions = () => {
         throw error;
       });
   };
+
+  export const likeDiscussion = (discussionId) => {
+    return fetch(`/discussion/likeDiscussion/${discussionId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ discussionId }), 
+    }).then((res) => res.json());  
+  };
+
+  export const dislikeDiscussion = (discussionId) => {
+    return fetch(`/discussion/dislikeDiscussion/${discussionId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ discussionId }), 
+    }).then((res) => res.json());  
+  };

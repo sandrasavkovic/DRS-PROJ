@@ -73,7 +73,7 @@ const DiscussionDisplay = ({ discussion }) => {
         </div>
         <div className="card-footer d-flex justify-content-between">
           {/* Displaying DiscussionAction component */}
-          <DiscussionAction discussion={discussion} /> {/* Here, we show like, dislike, comment buttons */}
+          <DiscussionAction discussion={discussion.id} /> {/* Here, we show like, dislike, comment buttons */}
           <div>
             {discussion.username === loggedUser && (
               <button
