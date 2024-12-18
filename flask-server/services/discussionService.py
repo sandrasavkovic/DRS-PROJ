@@ -53,6 +53,81 @@ def get_discussion_reactions(discussionId, userId):
         cursor.close()
         connection.close()
 
+# za komentare
+def get_discussion_comments(discussionId):
+    try:
+        print("U SERVISU ZA KOMENTARE")
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        query = """
+            SELECT comments.id, comments.content, comments.datetime, users.username
+            FROM comments
+            JOIN users ON comments.user_id = users.id
+            WHERE comments.discussion_id = %s;
+        """
+        cursor.execute(query, (discussionId,))
+        result = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries for easy handling in the frontend
+        comments = [
+            {
+                "id": row[0],
+                "content": row[1],
+                "datetime": row[2],
+                "username": row[3]
+            }
+            for row in result
+        ]
+
+        return comments
+
+    except Exception as e:
+        return ({"error": f"Error fetching comments: {str(e)}"}), 500
+    finally:
+        cursor.close()
+        connection.close()
+
+def post_new_comment(discussion_id, new_comment, user_id):
+    try:
+        connection = get_db_connection()  # Establish connection to the database
+        cursor = connection.cursor()
+
+        # Insert the new comment into the database
+        cursor.execute("""
+            INSERT INTO comments (discussion_id, user_id, content, datetime)
+            VALUES (%s, %s, %s, NOW())
+        """, (discussion_id, user_id, new_comment))
+
+        connection.commit()  # Commit the transaction
+
+        # Optionally, fetch the inserted comment to return it
+        cursor.execute("""
+            SELECT c.id, c.content, c.datetime, u.username
+            FROM comments c
+            JOIN users u ON c.user_id = u.id
+            WHERE c.discussion_id = %s AND c.user_id = %s
+            ORDER BY c.datetime DESC
+            LIMIT 1
+        """, (discussion_id, user_id))
+        inserted_comment = cursor.fetchone()
+
+        return {
+            "id": inserted_comment[0],
+            "content": inserted_comment[1],
+            "datetime": inserted_comment[2],
+            "username": inserted_comment[3],
+        }
+
+    except Exception as e:
+        return {"error": f"Error posting comment: {str(e)}"}, 500
+    finally:
+        cursor.close()
+        connection.close()
+
+
+
+
 def get_user_id_from_username(username):
     try:
         connection = get_db_connection() 

@@ -24,6 +24,58 @@ export const fetchDiscussionReactions = (discussionId, userId) => {
     });
 };
 
+// za komentare
+// za komentare
+export const fetchDiscussionComments = (discussionId) => {
+  console.log("DOBAVLJAM KOMENTARE ZA DISKUSIJU : ", discussionId);
+  return fetch(`/discussion/fetchComments`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ discussionId }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Reactions fetched:", data);
+      return data;
+    })
+    .catch((error) => {
+      console.error("Error fetching reactions:", error);
+      throw error;
+    });
+};
+
+
+export const postComment = (discussionId, userId, newComment) => {
+  console.log("POSTAVLJAM KOMENTARE ZA DISKUSIJU : ", discussionId)
+  console.log("KORISNIK KOJI POSTAVLJA : ", userId)
+  console.log("KOMENTAR: ", newComment)
+
+  return fetch(`/discussion/postComment`, {
+    method: "POST", 
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ discussionId, userId, newComment }), 
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error posting comment:", error);
+      throw error;
+    });
+
+};
 
 
 // u bazi je id pa pomocu username pronalazimo id!

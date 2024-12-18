@@ -358,17 +358,18 @@ const handleDeleteDiscussion = (discussionId) => {
   return (
     <div className="d-flex flex-column w-100" style={{ height: '100vh' }}>
     {/* Logout Button */}
-    <button onClick={handleLogout} className="logout-btn">
+    {/* <button onClick={handleLogout} className="logout-btn">
       Logout
-    </button>
+    </button> */}
   
-    {/* Centrirana Discussions komponenta sa 70% visine */}
-    <div className="d-flex justify-content-center align-items-start" style={{ height: '70vh' }}>
+     {/* Centrirana Discussions komponenta sa 70% visine */}
+     <div className="d-flex justify-content-center align-items-start" style={{ height: '70vh' }}>
       {/* Prosleđivanje samo userId kao prop u Discussions */}
       {userId && <Discussions userId={userId} />}
     </div>
 
-    {/* <div className="sidebar-left">
+
+     <div className="sidebar-left">
         <div className="search-bar">
           <input
             type="text"
@@ -388,12 +389,12 @@ const handleDeleteDiscussion = (discussionId) => {
             >
               <h4>{theme.id}</h4>
               <p>{theme.theme_name}</p>
-              <p>{theme.date_time}</p>
+              {/* <p>{theme.date_time}</p> */}
             </div>
           ))}
         </div>
       </div>
-       */}
+      
       
       
       {isEditDiscussionModalOpen && (
@@ -428,8 +429,8 @@ const handleDeleteDiscussion = (discussionId) => {
 
     <div className="d-flex flex-column w-100" style={{ height: '100vh' }}>
       {/* Right Sidebar */}
-      <div className="sidebar-right">
-        <div className="adding">
+      <div className="top-right-controls">
+        <div className="in_line">
         <button
           className="btn btn-info"
           onClick={openAddModal}
@@ -437,8 +438,16 @@ const handleDeleteDiscussion = (discussionId) => {
         >
         Add
         </button>
+        <button className="btn btn-info" onClick={openEditModal} style={{ margin: '1rem' }} >Edit</button>
+        {/* <FontAwesomeIcon
+          icon={faUserEdit}
+          className="edit-icon"
+          onClick={openEditModal}
+        /> */}
+      <button onClick={handleLogout} className="btn btn-secondary">
+      Logout
+    </button>
         </div>
-      
 
         {/* Add Discussion Modal */}
         {isAddModalOpen && (
@@ -494,7 +503,7 @@ const handleDeleteDiscussion = (discussionId) => {
           </div>
         </div>
       )}
-       <div className="header">
+       {/* <div className="header">
         <FontAwesomeIcon
           icon={faUserEdit}
           className="edit-icon"
@@ -505,7 +514,7 @@ const handleDeleteDiscussion = (discussionId) => {
           className="fetch-icon"
           onClick={handleFetchUserDiscussions}
         />
-       </div>
+       </div> */}
     </div>
 
     </div>
@@ -608,6 +617,7 @@ const handleDeleteDiscussion = (discussionId) => {
     </div>
   );
 };
+
 
 
 export default User;

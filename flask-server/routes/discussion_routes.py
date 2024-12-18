@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, Blueprint
-from services.discussionService import get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, get_discussion_reactions, delete_discussion_by_id_service, get_all_discussions, process_reaction, get_user_id_from_username
+from services.discussionService import get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, get_discussion_reactions, delete_discussion_by_id_service, get_all_discussions, process_reaction, get_user_id_from_username, get_discussion_comments, post_new_comment
 
 discussion_routes = Blueprint("discussion_routes", __name__)
 
@@ -11,6 +11,29 @@ def fetch_reactions():
    
     reactions = get_discussion_reactions(discussion_id, user_id)
     return jsonify(reactions)
+
+
+@discussion_routes.route('/fetchComments', methods=['POST'])
+def fetch_comments():
+    data = request.get_json()
+    discussion_id = data.get('discussionId')
+    
+   
+    reactions = get_discussion_comments(discussion_id)
+    return jsonify(reactions)
+
+
+@discussion_routes.route('/postComment', methods=['POST'])
+def post_comment():
+    data = request.get_json()
+    discussion_id = data.get('discussionId')
+    newComment = data.get('newComment')
+    user_id = data.get('userId')
+    response = post_new_comment(discussion_id, newComment, user_id)
+    return jsonify(response)
+
+
+
 
 
 @discussion_routes.route('/getUserId/<username>', methods=['GET'])
