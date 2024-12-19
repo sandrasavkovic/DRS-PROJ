@@ -10,7 +10,7 @@ import 'font-awesome/css/font-awesome.min.css';
 
 // Ovdje je def like, dislike i kom
 
-const DiscussionAction = ({ discussion, userId }) => {
+const DiscussionAction = ({ discussion, userId, role }) => {
   const [likesCount, setLikesCount] = useState(0);
   const [dislikesCount, setDislikesCount] = useState(0);
   const [userReaction, setUserReaction] = useState('none');
@@ -146,7 +146,7 @@ const DiscussionAction = ({ discussion, userId }) => {
               <p>{comment.content}</p>
             
               {/* Ako je korisnikova diskusija ili ako je njegov komentar */}
-              {( discussion.user_id === userId || userId === comment.user_id) && (
+              {( discussion.user_id === userId || userId === comment.user_id || Number(role) === 1) && (
                 <button
                   className="btn btn-danger btn-sm"
                   onClick={() => handleDeleteComment(comment.id)}>

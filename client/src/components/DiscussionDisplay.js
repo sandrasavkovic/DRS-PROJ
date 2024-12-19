@@ -80,6 +80,7 @@ const DiscussionDisplay = ({ discussion, userId }) => {
           <DiscussionAction 
             discussion={discussion} 
             userId={userId}
+            role={role}
           />
           <div>
             {discussion.username === loggedUser && (
