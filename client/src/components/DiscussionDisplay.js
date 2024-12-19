@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { updateDiscussion, getDiscussionById, deleteDiscussion } from '../services/themeService';
 import 'font-awesome/css/font-awesome.min.css';
 import DiscussionAction from './DiscussionAction'; 
@@ -11,6 +11,10 @@ const DiscussionDisplay = ({ discussion, userId }) => {
 
   const loggedUser = sessionStorage.getItem("user_name");
   const role = sessionStorage.getItem("isAdmin");
+
+  useEffect(() => {
+    console.log("diskusija se mijenja mora u uglaste zagrade")
+  }, [discussion]);
 
   const handleDeleteDiscussion = (discussionId) => {
     deleteDiscussion(discussionId)
@@ -74,7 +78,7 @@ const DiscussionDisplay = ({ discussion, userId }) => {
         <div className="card-footer d-flex justify-content-between">
           {/* Displaying DiscussionAction component */}
           <DiscussionAction 
-            discussionId={discussion.id} 
+            discussion={discussion} 
             userId={userId}
           />
           <div>

@@ -53,10 +53,7 @@ export const fetchDiscussionComments = (discussionId) => {
 
 
 export const postComment = (discussionId, userId, newComment) => {
-  console.log("POSTAVLJAM KOMENTARE ZA DISKUSIJU : ", discussionId)
-  console.log("KORISNIK KOJI POSTAVLJA : ", userId)
-  console.log("KOMENTAR: ", newComment)
-
+  
   return fetch(`/discussion/postComment`, {
     method: "POST", 
     headers: {
@@ -80,7 +77,6 @@ export const postComment = (discussionId, userId, newComment) => {
 
 export const deleteComment = (commentId) =>
 {
-  console.log("BRISEM KOMENTAR SA ID-EM", commentId)
   return fetch(`/discussion/deleteComment`, {
     method: "POST", 
     headers: {

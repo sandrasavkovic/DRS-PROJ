@@ -4,9 +4,11 @@ from services.themeService import get_current_user_id;
 from models.Discussion import DiscussionDTO
 def get_discussion_reactions(discussionId, userId):
     try:
-        print("HELLOOOO")
         connection = get_db_connection()
         cursor = connection.cursor()
+
+        print("Korisnik ID IZ rekacije zahtjeva: ")
+        print(userId)
 
         # Preuzimanje broja lajkova
         cursor.execute("""
@@ -15,8 +17,7 @@ def get_discussion_reactions(discussionId, userId):
         """, (discussionId,))
         result = cursor.fetchone()
         likes = result[0] if result else 0  # Ako je rezultat None, postavi 0
-        print(likes)
-
+        
         # Preuzimanje broja dislajkova
         cursor.execute("""
             SELECT COUNT(*) FROM reactions
@@ -24,21 +25,15 @@ def get_discussion_reactions(discussionId, userId):
         """, (discussionId,))
         result = cursor.fetchone()
         dislikes = result[0] if result else 0 
-        print(dislikes)
-
+    
         # Preuzimanje reakcije korisnika (ako postoji)
         cursor.execute("""
             SELECT reaction_type FROM reactions
             WHERE discussion_id = %s AND user_id = %s
         """, (discussionId, userId))
        
-        print("KORISNIK ID: ")
-        print(userId)
-       
         result = cursor.fetchone()
        
-        print("KORISNIK")
-        print(result)
         user_reaction = result[0] if result else 'none'  # Ako nema reakcije, postavi 'none'
 
         return {
@@ -92,18 +87,16 @@ def get_discussion_comments(discussionId):
 
 def post_new_comment(discussion_id, new_comment, user_id):
     try:
-        connection = get_db_connection()  # Establish connection to the database
+        connection = get_db_connection()  
         cursor = connection.cursor()
 
-        # Insert the new comment into the database
         cursor.execute("""
             INSERT INTO comments (discussion_id, user_id, content, datetime)
             VALUES (%s, %s, %s, NOW())
         """, (discussion_id, user_id, new_comment))
 
-        connection.commit()  # Commit the transaction
+        connection.commit() 
 
-        # Optionally, fetch the inserted comment to return it
         cursor.execute("""
             SELECT c.id, c.content, c.datetime, u.username
             FROM comments c
@@ -119,6 +112,7 @@ def post_new_comment(discussion_id, new_comment, user_id):
             "content": inserted_comment[1],
             "datetime": inserted_comment[2],
             "username": inserted_comment[3],
+            "user_id" : user_id, # treba da za novi kom doda delete dugme
         }
 
     except Exception as e:
@@ -128,36 +122,30 @@ def post_new_comment(discussion_id, new_comment, user_id):
         connection.close()
 
 def delete_comment_service(comment_id):
-    print("U SERVISU SAM ZA BRISANJE : %s", comment_id)
     try:
-        # Convert comment_id to an integer, ensuring it's in the correct format
         try:
             comment_id = int(comment_id)
         except ValueError:
             return {"success": False, "message": "Invalid comment ID format"}, 400
 
-        connection = get_db_connection()  # Establish connection to the database
+        connection = get_db_connection()  
         cursor = connection.cursor(dictionary=True)
 
-        # Check if the comment exists
         cursor.execute('SELECT * FROM comments WHERE id = %s', (comment_id,))
-        comment = cursor.fetchone()  # Fetch the comment
+        comment = cursor.fetchone()
         
         if not comment:
             return {"success": False, "message": "Comment not found"}, 404
 
-        # Proceed with deleting the comment
         cursor.execute('DELETE FROM comments WHERE id = %s', (comment_id,))
-        connection.commit()  # Commit the deletion
+        connection.commit() 
 
         return {"success": True, "message": "Comment deleted successfully"}, 200
 
     except Exception as e:
-        # In case of an error, return the error message
         return {"success": False, "message": str(e)}, 500
 
     finally:
-        # Ensure that the cursor and connection are properly closed
         if cursor:
             cursor.close()
         if connection:
@@ -168,10 +156,10 @@ def get_user_id_from_username(username):
     try:
         connection = get_db_connection() 
         cursor = connection.cursor(dictionary=True)
-        
+        print(username)
         cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
         result = cursor.fetchone()
-        
+        print(result['id'])
         if result:
             return result['id']
         else:
