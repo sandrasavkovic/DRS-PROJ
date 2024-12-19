@@ -70,10 +70,13 @@ const DiscussionAction = ({ discussion, userId }) => {
       alert('Comment cannot be empty!');
       return;
     }
-
-    postComment(discussion.id, userId, newComment)
+  
+    // Detect mentions using regex (e.g., @username)
+    const mentionPattern = /@(\w+)/g;
+    const mentions = [...newComment.matchAll(mentionPattern)].map(match => match[1]);
+  
+    postComment(discussion.id, userId, newComment, mentions)
       .then((data) => {
-        console.log(data)
         setComments((prev) => [...prev, data]);
         setNewComment('');
       })

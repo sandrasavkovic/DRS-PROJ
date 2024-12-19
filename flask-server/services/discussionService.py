@@ -2,6 +2,8 @@ from app_init import socketio
 from db import get_db_connection
 from services.themeService import get_current_user_id;
 from models.Discussion import DiscussionDTO
+from utils.email_utils import send_email
+
 def get_discussion_reactions(discussionId, userId):
     try:
         connection = get_db_connection()
@@ -85,18 +87,19 @@ def get_discussion_comments(discussionId):
         cursor.close()
         connection.close()
 
-def post_new_comment(discussion_id, new_comment, user_id):
+def post_new_comment(discussion_id, new_comment, user_id, mentions):
     try:
-        connection = get_db_connection()  
+        connection = get_db_connection()
         cursor = connection.cursor()
 
+        # Insert comment into the database
         cursor.execute("""
             INSERT INTO comments (discussion_id, user_id, content, datetime)
             VALUES (%s, %s, %s, NOW())
         """, (discussion_id, user_id, new_comment))
+        connection.commit()
 
-        connection.commit() 
-
+        # Fetch the inserted comment
         cursor.execute("""
             SELECT c.id, c.content, c.datetime, u.username
             FROM comments c
@@ -106,13 +109,30 @@ def post_new_comment(discussion_id, new_comment, user_id):
             LIMIT 1
         """, (discussion_id, user_id))
         inserted_comment = cursor.fetchone()
+        
+        # Notify mentioned users (optional logic)
+        if mentions:
+            print("MENTIONS POSTOJI")
+            for username in mentions:
+                cursor.execute("""
+                    SELECT * FROM users WHERE username = %s
+                """, (username,))
+                mentioned_user = cursor.fetchone()
+                print(mentioned_user)
+                if mentioned_user:
+                    print(f"User {username} (ID: {mentioned_user[0]}) was mentioned.")  # Replace with notification logic
+                    subject = "Neko Vas je pomenuo u komentaru!"
+                    body = f"Poštovani {mentioned_user[1]},\n\n Pomenuti ste u komentaru od strane {inserted_comment[3]}!"
+                    send_email(subject, mentioned_user[9], body) 
+
+
 
         return {
             "id": inserted_comment[0],
             "content": inserted_comment[1],
             "datetime": inserted_comment[2],
             "username": inserted_comment[3],
-            "user_id" : user_id, # treba da za novi kom doda delete dugme
+            "user_id": user_id,
         }
 
     except Exception as e:
@@ -120,6 +140,7 @@ def post_new_comment(discussion_id, new_comment, user_id):
     finally:
         cursor.close()
         connection.close()
+
 
 def delete_comment_service(comment_id):
     try:

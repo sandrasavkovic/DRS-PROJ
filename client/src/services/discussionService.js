@@ -52,26 +52,24 @@ export const fetchDiscussionComments = (discussionId) => {
 };
 
 
-export const postComment = (discussionId, userId, newComment) => {
-  
-  return fetch(`/discussion/postComment`, {
-    method: "POST", 
+export const postComment = (discussionId, userId, newComment, mentions) => {
+  return fetch('/discussion/postComment', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ discussionId, userId, newComment }), 
+    body: JSON.stringify({ discussionId, userId, newComment, mentions }), // Pass mentions here
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error('Network response was not ok');
       }
       return response.json();
     })
     .catch((error) => {
-      console.error("Error posting comment:", error);
+      console.error('Error posting comment:', error);
       throw error;
     });
-
 };
 
 

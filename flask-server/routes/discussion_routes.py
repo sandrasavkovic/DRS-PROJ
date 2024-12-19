@@ -28,9 +28,12 @@ def fetch_comments():
 def post_comment():
     data = request.get_json()
     discussion_id = data.get('discussionId')
-    newComment = data.get('newComment')
+    new_comment = data.get('newComment')
     user_id = data.get('userId')
-    response = post_new_comment(discussion_id, newComment, user_id)
+    mentions = data.get('mentions')  # Retrieve mentions from the request
+
+    # Pass mentions to the service
+    response = post_new_comment(discussion_id, new_comment, user_id, mentions)
     return jsonify(response)
 
 @discussion_routes.route('/deleteComment', methods=['POST'])
