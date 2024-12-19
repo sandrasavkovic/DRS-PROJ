@@ -120,10 +120,11 @@ def post_new_comment(discussion_id, new_comment, user_id, mentions):
                 mentioned_user = cursor.fetchone()
                 print(mentioned_user)
                 if mentioned_user:
-                    print(f"User {username} (ID: {mentioned_user[0]}) was mentioned.")  # Replace with notification logic
-                    subject = "Neko Vas je pomenuo u komentaru!"
-                    body = f"Poštovani {mentioned_user[1]},\n\n Pomenuti ste u komentaru od strane {inserted_comment[3]}!"
-                    send_email(subject, mentioned_user[9], body) 
+                    if(mentioned_user[0] != user_id):
+                        print(f"User {username} (ID: {mentioned_user[0]}) was mentioned.")  # Replace with notification logic
+                        subject = "Neko Vas je pomenuo u komentaru!"
+                        body = f"Poštovani {mentioned_user[1]},\n\n Pomenuti ste u komentaru od strane {inserted_comment[3]}!"
+                        send_email(subject, mentioned_user[9], body) 
 
 
 
