@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, Blueprint
-from services.discussionService import get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, get_discussion_reactions, delete_discussion_by_id_service, get_all_discussions, process_reaction, get_user_id_from_username, get_discussion_comments, post_new_comment, delete_comment_service
+from services.discussionService import modify_existing_discussion, get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, get_discussion_reactions, delete_discussion_by_id_service, get_all_discussions, process_reaction, get_user_id_from_username, get_discussion_comments, post_new_comment, delete_comment_service
 
 discussion_routes = Blueprint("discussion_routes", __name__)
 
@@ -148,7 +148,7 @@ def search_discussions(theme_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@discussion_routes.route("/editDiscussion", methods=["POST"])
+@discussion_routes.route("/editDiscussion", methods=["PUT"])
 def update_discussion():
     try:
         # Extract query parameter
@@ -228,3 +228,20 @@ def delete_discussion_by_id():
         print(f"Error in get_discussions_for_user: {e}")
         return jsonify({"error": "An error occurred while fetching discussions"}), 500
     
+
+
+@discussion_routes.route('/modify_discussion/<int:discussion_id>', methods=['PUT'])
+def modify_discussion(discussion_id):
+    try:
+        data = request.get_json()
+        title = data.get('title')
+        content = data.get('content')
+
+        if not title or not content:
+            return jsonify({'error': 'Description name and description are required'}), 400
+    
+        modify_existing_discussion(discussion_id, title, content)
+        return jsonify({'message': 'Diskusija je uspešno modifikovana!'}), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500  

@@ -178,3 +178,28 @@ export const fetchAllDiscussions = () => {
     }).then((res) => res.json());  
   };
   */
+
+
+  export const modifyDiscussion = (discussionId, updatedDiscussion) => {
+    return fetch(`/discussion/modify_discussion/${discussionId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: updatedDiscussion.title,
+        content: updatedDiscussion.content, 
+        datetime: updatedDiscussion.datetime, 
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to modify discussion with id ${discussionId}`);
+        }
+        return response.json();
+      })
+      .catch((error) => {
+        console.error("Error modifying discussion:", error);
+        throw error;
+      });
+  };

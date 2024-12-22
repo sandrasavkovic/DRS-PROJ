@@ -487,4 +487,19 @@ def delete_discussion_by_id_service(id):
         cursor.close()
         connection.close()
 
-       
+def modify_existing_discussion(discussion_id, discussion_name, description):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute('UPDATE discussions SET title = %s,  content = %s, datetime = NOW() WHERE id = %s', 
+                       (discussion_name, description, discussion_id))
+        connection.commit()
+        
+    except Exception as e:
+        connection.rollback()  
+        raise Exception(f"Failed to modify discussion with id {discussion_id}: {str(e)}")  
+    
+    finally:
+        cursor.close()
+        connection.close()      
