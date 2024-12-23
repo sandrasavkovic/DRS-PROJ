@@ -62,7 +62,7 @@ function App() {
     loginUser(formData.email, formData.password)
       .then((data) => {
         if (data.success) {
-          alert("Login je uspješan!");
+          alert("Login is successful!");
           sessionStorage.setItem("access_token", data.access_token);
           sessionStorage.setItem("userName", data.user.name);
           sessionStorage.setItem("isAdmin", JSON.stringify(data.user.is_admin));
@@ -71,7 +71,7 @@ function App() {
           const redirectPath = data.user.is_admin ? "/admin" : "/user";
           navigate(redirectPath);
         } else {
-          alert("Login je neuspješan. Provjerite email i lozinku.");
+          alert("Login failed. Check your email and password.");
         }
       })
       .catch((err) => console.error("Error:", err));
@@ -91,10 +91,10 @@ function App() {
     )
       .then((data) => {
         if (data.success) {
-          alert("Registracija je uspjesna!");
+          alert("Registration is successful!");
           setIsRegistering(false);
         } else {
-          alert("Registracija nije uspjela.");
+          alert("Registration failed.");
         }
       })
       .catch((err) => console.error("Error:", err));
@@ -141,7 +141,7 @@ function App() {
 
                 <div className="text-center mt-3">
                   <button onClick={toggleForm} className="btn btn-link">
-                    {isRegistering ? "Prebaci na prijavu" : "Prebaci na registraciju"}
+                    {isRegistering ? "Switch to login" : "Switch to registation"}
                   </button>
                 </div>
               </div>

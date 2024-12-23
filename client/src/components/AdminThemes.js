@@ -8,7 +8,7 @@ const AdminThemes = () => {
 
   const handleAddTheme = () => {
     if (!themeName || !themeDescription) {
-      alert("Morate popuniti polja za ime teme i opis!");
+      alert("You must fill in the theme name and description fields!");
       return;
     }
 
@@ -35,14 +35,14 @@ const AdminThemes = () => {
 
   return (
     <div className="container mt-4">
-      <h1 className="mb-4">Teme</h1>
+      <h1 className="mb-4">Themes</h1>
 
       <div className="card p-4 shadow-sm">
-        <h2 className="mb-4">Dodajte novu temu</h2>
+        <h2 className="mb-4">Add new theme</h2>
 
         <div className="mb-3">
           <label htmlFor="themeName" className="form-label">
-            Ime teme
+            Theme name
           </label>
           <input
             type="text"
@@ -50,13 +50,13 @@ const AdminThemes = () => {
             id="themeName"
             value={themeName}
             onChange={(e) => setThemeName(e.target.value)}
-            placeholder="Unesite ime teme"
+            placeholder="Input theme name"
           />
         </div>
 
         <div className="mb-3">
           <label htmlFor="themeDescription" className="form-label">
-            Opis teme
+            Theme description
           </label>
           <textarea
             className="form-control"
@@ -64,7 +64,7 @@ const AdminThemes = () => {
             rows="4"
             value={themeDescription}
             onChange={(e) => setThemeDescription(e.target.value)}
-            placeholder="Unesite opis teme"
+            placeholder="Input theme description"
           />
         </div>
 
@@ -73,13 +73,13 @@ const AdminThemes = () => {
             className="btn btn-info"
             onClick={handleAddTheme}
           >
-            Dodaj temu
+            Add theme
           </button>
           <button
             className="btn btn-secondary"
             onClick={handleClearForm}
           >
-            Očistite formu
+            Clean form
           </button>
         </div>
       </div>

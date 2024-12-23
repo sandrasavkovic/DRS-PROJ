@@ -329,3 +329,16 @@ color: #fff !important; /* Set the text color to white and ensure it's applied *
 color: #fff !important; /* Keep white text on hover */
 background-color: #117a8b !important; /* Darker shade for hover effect */
 }
+
+.edit-user-form {
+  position: absolute;
+  z-index: 1000;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+  padding: 20px;
+}

@@ -79,7 +79,7 @@ const Admin = ({ socket, handleLogout }) => {
       <Sidebar onSelect={handleSidebarSelect} handleLogout={handleLogout} />
       
       <div className="content">
-        <h1>Dobrodošli na Admin stranicu</h1>
+        <h1>Admin page</h1>
 
         {/* Conditionally render content based on selectedOption */}
         {selectedOption === "pendingRequests" && (

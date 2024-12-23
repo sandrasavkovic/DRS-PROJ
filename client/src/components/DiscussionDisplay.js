@@ -133,11 +133,11 @@ const DiscussionDisplay = ({ discussion, userId }) => {
       <div className="card shadow-sm">
         <div className="card-header d-flex justify-content-between">
           <small className="text-muted">Username: {discussion.username}</small>
-          <small className="text-muted">Tema: {discussion.theme_name}</small>
+          <small className="text-muted">Theme: {discussion.theme_name}</small>
         </div>
         <div className="card-body">
           <h5 className="card-title">{discussion.title}</h5>
-          <small className="card-title">Sadržaj: {discussion.content}</small>
+          <small className="card-title">Content: {discussion.content}</small>
         </div>
         <div className="card-footer d-flex justify-content-between">
           {/* Displaying DiscussionAction component */}
@@ -195,7 +195,7 @@ const DiscussionDisplay = ({ discussion, userId }) => {
                         value={DiscussionDescription}
                         onChange={(e) => setDiscussionDescription(e.target.value)}
                         className="form-control"
-                        placeholder="Enter discussion description"
+                        placeholder="Enter discussion content"
                       />
                 </div>
               </form>

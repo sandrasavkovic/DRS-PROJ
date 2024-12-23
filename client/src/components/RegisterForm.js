@@ -3,12 +3,12 @@ import React from "react";
 const RegisterForm = ({ formData, handleChange, handleRegister }) => {
   return (
     <div className="card p-4 shadow" style={{ maxWidth: "400px", margin: "auto" }}>
-      <h2 className="text-center mb-4">Registracija</h2>
+      <h2 className="text-center mb-4">Registration</h2>
       <div className="mb-3">
         <input
           type="text"
           name="username"
-          placeholder="Korisničko ime"
+          placeholder="Username"
           value={formData.username}
           onChange={handleChange}
           className="form-control"
@@ -18,7 +18,7 @@ const RegisterForm = ({ formData, handleChange, handleRegister }) => {
         <input
           type="password"
           name="password"
-          placeholder="Lozinka"
+          placeholder="Password"
           value={formData.password}
           onChange={handleChange}
           className="form-control"
@@ -28,7 +28,7 @@ const RegisterForm = ({ formData, handleChange, handleRegister }) => {
         <input
           type="text"
           name="name"
-          placeholder="Ime"
+          placeholder="First name"
           value={formData.name}
           onChange={handleChange}
           className="form-control"
@@ -38,7 +38,7 @@ const RegisterForm = ({ formData, handleChange, handleRegister }) => {
         <input
           type="text"
           name="last_name"
-          placeholder="Prezime"
+          placeholder="Last name"
           value={formData.last_name}
           onChange={handleChange}
           className="form-control"
@@ -48,7 +48,7 @@ const RegisterForm = ({ formData, handleChange, handleRegister }) => {
         <input
           type="text"
           name="address"
-          placeholder="Adresa"
+          placeholder="Address"
           value={formData.address}
           onChange={handleChange}
           className="form-control"
@@ -58,7 +58,7 @@ const RegisterForm = ({ formData, handleChange, handleRegister }) => {
         <input
           type="text"
           name="city"
-          placeholder="Grad"
+          placeholder="City"
           value={formData.city}
           onChange={handleChange}
           className="form-control"
@@ -68,7 +68,7 @@ const RegisterForm = ({ formData, handleChange, handleRegister }) => {
         <input
           type="text"
           name="country"
-          placeholder="Država"
+          placeholder="County"
           value={formData.country}
           onChange={handleChange}
           className="form-control"
@@ -78,7 +78,7 @@ const RegisterForm = ({ formData, handleChange, handleRegister }) => {
         <input
           type="text"
           name="phone_number"
-          placeholder="Broj telefona"
+          placeholder="Phone number"
           value={formData.phone_number}
           onChange={handleChange}
           className="form-control"
@@ -95,7 +95,7 @@ const RegisterForm = ({ formData, handleChange, handleRegister }) => {
         />
       </div>
       <button onClick={handleRegister} className="btn btn-success w-100">
-        Potvrdi registraciju
+      Confirm registration
       </button>
     </div>
   );

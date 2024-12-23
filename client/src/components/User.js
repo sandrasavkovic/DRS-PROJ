@@ -31,7 +31,7 @@ const User = ({ socket, handleLogout }) => {
     console.log(userString);
     
     if (!userString) {
-      alert('Nema podataka o korisniku u sesiji.');
+      alert('No user data in session.');
       return;
     }
   
@@ -42,11 +42,11 @@ const User = ({ socket, handleLogout }) => {
       if (response) {
         setEditUser(response.user);  // Update state with the response
       } else {
-        alert('Korisnik nije pronađen.');
+        alert('User not found.');
       }
     } catch (error) {
-      console.error('Greška pri parsiranju korisničkih podataka:', error);
-      alert('Došlo je do greške pri učitavanju korisničkih podataka.');
+      console.error('Error parsing user data:', error);
+      alert('An error occurred while loading user data.');
     }
   };
   
@@ -65,27 +65,27 @@ const User = ({ socket, handleLogout }) => {
 
   const handleEdit = () => {
     if (!editUser) {
-        alert('Nema podataka za ažuriranje korisnika.');
+        alert('There is no data to update the user.');
         return;
     }
 
     const username = sessionStorage.getItem("userName");
 
     if (!username) {
-        alert('Korisničko ime nije pronađeno.');
+        alert('Username not found.');
         return;
     }
   
     const userString = sessionStorage.getItem("user_name");
     updateUser(userString, editUser)
         .then((updatedUser) => {
-            console.log('Korisnik uspešno ažuriran:', updatedUser);
-            alert('Korisnik uspešno ažuriran.');
+            console.log('User successfully updated:', updatedUser);
+            alert('User successfully updated.');
             closeEditModal(); 
         })
         .catch((error) => {
-            console.error('Greška pri ažuriranju korisnika:', error);
-            alert('Došlo je do greške pri ažuriranju korisnika.');
+            console.error('Error updating user:', error);
+            alert('An error occurred while updating the user.');
         });
   };
 
@@ -122,69 +122,74 @@ const User = ({ socket, handleLogout }) => {
 
       {/* Modal za edit - User */}
       {isEditModalOpen && (
-        <div className="edit-modal">
-          <div className="modal-content">
-            <h4>Edit user</h4>
-            <form>
-              <label>
-                Name:
-                <input
+        <div className="card p-4 shadow" style={{maxWidth: "500px",position: "absolute",
+          top: "180px", // Razmak ispod dugmeta
+          right: "10px", // Razmak od desne ivice
+        }}>
+          <h2 className="text-center mb-4">Edit user</h2>
+          <div className="mb-3">
+              <input
                   type="text"
                   name="name"
+                  placeholder="Name"
                   value={editUser.name || ''}
                   onChange={handleInputChange}
+                  className="form-control"
                 />
-              </label>
-              <label>
-                Lastname:
+            </div>
+            <div className="mb-3">
                 <input
                   type="text"
                   name="last_name"
+                  placeholder="Last name"
                   value={editUser.last_name || ''}
                   onChange={handleInputChange}
+                  className="form-control"
                 />
-              </label>
-              <label>
-                City:
+              </div>
+              <div className="mb-3">
                 <input
                   type="text"
                   name="city"
+                  placeholder="City"
                   value={editUser.city || ''}
                   onChange={handleInputChange}
+                  className="form-control"
                 />
-              </label>
-              <label>
-                Country:
+              </div>
+              <div className="mb-3">
                 <input
                   type="text"
                   name="country"
+                  placeholder="Country"
                   value={editUser.country || ''}
                   onChange={handleInputChange}
+                  className="form-control"
                 />
-              </label>
-              <label>
-                Phone number:
+             </div>
+             <div className="mb-3">
                 <input
                   type="text"
                   name="phone_number"
+                  placeholder="Phone number"
                   value={editUser.phone_number || ''}
                   onChange={handleInputChange}
+                  className="form-control"
                 />
-              </label>
-              <label>
-                Email:
+              </div>
+              <div className="mb-3">
                 <input
                   type="email"
                   name="email"
+                  placeholder="Email"
                   value={editUser.email || ''}
                   onChange={handleInputChange}
+                  className="form-control"
                 />
-              </label>
-            </form>
-            <button onClick={handleEdit}>Save</button>
-            <button onClick={closeEditModal}>Close</button>
+             </div>
+            <button onClick={handleEdit} className="btn btn-success w-100">Save</button>
+            <button onClick={closeEditModal} className="btn btn-secondary w-100 mt-2">Close</button>
           </div>
-        </div>
       )}
     </div>
   );

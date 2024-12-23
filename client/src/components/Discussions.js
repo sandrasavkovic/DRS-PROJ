@@ -116,7 +116,7 @@ const Discussions = ({ userId }) => {
 
   return (
   <div className="container mt-4">
-    <h2 className="text-center mb-4">Diskusije</h2>
+    <h2 className="text-center mb-4">Discussions</h2>
 
     {/* Add Discussion Modal */}
     {isAddModalOpen && (
@@ -192,7 +192,7 @@ const Discussions = ({ userId }) => {
           value={filters.searchValue}
           onChange={handleFilterChange}
           className="form-control"
-          placeholder="Unesite tekst za pretragu..."
+          placeholder="Enter search text..."
         />
       </div>
 
