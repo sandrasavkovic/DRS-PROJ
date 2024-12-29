@@ -1,104 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { updateDiscussion, getDiscussionById, deleteDiscussion, fetchDiscussions } from '../services/themeService';
-import { modifyDiscussion, fetchAllDiscussions } from '../services/discussionService';
+import { modifyDiscussion, deleteDiscussion } from '../services/themeService';
 import 'font-awesome/css/font-awesome.min.css';
-import DiscussionAction from './DiscussionAction'; 
+import DiscussionAction from './DiscussionAction';
 
-// Ovdje se definise izgled pojedinacne diskusije, handle edit, delete
-
-const DiscussionDisplay = ({ discussion, userId }) => {
+const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, onDiscussionDeleted }) => {
   const [isEditDiscussionModalOpen, setEditDiscussionModalOpen] = useState(false);
   const [editDiscussion, setEditDiscussion] = useState(null);
-
-  const [DiscussionName, setDiscussionName] = useState("");
-  const [DiscussionDescription, setDiscussionDescription] = useState("");
-  const [discussion2, setDiscussion] = useState([]);
-  const [selectedDiscussionId, setSelectedDiscussionId] = useState(null);
-
-
+  
   const loggedUser = sessionStorage.getItem("user_name");
   const role = sessionStorage.getItem("isAdmin");
-
+  
   useEffect(() => {
     console.log("diskusija se mijenja mora u uglaste zagrade")
-  }, [discussion]);
+  }, [discussion, themes]);
 
-
- // Handle discussion modification
- const handleModifyDiscussion = () => {
-  if (!DiscussionName || !DiscussionDescription || !selectedDiscussionId) {
-    alert("Please fill in both theme name and description!");
-    return;
-  }
-
-  const updatedDiscussion = {
-    title: DiscussionName,
-    content: DiscussionDescription, 
-    datetime: new Date().toISOString(),
-  };
-
-  modifyDiscussion(selectedDiscussionId, updatedDiscussion)
-    .then(() => {
-      fetchAllDiscussions()
-        .then((response) => {
-          const sortedDiscussion = response.data.sort(
-            (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
-          );
-          setDiscussion(sortedDiscussion); // Update state with the new list of discussions
-          setDiscussionName(""); // Reset the input fields
-          setDiscussionDescription("");
-          setSelectedDiscussionId(null);
-          setEditDiscussionModalOpen(false); // Close the modal after saving changes
-        })
-        .catch((error) => console.error("Error fetching discussions:", error));
-    })
-    .catch((error) => console.error("Error modifying discussions:", error));
-};
-
-
- // Fetch discussions on initial render
- useEffect(() => {
-  fetchAllDiscussions()
-    .then((response) => {
-      const sortedDiscussion = response.data.sort(
-        (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
-      );
-      setDiscussion(sortedDiscussion); // Set initial theme list
-    })
-    .catch((error) => console.error("Error fetching discussions:", error));
-}, []);
-
-
- // Handle edit button click
- const handleEditClick = (discussion) => {
-  setSelectedDiscussionId(discussion.id);
-  setDiscussionName(discussion.title);
-  setDiscussionDescription(discussion.content);
-  setEditDiscussionModalOpen(true); // Show the modal when editing
-};
-
-  const handleDeleteDiscussion = (discussionId) => {
-    deleteDiscussion(discussionId)
+  const handleDeleteDiscussion = () => {
+    deleteDiscussion(discussion.id)
       .then(() => {
         alert('Discussion deleted successfully.');
-        window.location.reload(); // Refresh page after delete
+        onDiscussionDeleted(discussion.id); // Callback for parent component
       })
       .catch((error) => {
         console.error('Error deleting discussion:', error);
         alert('Failed to delete discussion.');
-      });
+      })
   };
 
-  const handleUserDiscussionEdit = (discussion) => {
-    getDiscussionById(discussion.id)
-      .then((response) => {
-        setEditDiscussion(response.discussion);
-        setEditDiscussionModalOpen(true); // Open modal
+  const handleEditDiscussion = () => {
+    modifyDiscussion(discussion.id, editDiscussion)
+      .then((updatedDiscussion) => {
+        alert('Discussion updated successfully.');
+        onDiscussionUpdated(updatedDiscussion);  // Update in parent component
+        setEditDiscussionModalOpen(false);
       })
       .catch((error) => {
-        console.error('Error fetching discussion:', error);
-        alert('Failed to fetch the discussion for editing.');
-      });
+        console.error('Error updating discussion:', error);
+        alert('Failed to update discussion.');
+      })
+  };
+
+  const handleUserDiscussionEdit = () => {
+    setEditDiscussion({
+      ...discussion,
+      content: discussion.content,
+      theme_id: discussion.theme_id, 
+    });
+    setEditDiscussionModalOpen(true);
   };
 
   const handleInputDiscussionChange = (e) => {
@@ -109,48 +56,32 @@ const DiscussionDisplay = ({ discussion, userId }) => {
     }));
   };
 
-  const handleEditDiscussion = () => {
-    updateDiscussion(editDiscussion.id, editDiscussion)
-      .then(() => {
-        alert('Discussion updated successfully.');
-        setEditDiscussionModalOpen(false);
-      })
-      .catch((error) => {
-        console.error('Error updating discussion:', error);
-        alert('Failed to update discussion.');
-      });
-  };
-
   const closeEditDiscussionModal = () => {
     setEditDiscussionModalOpen(false);
-    setDiscussionName("");
-    setDiscussionDescription("");
-    setSelectedDiscussionId(null);
   };
 
   return (
     <div className="mb-4 w-75">
-      <div className="card shadow-sm">
-        <div className="card-header d-flex justify-content-between">
-          <small className="text-muted">Username: {discussion.username}</small>
-          <small className="text-muted">Theme: {discussion.theme_name}</small>
-        </div>
-        <div className="card-body">
-          <h5 className="card-title">{discussion.title}</h5>
-          <small className="card-title">Content: {discussion.content}</small>
-        </div>
-        <div className="card-footer d-flex justify-content-between">
-          {/* Displaying DiscussionAction component */}
-          <DiscussionAction 
-            discussion={discussion} 
-            userId={userId}
-            role={role}
-          />
+      <div className="shadow-sm p-3 mb-4 rounded bg-white">
+        {/* Header */}
+        <div className="d-flex align-items-center justify-content-between">
+          <div className="d-flex align-items-center">
+            <div
+              className="rounded-circle bg-secondary d-flex justify-content-center align-items-center"
+              style={{ width: '50px', height: '50px', color: 'white', fontSize: '1.2rem' }}
+            >
+              <i className="fa fa-user"></i>
+            </div>
+            <div className="ms-3">
+              <h6 className="mb-0">{discussion.name} {discussion.surname}</h6>
+              <small className="text-muted">@{discussion.username}</small>
+            </div>
+          </div>
           <div>
             {discussion.username === loggedUser && (
               <button
                 className="btn btn-outline-secondary btn-sm mx-1"
-                onClick={() => handleEditClick(discussion)}
+                onClick={handleUserDiscussionEdit}
               >
                 <i className="fa fa-pencil"></i>
               </button>
@@ -158,64 +89,96 @@ const DiscussionDisplay = ({ discussion, userId }) => {
             {(discussion.username === loggedUser || Number(role) === 1) && (
               <button
                 className="btn btn-outline-danger btn-sm mx-1"
-                onClick={() => handleDeleteDiscussion(discussion.id)}
+                onClick={handleDeleteDiscussion}
               >
                 <i className="fa fa-trash"></i>
               </button>
             )}
           </div>
         </div>
+        {/* Content */}
+        <div className="mt-3">
+          <p className="mb-2">{discussion.content}</p>
+          <h6 className="text-primary mb-1">#{discussion.theme_name}</h6>
+          <small className="text-muted">{discussion.date}</small>
+        </div>
+        {/* Actions */}
+        <div className="mt-3">
+          <DiscussionAction 
+            discussion={discussion} 
+            userId={userId}
+            role={role}
+          />
+        </div>
       </div>
 
-      {/* Edit Discussion Modal */}
+      {/* Edit Modal */}
       {isEditDiscussionModalOpen && (
         <div className="modal show d-block" tabIndex="-1" aria-labelledby="editDiscussionModalLabel" aria-hidden="true">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
-            <div className="modal-header">
-                <h5 className="modal-title" id="editDiscussionModalLabel">Edit discussion</h5>  
-            </div>
-            <div className="modal-body">
-              <form>
-                <div className="mb-3">
-                  <label htmlFor="DiscussionName" className="form-label">Discussion title</label>
-                    <input
-                        type="text"
-                        id="DiscussionName"
-                        value={DiscussionName}
-                        onChange={(e) => setDiscussionName(e.target.value)}
-                        className="form-control"
-                        placeholder="Enter discussion name"
-                      />
-                </div>
-                <div className="mb-3">
-                      <label htmlFor="DiscussionDescription" className="form-label">Discussion description</label>
-                      <textarea
-                        id="DiscussionDescription"
-                        value={DiscussionDescription}
-                        onChange={(e) => setDiscussionDescription(e.target.value)}
-                        className="form-control"
-                        placeholder="Enter discussion content"
-                      />
-                </div>
-              </form>
-            </div>
-            <div className="modal-footer">
-                  
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={handleModifyDiscussion}
-                  >
-                    Save Changes
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={closeEditDiscussionModal}
-                  >
-                    Close
-                  </button>
+              <div className="modal-header">
+                <h5 className="modal-title" id="editDiscussionModalLabel">Edit Discussion</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label="Close"
+                  onClick={closeEditDiscussionModal}
+                ></button>
+              </div>
+
+                <div className="modal-body">
+                  <form>
+                  <div className="mb-3">
+                    <label htmlFor="discussionTheme" className="form-label">
+                      Select Theme
+                    </label>
+                    <select
+                      id="discussionTheme"
+                      name="theme_id" 
+                      value={editDiscussion?.theme_id || ''}  
+                      onChange={handleInputDiscussionChange}
+                      className="form-control"
+                    >
+                      {themes?.map((theme) => (
+                        <option key={theme.id} value={theme.id}>  {/* Use theme_id as value */}
+                          {theme.theme_name}  {/* Display theme_name */}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="discussionContent" className="form-label">
+                      Discussion Content
+                    </label>
+                    <textarea
+                      id="discussionContent"
+                      name="content"
+                      value={editDiscussion?.content || ''}
+                      onChange={handleInputDiscussionChange}
+                      className="form-control"
+                      rows="5"
+                      placeholder="Enter discussion content"
+                    />
+                  </div>
+                </form>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleEditDiscussion}
+                >
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={closeEditDiscussionModal}
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>
@@ -226,3 +189,5 @@ const DiscussionDisplay = ({ discussion, userId }) => {
 };
 
 export default DiscussionDisplay;
+
+  

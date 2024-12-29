@@ -4,6 +4,64 @@ from services.themeService import get_current_user_id;
 from models.Discussion import DiscussionDTO
 from utils.email_utils import send_email
 
+def editDiscussion(discussion_id, theme_id, content):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        # Ažuriramo diskusiju u bazi podataka
+        cursor.execute('UPDATE discussions SET content = %s, theme_id = %s, datetime = NOW() WHERE id = %s',
+                       (content, theme_id, discussion_id))
+        connection.commit()
+
+        # Dohvatamo ažuriranu diskusiju
+        cursor.execute("""
+            SELECT 
+                d.id, 
+                d.content, 
+                d.user_id, 
+                d.theme_id, 
+                u.username, 
+                u.name,
+                u.last_name,
+                u.email,
+                t.theme_name,
+                d.datetime
+            FROM discussions d
+            LEFT JOIN users u ON d.user_id = u.id
+            LEFT JOIN themes t ON d.theme_id = t.id
+            WHERE d.id = %s
+        """, (discussion_id,))
+
+        updated_discussion = cursor.fetchone()
+
+        # Ako diskusija postoji, vraćamo je u odgovarajućem formatu
+        if updated_discussion:
+            updated_discussion_dto = {
+                'id': updated_discussion['id'],
+                'content': updated_discussion['content'],
+                'username': updated_discussion['username'],
+                'theme_name': updated_discussion['theme_name'],
+                'theme_id': updated_discussion['theme_id'], #dodan je theme_id 
+                'post_time': updated_discussion['datetime'],
+                'name': updated_discussion['name'],
+                'surname': updated_discussion['last_name'],
+                'email': updated_discussion['email'],
+                'user_id': updated_discussion['user_id']
+            }
+            return updated_discussion_dto
+        else:
+            raise Exception(f"Discussion with id {discussion_id} not found.")
+
+    except Exception as e:
+        connection.rollback()
+        raise Exception(f"Failed to modify discussion with id {discussion_id}: {str(e)}")
+    
+    finally:
+        cursor.close()
+        connection.close()
+
+
 def get_discussion_reactions(discussionId, userId):
     try:
         connection = get_db_connection()
@@ -274,8 +332,7 @@ def get_all_discussions():
 
         cursor.execute("""
             SELECT 
-                d.id, 
-                d.title, 
+                d.id,  
                 d.content, 
                 d.user_id, 
                 d.theme_id, 
@@ -294,14 +351,14 @@ def get_all_discussions():
         discussions = cursor.fetchall()  # Svi podaci uključujući korisničko ime i ime teme
         print("Fetched discussions:", discussions)
 
-        # Umesto DTO klase, vraćamo listu dictionary objekata
+        # Umjesto DTO klase, vraćamo listu dictionary objekata
         discussion_dtos = [
             {
                 'id': discussion['id'], 
-                'title': discussion['title'], 
                 'content': discussion['content'],
                 'username': discussion['username'], 
                 'theme_name': discussion['theme_name'],
+                'theme_id': discussion['theme_id'], #dodan je theme_id 
                 'post_time': discussion['datetime'], #myb nam ne treba ovo post time al eto nek se nadje
                 'name': discussion['name'],
                 'surname': discussion['last_name'],

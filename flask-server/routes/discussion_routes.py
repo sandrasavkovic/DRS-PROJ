@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, Blueprint
-from services.discussionService import modify_existing_discussion, get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, get_discussion_reactions, delete_discussion_by_id_service, get_all_discussions, process_reaction, get_user_id_from_username, get_discussion_comments, post_new_comment, delete_comment_service
+from services.discussionService import editDiscussion, modify_existing_discussion, get_discussions_by_theme, add_new_discussion, search_discussions_by_theme,update_discussion_service, get_discussions_for_user_service, get_discussion_by_id_service, get_discussion_reactions, delete_discussion_by_id_service, get_all_discussions, process_reaction, get_user_id_from_username, get_discussion_comments, post_new_comment, delete_comment_service
 
 discussion_routes = Blueprint("discussion_routes", __name__)
 
@@ -12,6 +12,18 @@ def fetch_reactions():
     reactions = get_discussion_reactions(discussion_id, user_id)
     return jsonify(reactions)
 
+#Najnovija ruta za edit diskusije
+@discussion_routes.route('/edit/<int:discussion_id>', methods=['PUT'])
+def edit_discussion(discussion_id):
+    try:
+        print("RUTA PRONADJENA")
+        data = request.get_json()
+        theme_id = data.get('theme_id')
+        content = data.get('content')
+        updatedDiscussion = editDiscussion(discussion_id, theme_id, content)
+        return jsonify(updatedDiscussion), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500  
 
 # za komentare
 @discussion_routes.route('/fetchComments', methods=['POST'])
@@ -245,3 +257,6 @@ def modify_discussion(discussion_id):
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500  
+
+
+

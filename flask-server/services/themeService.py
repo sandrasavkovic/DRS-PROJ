@@ -105,39 +105,67 @@ def get_id_from_theme_name(theme_name):
     else:
         return None
 
-def add_discussion_service(username, theme, discussionText):
-    print("USAO U SERVIS!")
+def add_discussion_service(userId, themeId, discussionText):
+    print("POKUSAJ DODAVANJA: ")
+    print(userId)
+    print(themeId)
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    # Assuming you have a way to get user_id from session or another method
-    user_id = get_current_user_id(username)  # This needs to be defined based on your app's logic
 
-    # Assuming the 'theme' object has the 'id' and 'theme_name' properties
-    theme_name = theme['theme_name']
-    theme_id = get_id_from_theme_name(theme_name)
-
-    # SQL query to insert the new discussion
-    sql = """
-        INSERT INTO discussions (title, content, user_id, theme_id, datetime)
-        VALUES (%s, %s, %s, %s, NOW())
-    """
-
-    # Execute the query
     try:
-        print(theme['theme_name'])
-        print(discussionText)
-        print(user_id)
-        print(theme_id)
-        cursor.execute(sql, (theme['theme_name'], discussionText, user_id, theme_id))
+        # Ubacivanje nove diskusije u bazu
+        cursor.execute("""
+            INSERT INTO discussions (content, user_id, theme_id, datetime)
+            VALUES (%s, %s, %s, NOW())
+        """, (discussionText, userId, themeId))
         connection.commit()
-        if cursor.rowcount>0:
-            return {"success": True, "message": "Discussion added!"}, 200
+
+        # Dohvatanje ID-a novokreirane diskusije
+        discussion_id = cursor.lastrowid
+
+        # Vraćanje svih podataka o novoj diskusiji
+        cursor.execute("""
+            SELECT 
+                d.id, 
+                d.content, 
+                d.user_id, 
+                d.theme_id, 
+                d.datetime AS post_time,
+                u.username, 
+                u.name, 
+                u.last_name AS surname, 
+                u.email, 
+                t.theme_name
+            FROM discussions d
+            LEFT JOIN users u ON d.user_id = u.id
+            LEFT JOIN themes t ON d.theme_id = t.id
+            WHERE d.id = %s
+        """, (discussion_id,))
+
+        new_discussion = cursor.fetchone()
+
+        if new_discussion:
+            new_discussion_dto = {
+                'id': new_discussion['id'],
+                'content': new_discussion['content'],
+                'username': new_discussion['username'],
+                'theme_name': new_discussion['theme_name'],
+                'theme_id': new_discussion['theme_id'],
+                'post_time': new_discussion['post_time'],
+                'name': new_discussion['name'],
+                'surname': new_discussion['surname'],
+                'email': new_discussion['email'],
+                'user_id': new_discussion['user_id']
+            }
+            return new_discussion_dto
         else:
-            return {"success": False, "message": "Failed action!"}, 404
+            raise Exception("Failed to retrieve the new discussion.")
 
     except Exception as e:
-        print(f"Error while inserting discussion: {e}")
         connection.rollback()
+        raise Exception(f"Failed to add discussion: {str(e)}")
+
     finally:
         cursor.close()
         connection.close()
+   

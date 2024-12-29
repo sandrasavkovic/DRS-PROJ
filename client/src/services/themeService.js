@@ -11,6 +11,30 @@
 const username = sessionStorage.getItem("user_name");
 const discussionId = parseInt(sessionStorage.getItem("id"), 10);
 
+//NAJNOVIJI KOD ZA IZMJENU DISKUSIJE
+export const modifyDiscussion = (discussionId, updatedDiscussion) => {
+  return fetch(`/discussion/edit/${discussionId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      theme_id: updatedDiscussion.theme_id, 
+      content: updatedDiscussion.content,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to edit discussion with id ${discussionId}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error editing discussion:", error);
+      throw error;
+    });
+};
+
 export const deleteTheme = (themeId) => {
   return fetch(`/theme/delete_theme/${themeId}`, {
     method: "DELETE",
@@ -127,17 +151,15 @@ export const fetchThemes = () => {
   
 
   // dodavanje diskusije na neku temu
-export const addDiscussion = (theme, discussionText) => {
-  console.log("Dodajem diskusiju na temu : ", theme.theme_name)
-  console.log("Tekst diskusije : ", discussionText)
+export const addDiscussion = (user_id, theme_id, discussionText) => {
   return fetch(`/theme/addDiscussion`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      username: username,  // Pass the username from sessionStorage
-      theme: theme,
+      userId: user_id,
+      themeId: theme_id,
       discussionText: discussionText
   }),
   }).then((res) => res.json());

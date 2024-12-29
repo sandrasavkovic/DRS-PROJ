@@ -6,6 +6,37 @@ import DiscussionDisplay from './DiscussionDisplay';
 import 'font-awesome/css/font-awesome.min.css';
 
 // Ovdje se samo filtriraju sve diskusije!
+// NAPOMENA: BITNO!!!
+// Discussion objekat u discussions u svim fjama (edit i add) mora imati format kao i u getAllDiscussions
+// je ser druge fje oslanjaju na ove podatke - bez njih exception!
+// Dakle: 
+/*
+  'id': discussion['id'], 
+  'content': discussion['content'],
+  'username': discussion['username'], 
+  'theme_name': discussion['theme_name'],
+  'theme_id': discussion['theme_id'], #dodan je theme_id 
+  'post_time': discussion['datetime'], #myb nam ne treba ovo post time al eto nek se nadje
+  'name': discussion['name'],
+  'surname': discussion['last_name'],
+  'email': discussion['email'],
+  'user_id' : discussion['user_id']
+*/
+
+//Zbog ovoga je izmjenje Edit i Add discussions,
+//Dodani su prop u DiscussionDisplay da se promjene (edit i brisanje) propagira u roditeljsku komponentu (OVU - Discussions)
+
+//BAZA IZMJENE:
+//Obrisana je kolona Title u Discussions
+//Dodano je unique ogranicenje za theme_name
+
+//Sta ne radi? 
+// Admin dodavanje/izmjena tema i propagacija promjea u user, ostalo nisam stigla provjeriti
+// Front za izgled post ostavi meni (nisam stigla zavrsiti)
+// Iz nekog razloga je disableovan like/dislike za DRUGU diskusiju 
+  // npr obrise se diskusija 1 i onda diskusija koja je bila diskusija 2 je sad prva
+  // i onda se moze like/dislike, aliii diskusija koja je bila diskusija 3 je sad druga 
+  // i onda se NE moze like/dislike (cudno!!)
 
 const Discussions = ({ userId }) => {
 
@@ -21,6 +52,26 @@ const Discussions = ({ userId }) => {
     searchBy: 'theme_name',
     searchValue: '',
   });
+
+  //Callback funkcija za edit i brisanje diskusije
+  //NAPOMENA: DiscussionDisplay je komponenta za 1 diskusiju, dakle za svaku diskusiju onda imamo 1 DiscussionDisplay komp
+  //Po azuriranju te jedne komponente moramo javiti roditejskoj (ovoj komponenti) jer ona sadrzi SVE diskusije
+  //Ovdje se tim callback fjama azurira/obrise ta diskusija u listi svih diskusija
+  // Funkcija za ažuriranje diskusije
+  const handleDiscussionUpdated = (updatedDiscussion) => {
+    setDiscussions((prevDiscussions) =>
+      prevDiscussions.map((discussion) =>
+        discussion.id === updatedDiscussion.id ? updatedDiscussion : discussion
+      )
+    );
+  };
+
+  // Funkcija za brisanje diskusije
+  const handleDiscussionDeleted = (deletedDiscussionId) => {
+    setDiscussions((prevDiscussions) =>
+      prevDiscussions.filter((discussion) => discussion.id !== deletedDiscussionId)
+    );
+  };
 
   useEffect(() => {
     fetchAllDiscussions()
@@ -84,8 +135,8 @@ const Discussions = ({ userId }) => {
       alert('Discussion text cannot be empty.');
       return;
     }
-
-    addDiscussion(selectedFromList, newDiscussionText)
+    // saljemo user_id, theme_id, content
+    addDiscussion(userId, selectedFromList.id, newDiscussionText)
       .then(() => {
         alert('Discussion added successfully.');
         closeAddModal();
@@ -210,7 +261,13 @@ const Discussions = ({ userId }) => {
     <div className="d-flex flex-column align-items-center">
       {filteredDiscussions.length > 0 ? (
         filteredDiscussions.map((discussion) => (
-          <DiscussionDisplay key={discussion.id} discussion={discussion} userId={userId} />
+          <DiscussionDisplay 
+          key={discussion.id} 
+          discussion={discussion} 
+          userId={userId} 
+          themes={themes} // OVO je dodano za meni kod selektovanja teme
+          onDiscussionUpdated={handleDiscussionUpdated}
+          onDiscussionDeleted={handleDiscussionDeleted}/>
         ))
       ) : (
         <p>No discussions found matching your search criteria.</p>

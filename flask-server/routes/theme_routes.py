@@ -72,14 +72,11 @@ def add_discussion():
         if not data:
             return jsonify({"success": False, "message": "No data provided for update"}), 400
 
-        print(f"Received data: {data}")
-        username = data.get('username')
-        print(username)
-        theme = data.get('theme')
-        print(theme)
+        userId = data.get('userId')
+        themeId = data.get('themeId')
         discussion_text = data.get('discussionText')
-        print(discussion_text)
-        response, status_code = add_discussion_service(username, theme, discussion_text)
+     
+        response, status_code = add_discussion_service(userId, themeId, discussion_text)
         return jsonify(response), status_code
     except Exception as e:
         return jsonify({'error': str(e)}), 500  
