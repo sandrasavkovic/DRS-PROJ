@@ -103,10 +103,10 @@ const User = ({ socket, handleLogout }) => {
   }, [socket]);
 
   return (
-    <div className="d-flex flex-column w-100" style={{ height: '100vh' }}>
+    <div style={{ minHeight: '100vh'}}>
 
      {/* Centrirana Discussions komponenta sa 70% visine */}
-     <div className="d-flex justify-content-center align-items-start" style={{ height: '70vh' }}>
+     <div className="d-flex justify-content-center align-items-start" style={{ height: '80vh' }}>
       {userId && <Discussions userId={userId} />}
      </div>
 

@@ -102,38 +102,49 @@ const DiscussionAction = ({ discussion, userId, role }) => {
 
   return (
     <div>
-      {/* Like dugme */}
-      <button
-        onClick={() => handleReaction('like')}
-        className="btn border-0 p-0 mx-2" // Uklonjen okvir i razmak
-        style={{
-          fontSize: userReaction === 'like' ? '1.8em' : '1.5em', // Veća ikonica ako je aktivna
-          color: userReaction === 'like' ? '#007bff' : '#6c757d', // Plava ako je aktivna, siva inače
-          transition: 'font-size 0.2s, color 0.2s', // Animacija prelaza
-        }}
-      >
-        <i className="fa fa-thumbs-up"></i>
-      </button>
-      <span>{likesCount}</span>
+     <div className="d-flex align-items-center"> {/* Poravnanje svih elemenata */}
+        {/* Like dugme */}
+        <button
+          onClick={() => handleReaction('like')}
+          className="btn border-0 p-0 mx-2"
+          style={{
+            fontSize: userReaction === 'like' ? '1.8em' : '1.5em', // Veća ikonica ako je aktivna
+            color: userReaction === 'like' ? '#007bff' : '#6c757d', // Plava ako je aktivna, siva inače
+            transition: 'font-size 0.2s, color 0.2s',
+          }}
+        >
+          <i className="fa fa-thumbs-up"></i>
+        </button>
+        <span className="me-3">{likesCount}</span> {/* Razmak između dugmeta i broja */}
 
-      {/* Dislike dugme */}
-      <button
-        onClick={() => handleReaction('dislike')}
-        className="btn border-0 p-0 mx-2" // Uklonjen okvir i razmak
-        style={{
-          fontSize: userReaction === 'dislike' ? '1.8em' : '1.5em', // Veća ikonica ako je aktivna
-          color: userReaction === 'dislike' ? '#dc3545' : '#6c757d', // Crvena ako je aktivna, siva inače
-          transition: 'font-size 0.2s, color 0.2s', // Animacija prelaza
-        }}>
-        <i className="fa fa-thumbs-down"></i>
-      </button>
-      <span>{dislikesCount}</span>
+        {/* Dislike dugme */}
+        <button
+          onClick={() => handleReaction('dislike')}
+          className="btn border-0 p-0 mx-2"
+          style={{
+            fontSize: userReaction === 'dislike' ? '1.8em' : '1.5em',
+            color: userReaction === 'dislike' ? '#dc3545' : '#6c757d', // Crvena ako je aktivna, siva inače
+            transition: 'font-size 0.2s, color 0.2s',
+          }}
+        >
+          <i className="fa fa-thumbs-down"></i>
+        </button>
+        <span className="me-3">{dislikesCount}</span>
+
+        {/* Comment dugme */}
+        <button
+          onClick={toggleComments}
+          className="btn border-0 p-0 mx-2"
+          style={{
+            fontSize: showComments ? '1.8em' : '1.5em', // Veća ikonica ako je aktivno
+            color: showComments ? '#495057' : '#6c757d', // Tamnosiva ako je aktivno, svetlosiva inače
+            transition: 'font-size 0.2s, color 0.2s',
+          }}
+        >
+          <i className="fa fa-comment"></i>
+        </button>
       
-      <button
-        onClick={toggleComments}
-        className="btn btn-sm btn-outline-secondary">
-        Comments
-      </button>
+      </div>
 
       {showComments && (
         <div className="mt-3 p-2 border rounded bg-light">

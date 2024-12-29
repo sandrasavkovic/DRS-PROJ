@@ -1,8 +1,9 @@
 /* Struktura stranice */
 .page-container {
   display: flex;
-  height: 100vh;
+  height: 100vh; /* Koristi 100vh da bi zauzeo celu visinu ekrana */
   justify-content: space-between;
+  flex-direction: row; /* Ako želiš da elementi budu u redu, ne u koloni */
 }
 
 /* Sidebar sa temama (leva strana) */

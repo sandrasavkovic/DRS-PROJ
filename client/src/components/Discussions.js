@@ -167,8 +167,7 @@ const Discussions = ({ userId }) => {
 
   return (
   <div className="container mt-4">
-    <h2 className="text-center mb-4">Discussions</h2>
-
+   <h2 className="text-center mb-4" style={{ color: '#6c757d' }}>Discussions</h2>
    {/* Add Discussion Modal */}
    {isAddModalOpen && (
       <div className="add-discussion-modal">
@@ -221,21 +220,43 @@ const Discussions = ({ userId }) => {
         </div>
       </div>
     )}
-    <div className="d-flex justify-content-center mb-4 align-items-center">
-      <div className="btn-group" role="group" aria-label="Search by">
-        {['theme_name', 'name', 'surname', 'email'].map((type) => (
-          <label key={type} className="btn btn-outline-primary">
-            <input
-              type="radio"
-              name="searchBy"
-              value={type}
-              checked={filters.searchBy === type}
-              onChange={handleRadioChange}
-            />
-            {type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')}
-          </label>
-        ))}
-      </div>
+   <div className="d-flex justify-content-center mb-4 align-items-center">
+    <div className="btn-group" role="group" aria-label="Search by">
+      {['theme_name', 'name', 'surname', 'email'].map((type) => (
+        <label
+          key={type}
+          className="btn"
+          style={{
+            color: '#6c757d', // Siva boja teksta
+            backgroundColor: filters.searchBy === type ? '#f8f9fa' : 'transparent', // Bela pozadina kada je selektovano
+            border: 'none', // Ukloni border
+            padding: '5px 10px', // Malo razmaka oko teksta
+            cursor: 'pointer', // Pokazuje da je klikabilno
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#f8f9fa'; // Pozadina se menja na hover
+          }}
+          onMouseLeave={(e) => {
+            if (filters.searchBy !== type) {
+              e.target.style.backgroundColor = 'transparent'; // Vraća se u transparent ako nije selektovano
+            }
+          }}
+        >
+          <input
+            type="radio"
+            name="searchBy"
+            value={type}
+            checked={filters.searchBy === type}
+            onChange={handleRadioChange}
+            style={{
+              marginRight: '8px', // Razmak između inputa i teksta
+              accentColor: '#6c757d', // Postavljanje boje radio dugmeta (ako je selektovano)
+            }}
+          />
+          {type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')}
+        </label>
+      ))}
+    </div>
 
       <div className="mx-2" style={{ maxWidth: '300px' }}>
         <input

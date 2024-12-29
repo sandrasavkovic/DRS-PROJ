@@ -109,7 +109,7 @@ function App() {
   };
 
   return (
-    <div className="d-flex flex-column w-100 vh-100">
+    <div className="d-flex flex-column w-100" style={{ minHeight: '100vh'}}>
       <Routes>
         <Route
           path="/login"

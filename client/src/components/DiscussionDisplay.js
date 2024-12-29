@@ -61,8 +61,8 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
   };
 
   return (
-    <div className="mb-4 w-75">
-      <div className="shadow-sm p-3 mb-4 rounded bg-white">
+  <div className="mb-4" style={{ width: '65%' }}> {/* širinu ovdje podesiti 65% */}
+    <div className="shadow-sm p-3 mb-4 rounded bg-white">
         {/* Header */}
         <div className="d-flex align-items-center justify-content-between">
           <div className="d-flex align-items-center">
@@ -78,30 +78,58 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
             </div>
           </div>
           <div>
-            {discussion.username === loggedUser && (
-              <button
-                className="btn btn-outline-secondary btn-sm mx-1"
-                onClick={handleUserDiscussionEdit}
-              >
-                <i className="fa fa-pencil"></i>
-              </button>
-            )}
-            {(discussion.username === loggedUser || Number(role) === 1) && (
-              <button
-                className="btn btn-outline-danger btn-sm mx-1"
-                onClick={handleDeleteDiscussion}
-              >
-                <i className="fa fa-trash"></i>
-              </button>
-            )}
+          {discussion.username === loggedUser && (
+          <button
+            className="btn p-0 mx-1" 
+            onClick={handleUserDiscussionEdit}
+            style={{
+              background: 'none',
+              border: 'none', 
+              color: '#6c757d', 
+              fontSize: '1.2em', 
+              cursor: 'pointer', 
+              transition: 'color 0.2s', 
+            }}
+            onMouseEnter={(e) => (e.target.style.color = '#007bff')} 
+            onMouseLeave={(e) => (e.target.style.color = '#6c757d')} 
+          >
+            <i className="fa fa-pencil"></i>
+          </button>
+        )}
+        {(discussion.username === loggedUser || Number(role) === 1) && (
+          <button
+            className="btn p-0 mx-1" 
+            onClick={handleDeleteDiscussion}
+            style={{
+              background: 'none', 
+              border: 'none', 
+              color: '#dc3545', 
+              fontSize: '1.2em', 
+              cursor: 'pointer',
+              transition: 'color 0.2s', 
+            }}
+            onMouseEnter={(e) => (e.target.style.color = '#ff6666')} 
+            onMouseLeave={(e) => (e.target.style.color = '#dc3545')} 
+          >
+            <i className="fa fa-trash"></i>
+          </button>
+        )}
           </div>
         </div>
+
+        {/* Siva linija - kao granica za preglednost */}
+        <hr style={{ border: '1px solid #dee2e6', margin: '1rem 0' }} />
+
         {/* Content */}
         <div className="mt-3">
           <p className="mb-2">{discussion.content}</p>
           <h6 className="text-primary mb-1">#{discussion.theme_name}</h6>
-          <small className="text-muted">{discussion.date}</small>
+          <small className="text-muted">{discussion.post_time}</small>
         </div>
+
+        {/* siva linija*/}
+        <hr style={{ border: '1px solid #dee2e6', margin: '1rem 0' }} />
+
         {/* Actions */}
         <div className="mt-3">
           <DiscussionAction 
