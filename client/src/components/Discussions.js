@@ -169,11 +169,14 @@ const Discussions = ({ userId }) => {
   <div className="container mt-4">
     <h2 className="text-center mb-4">Discussions</h2>
 
-    {/* Add Discussion Modal */}
-    {isAddModalOpen && (
-      <div className="edit-modal">
+   {/* Add Discussion Modal */}
+   {isAddModalOpen && (
+      <div className="add-discussion-modal">
         <div className="modal-content">
-          <h4>Add Discussion</h4>
+          <div className="modal-header">
+            <h4>Add Discussion</h4>
+          </div>
+
           <form>
             <label htmlFor="themeDropdown">Select Theme:</label>
             <select
@@ -204,11 +207,10 @@ const Discussions = ({ userId }) => {
               rows="5"
               value={newDiscussionText}
               onChange={(e) => setNewDiscussionText(e.target.value)}
-              placeholder="Enter your discussion here..."
-            ></textarea>
+              placeholder="Enter your discussion here..."></textarea>
           </form>
 
-          <div className="mt-3">
+          <div className="modal-footer">
             <button className="btn btn-info me-2" onClick={handleAddDiscussion}>
               Add
             </button>
@@ -219,7 +221,6 @@ const Discussions = ({ userId }) => {
         </div>
       </div>
     )}
-
     <div className="d-flex justify-content-center mb-4 align-items-center">
       <div className="btn-group" role="group" aria-label="Search by">
         {['theme_name', 'name', 'surname', 'email'].map((type) => (

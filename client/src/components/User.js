@@ -110,7 +110,7 @@ const User = ({ socket, handleLogout }) => {
       {userId && <Discussions userId={userId} />}
      </div>
 
-    <div className="d-flex flex-column w-100" style={{ height: '100vh' }}>
+    <div className="d-flex flex-column w-100">
       {/* Desni Sidebar */}
       <div className="top-right-controls">
         <div className="in_line">
