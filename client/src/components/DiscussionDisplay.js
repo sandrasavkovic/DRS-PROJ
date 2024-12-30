@@ -124,7 +124,8 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
         <div className="mt-3">
           <p className="mb-2">{discussion.content}</p>
           <h6 className="text-primary mb-1">#{discussion.theme_name}</h6>
-          <small className="text-muted">{discussion.post_time}</small>
+          <small className="text-muted">{new Date(discussion.post_time).toLocaleString()}</small>
+          
         </div>
 
         {/* siva linija*/}
