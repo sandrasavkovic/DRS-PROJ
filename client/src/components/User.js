@@ -14,7 +14,7 @@ const User = ({ socket, handleLogout }) => {
 
   //treba za PROP ZA diskusije
   useEffect(() => {
-      const username = sessionStorage.getItem("user_name");
+      const username = localStorage.getItem("user_name");
   
       if (username) {
         getUserIdByUsername(username)
@@ -27,7 +27,7 @@ const User = ({ socket, handleLogout }) => {
 
    // KOD ZA EDITOVANJE KORISNIKA 
    const openEditModal = async () => {
-    const userString = sessionStorage.getItem("user_name");
+    const userString = localStorage.getItem("user_name");
     console.log(userString);
     
     if (!userString) {
@@ -69,14 +69,14 @@ const User = ({ socket, handleLogout }) => {
         return;
     }
 
-    const username = sessionStorage.getItem("userName");
+    const username = localStorage.getItem("userName");
 
     if (!username) {
         alert('Username not found.');
         return;
     }
   
-    const userString = sessionStorage.getItem("user_name");
+    const userString = localStorage.getItem("user_name");
     updateUser(userString, editUser)
         .then((updatedUser) => {
             console.log('User successfully updated:', updatedUser);
