@@ -63,10 +63,10 @@ function App() {
       .then((data) => {
         if (data.success) {
           alert("Login is successful!");
-          sessionStorage.setItem("access_token", data.access_token);
-          sessionStorage.setItem("userName", data.user.name);
-          sessionStorage.setItem("isAdmin", JSON.stringify(data.user.is_admin));
-          sessionStorage.setItem("user_name", data.user.username);
+          localStorage.setItem("access_token", data.access_token);
+          localStorage.setItem("userName", data.user.name);
+          localStorage.setItem("isAdmin", JSON.stringify(data.user.is_admin));
+          localStorage.setItem("user_name", data.user.username);
         
           const redirectPath = data.user.is_admin ? "/admin" : "/user";
           navigate(redirectPath);
@@ -101,10 +101,10 @@ function App() {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem("userName");
-    sessionStorage.removeItem("access_token");
-    sessionStorage.removeItem("isAdmin");
-    sessionStorage.removeItem("user_name");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("isAdmin");
+    localStorage.removeItem("user_name");
     navigate("/login");
   };
 
@@ -114,10 +114,10 @@ function App() {
         <Route
           path="/login"
           element={
-            sessionStorage.getItem("access_token") ? (
+            localStorage.getItem("access_token") ? (
               <Navigate
                 to={
-                  JSON.parse(sessionStorage.getItem("isAdmin"))
+                  JSON.parse(localStorage.getItem("isAdmin"))
                     ? "/admin"
                     : "/user"
                 }

@@ -7,8 +7,8 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
   const [isEditDiscussionModalOpen, setEditDiscussionModalOpen] = useState(false);
   const [editDiscussion, setEditDiscussion] = useState(null);
   
-  const loggedUser = sessionStorage.getItem("user_name");
-  const role = sessionStorage.getItem("isAdmin");
+  const loggedUser = localStorage.getItem("user_name");
+  const role = localStorage.getItem("isAdmin");
   
   useEffect(() => {
     console.log("diskusija se mijenja mora u uglaste zagrade")
