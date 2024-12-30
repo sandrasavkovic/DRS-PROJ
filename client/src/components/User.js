@@ -122,75 +122,81 @@ const User = ({ socket, handleLogout }) => {
 
       {/* Modal za edit - User */}
       {isEditModalOpen && (
-        <div className="card p-4 shadow" style={{maxWidth: "500px",position: "absolute",
-          top: "180px", // Razmak ispod dugmeta
-          right: "10px", // Razmak od desne ivice
-        }}>
-          <h2 className="text-center mb-4">Edit user</h2>
-          <div className="mb-3">
-              <input
-                  type="text"
-                  name="name"
-                  placeholder="Name"
-                  value={editUser.name || ''}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-            </div>
-            <div className="mb-3">
-                <input
-                  type="text"
-                  name="last_name"
-                  placeholder="Last name"
-                  value={editUser.last_name || ''}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  name="city"
-                  placeholder="City"
-                  value={editUser.city || ''}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  name="country"
-                  placeholder="Country"
-                  value={editUser.country || ''}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-             </div>
-             <div className="mb-3">
-                <input
-                  type="text"
-                  name="phone_number"
-                  placeholder="Phone number"
-                  value={editUser.phone_number || ''}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={editUser.email || ''}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-             </div>
-            <button onClick={handleEdit} className="btn btn-success w-100">Save</button>
-            <button onClick={closeEditModal} className="btn btn-secondary w-100 mt-2">Close</button>
-          </div>
+      <div className="edit-user-modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h4>Edit User</h4>
+        </div>
+      <div className="modal-body">
+        <div className="mb-3">
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={editUser.name || ''}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-3">
+          <input
+            type="text"
+            name="last_name"
+            placeholder="Last Name"
+            value={editUser.last_name || ''}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-3">
+          <input
+            type="text"
+            name="city"
+            placeholder="City"
+            value={editUser.city || ''}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-3">
+          <input
+            type="text"
+            name="country"
+            placeholder="Country"
+            value={editUser.country || ''}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-3">
+          <input
+            type="text"
+            name="phone_number"
+            placeholder="Phone Number"
+            value={editUser.phone_number || ''}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-3">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={editUser.email || ''}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+        </div>
+         <div className="modal-footer">
+          <button onClick={handleEdit} className="btn btn-info">Save</button>
+          <button onClick={closeEditModal} className="btn btn-secondary">Close</button>
+         </div>
+        </div>
+       </div>
       )}
+
     </div>
   );
 };

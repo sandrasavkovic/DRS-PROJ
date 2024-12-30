@@ -150,22 +150,36 @@ const DiscussionAction = ({ discussion, userId, role }) => {
         <div className="mt-3 p-2 border rounded bg-light">
           <h6>Comments</h6>
           {comments.map((comment) => (
-            <div key={comment.id} className="mb-2">
-              <small className="text-muted">
-                {comment.username} | {new Date(comment.datetime).toLocaleString()}
-              </small>
-              <p>{comment.content}</p>
-            
-              {/* Ako je korisnikova diskusija ili ako je njegov komentar */}
-              {( discussion.user_id === userId || userId === comment.user_id || Number(role) === 1) && (
-                <button
-                  className="btn btn-danger btn-sm"
-                  onClick={() => handleDeleteComment(comment.id)}>
-                  <i className="fa fa-trash"></i> Delete
-                </button>
-              )}
-            </div>
-          ))}
+  <div key={comment.id} className="mb-2 d-flex justify-content-between align-items-start">
+    <div>
+      <small className="text-muted">
+        {comment.username} | {new Date(comment.datetime).toLocaleString()}
+      </small>
+      <p>{comment.content}</p>
+    </div>
+    
+    {/* Trash can button aligned to the right side */}
+    {(discussion.user_id === userId || userId === comment.user_id || Number(role) === 1) && (
+      <button
+        className="btn p-0 mx-1"
+        onClick={() => handleDeleteComment(comment.id)}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: '#dc3545', // Red color for the trash icon
+          fontSize: '1.2em',
+          cursor: 'pointer',
+          transition: 'color 0.2s',
+        }}
+        onMouseEnter={(e) => (e.target.style.color = '#ff6666')} // Lighter red on hover
+        onMouseLeave={(e) => (e.target.style.color = '#dc3545')} // Default red color
+      >
+        <i className="fa fa-trash"></i>
+      </button>
+    )}
+  </div>
+))}
+
 
           <div className="input-group mt-2">
             <input
@@ -177,7 +191,7 @@ const DiscussionAction = ({ discussion, userId, role }) => {
             />
             <button
               onClick={handleCommentSubmit}
-              className="btn btn-primary">
+              className="btn btn-info">
               Submit
             </button>
           </div>

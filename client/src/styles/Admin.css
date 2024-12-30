@@ -218,3 +218,13 @@ ul.list-group {
     width: calc(100% - 220px); /* Adjust list width for smaller sidebar */
   }
 }
+
+.btn-info {
+  background-color: #2980b9 !important; /* Set the button background color */
+  color: white; /* Ensure the text is readable */
+  border: none; /* Remove any border */
+}
+
+.btn-info:hover {
+  background-color: #1f6391 !important; /* Slightly darker shade for hover effect */
+}
