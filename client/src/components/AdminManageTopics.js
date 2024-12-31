@@ -88,11 +88,10 @@ const ThemePanel2 = () => {
       <div className="content">
 
         {/* List of all themes */}
-        <h2 className="mt-4">Topic List</h2>
         {themes.length === 0 ? (
           <p>No themes available.</p>
         ) : (
-            <div className="list-group topic-list">
+            <div className="list-group ">
             {themes.map((theme) => (
               <div className="list-group-item d-flex justify-content-between align-items-center" key={theme.id}>
                 <div>

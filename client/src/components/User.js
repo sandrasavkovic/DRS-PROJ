@@ -114,8 +114,35 @@ const User = ({ socket, handleLogout }) => {
       {/* Desni Sidebar */}
       <div className="top-right-controls">
         <div className="in_line">
-        <button className="btn btn-info" onClick={openEditModal} style={{ margin: '1rem' }} >Edit</button>
-        <button onClick={handleLogout} className="btn btn-secondary"> Logout </button>
+        {/* Edit Button with Profile Icon */}
+<button
+  className="btn btn-white border-0"
+  onClick={openEditModal}
+  style={{
+    margin: '1rem',
+    color: '#2980b9', // Blue color for the profile icon
+    fontSize: '1.8em', // Adjust icon size
+    backgroundColor: 'transparent', // Transparent background
+  }}
+  title="Edit Profile"
+>
+  <i className="bi bi-person-circle"></i> {/* Profile icon */}
+</button>
+
+{/* Logout Button with Logout Icon */}
+<button
+  onClick={handleLogout}
+  className="btn btn-white border-0"
+  style={{
+    color: '#dc3545', // Red color for the logout icon
+    fontSize: '1.8em', // Adjust icon size
+    backgroundColor: 'transparent', // Transparent background
+  }}
+  title="Logout"
+>
+  <i className="bi bi-box-arrow-right"></i> {/* Logout icon */}
+</button>
+
         </div>
       </div>
     </div>

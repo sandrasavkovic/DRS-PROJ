@@ -35,7 +35,6 @@ const AdminThemes = () => {
 
   return (
     <div className="container mt-4">
-      <h1 className="mb-4">Themes</h1>
 
       <div className="card p-4 shadow-sm">
         <h2 className="mb-4">Add new theme</h2>

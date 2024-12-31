@@ -6,6 +6,8 @@ import {
   postComment,
   deleteComment
 } from '../services/discussionService';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 import 'font-awesome/css/font-awesome.min.css';
 
 // Ovdje je def like, dislike i kom
@@ -191,8 +193,10 @@ const DiscussionAction = ({ discussion, userId, role }) => {
             />
             <button
               onClick={handleCommentSubmit}
-              className="btn btn-info">
-              Submit
+              className="btn btn-info"
+              data-toggle="tooltip" data-placement="top" title="Post comment">
+                <i className="bi bi-send"></i>
+            
             </button>
           </div>
         </div>

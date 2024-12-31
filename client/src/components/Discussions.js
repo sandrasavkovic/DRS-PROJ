@@ -167,7 +167,7 @@ const Discussions = ({ userId }) => {
 
   return (
   <div className="container mt-4">
-   <h2 className="text-center mb-4" style={{ color: '#6c757d' }}>Discussions</h2>
+   <h2 className="text-center mb-4" style={{ color: '#6c757d' }}></h2>
    {/* Add Discussion Modal */}
    {isAddModalOpen && (
       <div className="add-discussion-modal">

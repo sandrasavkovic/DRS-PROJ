@@ -20,12 +20,14 @@
 
 /* Content styling */
 .content {
-  padding: 20px;
+  padding: 10px;
+  margin-top: 20px;
   flex-grow: 1;
   align-content: flex-start;
-  height: 100vh; /* Ensure content has full height */
-  overflow-y: auto; /* Add scroll to content if needed */
+  height: calc(100vh - 40px); /* Adjusted height to leave space for header/footer */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
+
 /* List styling */
 .sidebar ul {
   list-style: none;
@@ -72,7 +74,8 @@
 /* Make sure list is responsive and doesn’t overflow the screen */
 ul.list-group {
   margin-top: 20px;
-  align-items: center;
+  max-height: calc(100vh - 120px); /* Limit the height of the list to fit within the available space */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .list-group-item {
@@ -82,11 +85,14 @@ ul.list-group {
   border: 1px solid #ddd;
   margin-bottom: 10px;
   padding: 10px;
+  overflow-y: hidden;
+
 }
 
 /* Button styling inside list */
 .list-group-item .btn {
   margin-left: 10px;
+  
 }
 
 /* Modal styling for editing */
