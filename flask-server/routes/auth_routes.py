@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app_init import socketio 
 from services.authService import login_user, register_user, get_user_by_username_service, update_user_service
-
+from routes.approving_routes import emit_pending_requests
 # Pomocu Blueprint se samo grupisu rute - treba nam jer rute ne pisemo u server.py fajlu
 auth_routes = Blueprint("auth_routes", __name__)
 
@@ -47,6 +47,7 @@ def register():
     success, message = register_user(data.get("username"), data.get("password"), data.get("name"), data.get("last_name"), data.get("address"),
                                     data.get("city"), data.get("country"), data.get("phone_number"), data.get("email"))
     if success:
+        emit_pending_requests()
         return jsonify({"success": True, "message": "Registration successful"})
     else:
         return jsonify({"success": False, "message": message}), 400

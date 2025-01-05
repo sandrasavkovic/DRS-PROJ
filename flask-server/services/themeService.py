@@ -24,11 +24,9 @@ def add_new_theme(theme_name, description):
     connection = get_db_connection()
     cursor = connection.cursor()
     
-    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    
     try:
-        cursor.execute('INSERT INTO themes (theme_name, description, date_time) VALUES (%s, %s, %s)', 
-                       (theme_name, description, current_time))
+        cursor.execute('INSERT INTO themes (theme_name, description) VALUES (%s, %s)', 
+                       (theme_name, description))
         connection.commit()
     except Exception as e:
         connection.rollback()

@@ -23,20 +23,30 @@ import 'font-awesome/css/font-awesome.min.css';
   'user_id' : discussion['user_id']
 */
 
-//Zbog ovoga je izmjenje Edit i Add discussions,
-//Dodani su prop u DiscussionDisplay da se promjene (edit i brisanje) propagira u roditeljsku komponentu (OVU - Discussions)
-
+//----------------NOVE INFO-------------------
 //BAZA IZMJENE:
-//Obrisana je kolona Title u Discussions
-//Dodano je unique ogranicenje za theme_name
+//Obrisana je kolona date_time u themes
 
-//Sta ne radi? 
-// Admin dodavanje/izmjena tema i propagacija promjea u user, ostalo nisam stigla provjeriti
-// Front za izgled post ostavi meni (nisam stigla zavrsiti)
-// Iz nekog razloga je disableovan like/dislike za DRUGU diskusiju 
-  // npr obrise se diskusija 1 i onda diskusija koja je bila diskusija 2 je sad prva
-  // i onda se moze like/dislike, aliii diskusija koja je bila diskusija 3 je sad druga 
-  // i onda se NE moze like/dislike (cudno!!)
+//Sta treba doraditi? 
+// EDIT USER
+  // - mejl se NE smije mijenjati (izmjene i front i back)
+  // - povecati Close dugme
+
+// EDIT DISCUSSION
+  // - povecati Close dugme
+
+// DELETE DISCUSSION
+  // - Treba prompt (Are you sure you want to delete discussion) - kao kod delete comment sto imamo 
+
+// DELETE THEME
+  // - Treba prompt (Are you sure you want to delete theme) - kao kod delete comment sto imamo
+
+// Myb--kad se odbije reg i taj korisnik se pokusa logovati da izadje posebna poruke (ne check username, password)
+
+// Jos jedna zanimljivost:
+// Kad se edituje diskusija sve ok, aliii kad se otvori inspect i pokusa editovati diskusija izadje greska???
+
+// I JAKO BITNO:  Brisati sav kod koji je visak i provjera da li cascade delete radi
 
 const Discussions = ({ userId }) => {
 
@@ -53,11 +63,6 @@ const Discussions = ({ userId }) => {
     searchValue: '',
   });
 
-  //Callback funkcija za edit i brisanje diskusije
-  //NAPOMENA: DiscussionDisplay je komponenta za 1 diskusiju, dakle za svaku diskusiju onda imamo 1 DiscussionDisplay komp
-  //Po azuriranju te jedne komponente moramo javiti roditejskoj (ovoj komponenti) jer ona sadrzi SVE diskusije
-  //Ovdje se tim callback fjama azurira/obrise ta diskusija u listi svih diskusija
-  // Funkcija za ažuriranje diskusije
   const handleDiscussionUpdated = (updatedDiscussion) => {
     setDiscussions((prevDiscussions) =>
       prevDiscussions.map((discussion) =>
@@ -137,8 +142,9 @@ const Discussions = ({ userId }) => {
     }
     // saljemo user_id, theme_id, content
     addDiscussion(userId, selectedFromList.id, newDiscussionText)
-      .then(() => {
+      .then((newDiscussion) => {
         alert('Discussion added successfully.');
+        setDiscussions((prevDiscussions) => [newDiscussion, ...prevDiscussions]);
         closeAddModal();
       })
       .catch((error) => {
@@ -150,19 +156,10 @@ const Discussions = ({ userId }) => {
   useEffect(() => {
     fetchThemes()
       .then((response) => {
-        const sortedThemes = response.data.sort(
-          (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
-        );
-        setThemes(sortedThemes);
+        setThemes(response.data);
       })
       .catch((error) => console.error('Error fetching themes:', error));
 
-    /* Ovde možemo dodati socket logiku, ako je potrebno
-    return () => {
-      socket.off("serverReaction");
-      socket.off("mention_notification");
-    };*/ 
-    // u uglaste zagrade socket i proslije kao prop onda!
   }, []);
 
   return (

@@ -16,12 +16,9 @@ const AdminThemes = () => {
       .then(() => {
         fetchThemes()
           .then((response) => {
-            const sortedThemes = response.data.sort(
-              (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
-            );
-            setThemes(sortedThemes);
-            setThemeName(""); // reset theme name field
-            setThemeDescription(""); // reset theme description field
+            setThemes(response.data);
+            setThemeName("");
+            setThemeDescription("");
           })
           .catch((error) => console.error("Error fetching themes:", error));
       })

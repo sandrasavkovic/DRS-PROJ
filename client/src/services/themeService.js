@@ -151,20 +151,30 @@ export const fetchThemes = () => {
   
 
   // dodavanje diskusije na neku temu
-export const addDiscussion = (user_id, theme_id, discussionText) => {
-  return fetch(`/theme/addDiscussion`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      userId: user_id,
-      themeId: theme_id,
-      discussionText: discussionText
-  }),
-  }).then((res) => res.json());
+  export const addDiscussion = (user_id, theme_id, discussionText) => {
+    return fetch(`/theme/addDiscussion`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: user_id,
+        themeId: theme_id,
+        discussionText: discussionText
+    }),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to add discussion`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error add discussion:", error);
+      throw error;
+    });
+  };
   
-};
 
 /*
 export const getDiscussionById = (discussionId) => {

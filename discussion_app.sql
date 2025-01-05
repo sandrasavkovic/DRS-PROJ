@@ -33,7 +33,7 @@ CREATE TABLE `comments` (
   KEY `user_id` (`user_id`),
   CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`discussion_id`) REFERENCES `discussions` (`id`) ON DELETE CASCADE,
   CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -64,7 +64,7 @@ CREATE TABLE `discussions` (
   KEY `theme_id` (`theme_id`),
   CONSTRAINT `discussions_ibfk_1` FOREIGN KEY (`theme_id`) REFERENCES `themes` (`id`),
   CONSTRAINT `discussions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +73,7 @@ CREATE TABLE `discussions` (
 
 LOCK TABLES `discussions` WRITE;
 /*!40000 ALTER TABLE `discussions` DISABLE KEYS */;
-INSERT INTO `discussions` VALUES (2,'Sadržaj diskusije2',12,2,'2024-12-14 19:47:38'),(4,'n',11,1,'2024-12-29 15:09:19'),(8,'moja nova diskusija',12,3,'2024-12-14 19:52:31'),(9,'ssss',14,4,'2024-12-29 14:27:14'),(11,'sadasadsadasdadad',11,3,'2024-12-29 15:59:31');
+INSERT INTO `discussions` VALUES (2,'Sadržaj diskusije2',12,2,'2024-12-14 19:47:38'),(4,'n',11,1,'2024-12-29 15:09:19'),(8,'moja nova diskusija',12,3,'2024-12-14 19:52:31'),(9,'ssss',14,4,'2024-12-29 14:27:14'),(11,'sadasadsadasdadad',11,7,'2024-12-29 18:44:32'),(33,'novaaaaaaaaaaaaaaaa',11,1,'2025-01-05 22:33:25');
 /*!40000 ALTER TABLE `discussions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -124,7 +124,7 @@ CREATE TABLE `reactions` (
   KEY `discussion_id` (`discussion_id`),
   CONSTRAINT `reactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `reactions_ibfk_2` FOREIGN KEY (`discussion_id`) REFERENCES `discussions` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,7 +133,7 @@ CREATE TABLE `reactions` (
 
 LOCK TABLES `reactions` WRITE;
 /*!40000 ALTER TABLE `reactions` DISABLE KEYS */;
-INSERT INTO `reactions` VALUES (40,11,8,'like'),(44,12,8,'dislike'),(48,16,8,'dislike'),(49,16,2,'like'),(51,16,4,'like'),(59,11,2,'like');
+INSERT INTO `reactions` VALUES (40,11,8,'like'),(44,12,8,'dislike'),(48,16,8,'dislike'),(49,16,2,'like'),(51,16,4,'like'),(59,11,2,'like'),(62,11,11,'dislike'),(66,11,4,'like');
 /*!40000 ALTER TABLE `reactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,11 +147,10 @@ DROP TABLE IF EXISTS `themes`;
 CREATE TABLE `themes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `theme_name` varchar(255) NOT NULL,
-  `date_time` datetime DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_theme_name` (`theme_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -160,7 +159,7 @@ CREATE TABLE `themes` (
 
 LOCK TABLES `themes` WRITE;
 /*!40000 ALTER TABLE `themes` DISABLE KEYS */;
-INSERT INTO `themes` VALUES (1,'Tema 1','2024-12-08 14:30:00',NULL),(2,'Tema 2','2023-11-01 08:15:45',NULL),(3,'Tema 3','2022-06-25 23:59:59','jj'),(4,'Tema 4','2024-01-01 00:00:00','ds'),(7,'nova tema','2024-12-13 00:19:12','opis teme blabla');
+INSERT INTO `themes` VALUES (1,'Tema','neki opis12\n'),(2,'Tema 2','opisIzmjena'),(3,'Tema 3','jj'),(4,'Tema 4','ds'),(7,'nova tema','opis teme blabla');
 /*!40000 ALTER TABLE `themes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -188,7 +187,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -197,7 +196,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (11,'user','user123','Sandraa','Savkovicc','ulica123','Novi Sadd','Srbijaa','098765432111','sandrasavkovic86@gmail.com',0,'APPROVED',0),(12,'user1','user321','Duska','Muncan','Ulica321','Novi Sad','Srbija','1234567890','duskamuncan113@gmail.com',0,'PENDING',1),(14,'admin','admin123','Diana','Hodzic','ulica123','Novi Sad','Srbija','1234567890','projekat.drs6@gmail.com',1,'APPROVED',0),(16,'registrovani1','loz1','ime1','pr1','ad1','gr1','dz','0030303','fsdsds@gmail.com',0,'APPROVED',0);
+INSERT INTO `users` VALUES (11,'user','user123','Sandraa','Savkovicc','ulica123','Novi Sadd','Srbijaa','098765432111','sandrasavkovic86@gmail.com',0,'APPROVED',0),(12,'user1','user321','Duska','Muncan','Ulica321','Novi Sad','Srbija','1234567890','duskamuncan113@gmail.com',0,'PENDING',1),(14,'admin','admin123','Diana','Hodzic','ulica123','Novi Sad','Srbija','1234567890','projekat.drs6@gmail.com',1,'APPROVED',0),(16,'registrovani1','loz1','ime1','pr1','ad1','gr1','dz','0030303','fsdsds@gmail.com',0,'APPROVED',0),(19,'test','test123','Alma','Hodzic','Ulica321','Novi Sad','Srbija','1234567890','alma1hodzic@gmail.com',0,'DECLINED',1),(21,'test1','test123','Maja','Hodzic','Ulica321','Novi Sad','Srbija','1234567890','majahodzicc@gmail.com',0,'APPROVED',0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -210,4 +209,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-29 16:10:07
+-- Dump completed on 2025-01-05 22:49:38

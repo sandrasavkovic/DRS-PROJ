@@ -7,81 +7,51 @@ import Discussions from "./Discussions";
 
 
 const Admin = ({ socket, handleLogout }) => {
-  const[selectedOption, setSelectedOption] = useState(null)
+  const [selectedOption, setSelectedOption] = useState("pendingRequests")
   const [pendingRequests, setPendingRequests] = useState([]);
-
 
   const handleSidebarSelect = (option) =>{
     setSelectedOption(option)
   }
 
+  useEffect(() => {
+    if (!socket) return;
+  
+    socket.emit("getPendingRequests");
+  
+    socket.on("pendingRequestsUpdate", (data) => {
+      console.log("Pending requests updated:", data);
+      setPendingRequests(data);
+    });
+  
+    socket.on("errorMessage", (error) => {
+      console.error("Error received:", error);
+      alert(`Error: ${error}`);
+    });
+  
+    return () => {
+      socket.off("pendingRequestsUpdate");
+      socket.off("errorMessage");
+    };
+  }, [socket]);
+  
   const handleAcceptRequest = (userId) => {
     console.log("Accepting request for user: " + userId);
-    //socket.emit("accept_request", { userId }); //necemo ovdje emitovati EVENT (saljemo HTTP)
-    fetch(`/approving/accept-request/${userId}`, { method: "PUT" })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Request accepted:", data);
-      })
-      .catch((error) => console.error("Error accepting request:", error));
+    socket.emit("acceptRequest", { userId });
   };
-
+  
   const handleRejectRequest = (userId) => {
     console.log("Rejecting request for user: " + userId);
-    //socket.emit("reject_request", { userId }); //necemo ovdje emitovati EVENT (saljemo HTTP)
-    fetch(`/approving/decline-request/${userId}`, { method: "PUT" })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Request accepted:", data);
-    })
-    .catch((error) => console.error("Error accepting request:", error));
+    socket.emit("rejectRequest", { userId });
   };
-
-  useEffect(() => {
-    console.log(socket);
-
-    if (!socket) return;
-     // Učitavanje pending requests na početku
-    fetch("/approving/pending-requests") 
-      .then((response) => response.json())
-      .then((data) => {
-        setPendingRequests(data);
-      })
-      .catch((error) => console.error("Error fetching requests:", error));
-
-    socket.on("pendingRequestsUpdate", (data) => {
-        console.log("Pending requests updated:", data);
-        setPendingRequests(data); 
-    });
-
-    if (selectedOption === "pendingRequests") {
-      fetch("/approving/pending-requests") 
-      .then((response) => response.json())
-      .then((data) => {
-        setPendingRequests(data);
-      })
-      .catch((error) => console.error("Error fetching requests:", error));
-    }
-    else if (selectedOption === "nekaOpcija") {
-      alert("Kliknuli ste na neku opciju!")
-    }
-
-    return () => {
-      socket.off("updateRequest");
-    };
-  }, [socket, selectedOption]);
 
   return (
     <div className="admin-page">
-      {/* <button onClick={handleLogout} className="logout-btn">
-        Logout
-      </button> */}
+    
       <Sidebar onSelect={handleSidebarSelect} handleLogout={handleLogout} />
       
       <div className="content">
-        
-
-        {/* Conditionally render content based on selectedOption */}
+       
         {selectedOption === "pendingRequests" && (
           <div className="container mt-4">
           {pendingRequests.length === 0 ? (
@@ -118,21 +88,19 @@ const Admin = ({ socket, handleLogout }) => {
 
         {selectedOption === "addTopic" && (
           <div>
-           
-            <ThemePanel /> {/* Render ThemePanel for adding a new topic */}
+            <ThemePanel /> {/* dodavanje nove teme */}
           </div>
         )}
 
-        {/* Handle other options if needed */}
         {selectedOption === "manageTopics" && (
-          <div className="divForTopics">
-            <ThemePanel2/>
+          <div>
+            <ThemePanel2 />
           </div>
         )}
+
         {selectedOption === "discussionsView" &&(
           <div>
-                  <Discussions className="w-60 bg-light" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column'}} />
-
+            <Discussions className="w-60 bg-light" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column'}} />
           </div>
         )}
       </div>

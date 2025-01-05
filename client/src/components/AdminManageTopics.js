@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchThemes, deleteTheme, modifyTheme } from "../services/themeService"; 
+import 'font-awesome/css/font-awesome.min.css';
 
 const ThemePanel2 = () => {
   const [themeName, setThemeName] = useState("");
@@ -8,23 +9,18 @@ const ThemePanel2 = () => {
   const [isEditing, setIsEditing] = useState(false); 
   const [themes, setThemes] = useState([]);
 
-  // Handle theme deletion
   const handleDeleteTheme = (themeId) => {
     deleteTheme(themeId)
       .then(() => {
         fetchThemes()
           .then((response) => {
-            const sortedThemes = response.data.sort(
-              (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
-            );
-            setThemes(sortedThemes); // Update the theme list
+            setThemes(response.data);
           })
           .catch((error) => console.error("Error fetching themes:", error));
       })
       .catch((error) => console.error("Error deleting theme:", error));
   };
 
-  // Handle theme modification
   const handleModifyTheme = () => {
     if (!themeName || !themeDescription || !selectedThemeId) {
       alert("Please fill in both theme name and description!");
@@ -34,48 +30,38 @@ const ThemePanel2 = () => {
     const updatedTheme = {
       theme_name: themeName,
       description: themeDescription, 
-      date_time: new Date().toISOString(),
     };
 
     modifyTheme(selectedThemeId, updatedTheme)
       .then(() => {
         fetchThemes()
           .then((response) => {
-            const sortedThemes = response.data.sort(
-              (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
-            );
-            setThemes(sortedThemes); // Update state with the new list of themes
-            setThemeName(""); // Reset the input fields
+            setThemes(response.data); 
+            setThemeName(""); 
             setThemeDescription("");
             setSelectedThemeId(null);
-            setIsEditing(false); // Close the modal after saving changes
+            setIsEditing(false); 
           })
           .catch((error) => console.error("Error fetching themes:", error));
       })
       .catch((error) => console.error("Error modifying theme:", error));
   };
 
-  // Fetch themes on initial render
   useEffect(() => {
     fetchThemes()
       .then((response) => {
-        const sortedThemes = response.data.sort(
-          (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
-        );
-        setThemes(sortedThemes); // Set initial theme list
+        setThemes(response.data);
       })
       .catch((error) => console.error("Error fetching themes:", error));
   }, []);
 
-  // Handle edit button click
   const handleEditClick = (theme) => {
     setSelectedThemeId(theme.id);
     setThemeName(theme.theme_name);
     setThemeDescription(theme.description);
-    setIsEditing(true); // Show the modal when editing
+    setIsEditing(true); 
   };
 
-  // Handle close modal
   const handleCloseModal = () => {
     setIsEditing(false);
     setThemeName("");
@@ -84,43 +70,63 @@ const ThemePanel2 = () => {
   };
 
   return (
-    <div className="admin-page">
+    <div>
       <div className="content">
 
-        {/* List of all themes */}
+        {/* Lista tema */}
         {themes.length === 0 ? (
           <p>No themes available.</p>
         ) : (
-            <div className="list-group ">
+            <div className="list-group " style={{ width: '80%' }}>
             {themes.map((theme) => (
               <div className="list-group-item d-flex justify-content-between align-items-center" key={theme.id}>
                 <div>
                   <h5>{theme.theme_name}</h5>
                   <p>{theme.description}</p>
-                  <small className="text-muted">{new Date(theme.date_time).toLocaleString()}</small>
                 </div>
           
                 <div className="btn-group">
-                  <button
-                    onClick={() => handleEditClick(theme)}
-                    className="btn btn-info"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteTheme(theme.id)}
-                    className="btn btn-secondary"
-                  >
-                    Delete
-                  </button>
-                </div>
+                <button
+                  className="btn p-0 mx-1"
+                  onClick={() => handleEditClick(theme)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#6c757d',
+                    fontSize: '1.2em',
+                    cursor: 'pointer',
+                    transition: 'color 0.2s',
+                  }}
+                  onMouseEnter={(e) => (e.target.style.color = '#007bff')}
+                  onMouseLeave={(e) => (e.target.style.color = '#6c757d')}
+                >
+                  <i className="fa fa-pencil"></i>
+                </button>
+                <button
+                  className="btn p-0 mx-1"
+                  onClick={() => handleDeleteTheme(theme.id)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#dc3545',
+                    fontSize: '1.2em',
+                    cursor: 'pointer',
+                    transition: 'color 0.2s',
+                  }}
+                  onMouseEnter={(e) => (e.target.style.color = '#ff6666')}
+                  onMouseLeave={(e) => (e.target.style.color = '#dc3545')}
+                >
+                  <i className="fa fa-trash"></i>
+                </button>
+              </div>
+
               </div>
             ))}
           </div>
           
         )}
 
-        {/* Modal for Editing Theme */}
+        {/* Modal za edit */}
         {isEditing && (
           <div className="modal show d-block" tabIndex="-1" aria-labelledby="editThemeModalLabel" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered">

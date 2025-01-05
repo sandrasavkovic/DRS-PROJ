@@ -69,6 +69,7 @@ def add_discussion():
         print("Usao u funkciju za dodavanje diskusije")
         # kroz data.themeId ..
         data = request.get_json()
+        print(data)
         if not data:
             return jsonify({"success": False, "message": "No data provided for update"}), 400
 
@@ -76,7 +77,8 @@ def add_discussion():
         themeId = data.get('themeId')
         discussion_text = data.get('discussionText')
      
-        response, status_code = add_discussion_service(userId, themeId, discussion_text)
-        return jsonify(response), status_code
+        newDiscussion = add_discussion_service(userId, themeId, discussion_text)
+        print(newDiscussion)
+        return jsonify(newDiscussion), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500  

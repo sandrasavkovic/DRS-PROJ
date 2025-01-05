@@ -9,39 +9,40 @@ from app_init import socketio  # Pretpostavka da je socketio inicijalizovan
 
 approving_routes = Blueprint("approving_routes", __name__)
 
-@approving_routes.route("/pending-requests", methods=["GET"])
-def pending_requests():
+def emit_pending_requests():
     try:
         pending_requests = get_pending_requests()
-        return jsonify(pending_requests), 200
+        socketio.emit("pendingRequestsUpdate", pending_requests) 
     except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
+        socketio.emit("error", {"message": str(e)}) 
 
-@approving_routes.route("/accept-request/<int:user_id>", methods=["PUT"])
-def accept_request(user_id):
+@socketio.on("getPendingRequests")
+def handle_get_pending_requests():
+    emit_pending_requests()
+
+@socketio.on("acceptRequest")
+def handle_accept_request(data):
+    user_id = data.get("userId")
     try:
         success = approve_request(user_id)
-        print("info iz servise: ")
-        print(success)
         if success:
             pending_requests = get_pending_requests()
             socketio.emit("pendingRequestsUpdate", pending_requests)
-            return jsonify({"success": True, "message": "Request accepted successfully"}), 200
         else:
-            return jsonify({"success": False, "message": "Failed to accept request"}), 400
+            emit("error", {"message": "Failed to accept request"})
     except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
+        emit("error", {"message": str(e)})
 
-@approving_routes.route("/decline-request/<int:user_id>", methods=["PUT"])
-def decline_request(user_id):
+@socketio.on("rejectRequest")
+def handle_reject_request(data):
+    user_id = data.get("userId")
     try:
-        print(user_id)
         success = reject_request(user_id)
         if success:
             pending_requests = get_pending_requests()
             socketio.emit("pendingRequestsUpdate", pending_requests)
-            return jsonify({"success": True, "message": "Request declined successfully"}), 200
         else:
-            return jsonify({"success": False, "message": "Failed to decline request"}), 400
+            emit("error", {"message": "Failed to reject request"})
     except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
+        emit("error", {"message": str(e)})
+
