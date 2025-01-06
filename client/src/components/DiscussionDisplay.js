@@ -15,6 +15,7 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
   }, [discussion, themes]);
 
   const handleDeleteDiscussion = () => {
+    if (window.confirm('Are you sure you want to delete this discussion?')) {
     deleteDiscussion(discussion.id)
       .then(() => {
         alert('Discussion deleted successfully.');
@@ -24,6 +25,7 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
         console.error('Error deleting discussion:', error);
         alert('Failed to delete discussion.');
       })
+    }
   };
 
   const handleEditDiscussion = () => {
@@ -143,7 +145,7 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
 
       {/* Edit Modal */}
       {isEditDiscussionModalOpen && (
-        <div className="modal show d-block" tabIndex="-1" aria-labelledby="editDiscussionModalLabel" aria-hidden="true">
+        <div className="modal show d-block" tabIndex="-1" aria-labelledby="editDiscussionModalLabel">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
@@ -194,7 +196,7 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
                   className="btn btn-primary"
                   onClick={handleEditDiscussion}
                 >
-                  Save Changes
+                  Save
                 </button>
                 <button
                   type="button"

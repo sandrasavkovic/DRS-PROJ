@@ -11,7 +11,7 @@ const User = ({ socket, handleLogout }) => {
   // USER
   const [editUser, setEditUser] = useState(null); // Podaci o korisniku za uređivanje
   const [isEditModalOpen, setEditModalOpen] = useState(false); // Modal za uređivanje
-
+  
   //treba za PROP ZA diskusije
   useEffect(() => {
       const username = localStorage.getItem("user_name");
@@ -213,11 +213,12 @@ const User = ({ socket, handleLogout }) => {
             value={editUser.email || ''}
             onChange={handleInputChange}
             className="form-control"
+            disabled
           />
         </div>
         </div>
          <div className="modal-footer">
-          <button onClick={handleEdit} className="btn btn-info">Save</button>
+          <button onClick={handleEdit} className="btn btn-primary">Save</button>
           <button onClick={closeEditModal} className="btn btn-secondary">Close</button>
          </div>
         </div>

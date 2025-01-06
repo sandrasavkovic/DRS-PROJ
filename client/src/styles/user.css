@@ -360,6 +360,12 @@ background-color: #117a8b !important; /* Darker shade for hover effect */
   text-align: center;
 }
 
+.btn-primary, .btn-secondary {
+  width: 100px; /* ili željena širina */
+  height: 45px;
+  text-align: center;
+}
+
 .edit-user-modal .modal-footer {
   display: flex;
   justify-content: space-between; /* Positions buttons at opposite ends */

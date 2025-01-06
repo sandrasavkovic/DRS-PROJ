@@ -31,22 +31,31 @@ import 'font-awesome/css/font-awesome.min.css';
 // EDIT USER
   // - mejl se NE smije mijenjati (izmjene i front i back)
   // - povecati Close dugme
+  // disabled u front-u, korisnik ce moci da pregleda svoj email, ali nece moci da ga menja
 
 // EDIT DISCUSSION
   // - povecati Close dugme
-
+  // -close i save button su sada iste velicine 
 // DELETE DISCUSSION
   // - Treba prompt (Are you sure you want to delete discussion) - kao kod delete comment sto imamo 
-
+  // - uradjeno
 // DELETE THEME
   // - Treba prompt (Are you sure you want to delete theme) - kao kod delete comment sto imamo
-
+  // -uradjeno
 // Myb--kad se odbije reg i taj korisnik se pokusa logovati da izadje posebna poruke (ne check username, password)
+  // dobijamo mejl ako nas admin odbije o odbijenoj registraciji
 
 // Jos jedna zanimljivost:
 // Kad se edituje diskusija sve ok, aliii kad se otvori inspect i pokusa editovati diskusija izadje greska???
-
+  // meni ovo radi
 // I JAKO BITNO:  Brisati sav kod koji je visak i provjera da li cascade delete radi
+  // dodato cascade delete u themes tabelu
+    // provereno : kada se obrise topic brisu se njegove diskusije
+    // kada se obrise diskusija brisu se njeni komentari 
+    // kada se obrise diskusija brisu se i njene reakcije
+  // ---------------------  
+// Greska koja se pojavljuje u inspect-u (nisam sigurna kada se pojavila) - ispratiti :
+// user:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
 
 const Discussions = ({ userId }) => {
 
@@ -207,7 +216,7 @@ const Discussions = ({ userId }) => {
           </form>
 
           <div className="modal-footer">
-            <button className="btn btn-info me-2" onClick={handleAddDiscussion}>
+            <button className="btn btn-primary" onClick={handleAddDiscussion}>
               Add
             </button>
             <button className="btn btn-secondary" onClick={closeAddModal}>

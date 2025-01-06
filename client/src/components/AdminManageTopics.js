@@ -10,6 +10,7 @@ const ThemePanel2 = () => {
   const [themes, setThemes] = useState([]);
 
   const handleDeleteTheme = (themeId) => {
+    if (window.confirm('Are you sure you want to delete this topic?')) {
     deleteTheme(themeId)
       .then(() => {
         fetchThemes()
@@ -19,6 +20,7 @@ const ThemePanel2 = () => {
           .catch((error) => console.error("Error fetching themes:", error));
       })
       .catch((error) => console.error("Error deleting theme:", error));
+    }
   };
 
   const handleModifyTheme = () => {
@@ -128,7 +130,7 @@ const ThemePanel2 = () => {
 
         {/* Modal za edit */}
         {isEditing && (
-          <div className="modal show d-block" tabIndex="-1" aria-labelledby="editThemeModalLabel" aria-hidden="true">
+          <div className="modal show d-block" tabIndex="-1" aria-labelledby="editThemeModalLabel">
             <div className="modal-dialog modal-dialog-centered">
               <div className="modal-content">
                 <div className="modal-header">
@@ -168,7 +170,7 @@ const ThemePanel2 = () => {
                     className="btn btn-primary"
                     onClick={handleModifyTheme}
                   >
-                    Save Changes
+                    Save
                   </button>
                   <button
                     type="button"

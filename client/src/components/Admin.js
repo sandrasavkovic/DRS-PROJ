@@ -72,7 +72,7 @@ const Admin = ({ socket, handleLogout }) => {
                         Accept
                       </button>
                       <button
-                        className="btn btn-secondary"
+                        className="btn custom-btn-info"
                         onClick={() => handleRejectRequest(request[0])}
                       >
                         Decline
