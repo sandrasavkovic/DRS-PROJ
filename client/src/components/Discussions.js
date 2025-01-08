@@ -82,10 +82,17 @@ const Discussions = ({ userId , discussions:propDiscussions}) => {
     );
   };
 
-  useEffect(() => {
-    setDiscussions(propDiscussions);
-  }, [propDiscussions]); 
 
+  useEffect(() => {
+    fetchAllDiscussions()
+      .then((response) => {
+        setDiscussions(response.data);
+      })
+      .catch((error) => console.error('Error fetching discussions:', error));
+  }, []); 
+
+
+  
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prevState) => ({
@@ -142,7 +149,9 @@ const Discussions = ({ userId , discussions:propDiscussions}) => {
     }
     // saljemo user_id, theme_id, content
     addDiscussion(userId, selectedFromList.id, newDiscussionText)
+   
       .then((newDiscussion) => {
+        console.log("OVO JE ADMINOV ID : " ,userId);
         alert('Discussion added successfully.');
         setDiscussions((prevDiscussions) => [newDiscussion, ...prevDiscussions]);
         closeAddModal();

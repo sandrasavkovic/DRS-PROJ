@@ -3,11 +3,9 @@ import '../styles/user.css';
 import { getUserByUsername, updateUser } from '../services/authService';
 import Discussions from "./Discussions";
 import { getUserIdByUsername } from '../services/discussionService'; // ovo treba
-import useDiscussions from './useDiscussions';
 
 const User = ({ socket, handleLogout }) => {
   //TREBA ZA PROP - kod DISKUSIJA
-  const { discussions: propDiscussions, loading, error } = useDiscussions();  // Use the custom hook to fetch discussions
 
   const [userId, setUserId] = useState(null);
 
@@ -110,7 +108,7 @@ const User = ({ socket, handleLogout }) => {
 
      {/* Centrirana Discussions komponenta sa 70% visine */}
      <div className="d-flex justify-content-center align-items-start" style={{ height: '80vh' }}>
-      {userId && <Discussions userId={userId} discussions={propDiscussions} />}
+      {userId && <Discussions userId={userId} />}
      </div>
 
     <div className="d-flex flex-column w-100">

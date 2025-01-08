@@ -5,15 +5,14 @@ import ThemePanel2 from "./AdminManageTopics";
 import AdminCRUD from "./AdminCRUD";
 import Discussions from "./Discussions";
 import { fetchThemes } from "../services/themeService";
-import useDiscussions from "./useDiscussions";
+import { getUserIdByUsername } from '../services/discussionService'; // ovo treba
 
 const Admin = ({ socket, handleLogout }) => {
   const [selectedOption, setSelectedOption] = useState("pendingRequests");
   const [pendingRequests, setPendingRequests] = useState([]);
   const [isThemesLoading, setThemesLoading] = useState(false);
   const [themes, setPropThemes] = useState([]);
-  const { discussions: propDiscussions, loading, error } = useDiscussions();  // Use the custom hook to fetch discussions
-
+  const [adminId, setAdminId] = useState(null);
   const handleSidebarSelect = (option) => {
     setSelectedOption(option);
   };
@@ -32,6 +31,18 @@ const Admin = ({ socket, handleLogout }) => {
       });
   }, []);
   
+  // da bismo kao prop za diskusiju mogli da prosledimo adminov id
+ useEffect(() => {
+      const username = localStorage.getItem("user_name");
+  
+      if (username) {
+        getUserIdByUsername(username)
+          .then((id) => {
+            setAdminId(id);
+          })
+          .catch((error) => console.error("Error fetching userId:", error));
+      }
+    }, []);
 
 
   useEffect(() => {
@@ -119,7 +130,8 @@ const Admin = ({ socket, handleLogout }) => {
             <AdminCRUD themes={themes} isLoading={isThemesLoading} />
           )}
           {selectedOption === "discussionsView" && (
-            <Discussions discussions={propDiscussions}
+            <Discussions 
+            userId={adminId}
               className="w-60 bg-light"
               style={{
                 width: "100%",
