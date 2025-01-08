@@ -155,6 +155,7 @@ export const fetchDiscussionComments = (discussionId) => {
     })
     .then((data) => {
       console.log("Reactions fetched:", data);
+      console.log("OVAKO IZGLEDA REZULTAT", data)
       return data;
     })
     .catch((error) => {

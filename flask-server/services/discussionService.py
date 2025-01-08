@@ -349,7 +349,17 @@ def get_discussion_comments(discussionId):
             for row in result
         ]
 
-        return comments_dtos
+        query= """
+            SELECT COUNT(*) FROM comments WHERE discussion_id = %s;
+        """
+        cursor.execute(query, (discussionId,))
+        count = cursor.fetchone()[0]
+        
+        print("@22222222222222222")
+        print(comments_dtos)
+        print(count)
+        return comments_dtos, count
+    
 
     except Exception as e:
         return ({"error": f"Error fetching comments: {str(e)}"}), 500

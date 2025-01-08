@@ -20,6 +20,7 @@ const DiscussionAction = ({ discussion, userId, role }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [showComments, setShowComments] = useState(false);
+  const [commentsCount, setCommentsCount] = useState(0);
 
   useEffect(() => {
     fetchDiscussionReactions(discussion.id, userId)
@@ -27,12 +28,15 @@ const DiscussionAction = ({ discussion, userId, role }) => {
         setLikesCount(data.likes);
         setDislikesCount(data.dislikes);
         setUserReaction(data.user_reaction);
+        
       })
       .catch((error) => console.error('Error fetching reactions:', error));
 
     fetchDiscussionComments(discussion.id)
       .then((data) => {
-        setComments(data);
+        setComments(data[0]);
+        setCommentsCount(data[1]);
+
       })
       .catch((error) => console.error('Error fetching comments:', error));
 
@@ -61,7 +65,7 @@ const DiscussionAction = ({ discussion, userId, role }) => {
     if (!showComments) { 
       fetchDiscussionComments(discussion.id)
         .then((data) => {
-          setComments(data);
+          setComments(data[0]);
         })
         .catch((error) => console.error('Error fetching comments:', error));
     }
@@ -81,6 +85,8 @@ const DiscussionAction = ({ discussion, userId, role }) => {
       .then((data) => {
         setComments((prev) => [...prev, data]);
         setNewComment('');
+        setCommentsCount(prevCount => prevCount + 1); 
+
       })
       .catch((error) => console.error('Error posting comment:', error));
   };
@@ -145,6 +151,8 @@ const DiscussionAction = ({ discussion, userId, role }) => {
         >
           <i className="fa fa-comment"></i>
         </button>
+        <span className="me-3">{commentsCount}</span> {/* Razmak između dugmeta i broja */}
+
       
       </div>
 
