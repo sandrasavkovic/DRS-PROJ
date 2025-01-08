@@ -38,8 +38,9 @@ def modify_theme(theme_id):
     
         retVal = modify_existing_theme(theme_id, theme_name, description)
         
-        if 'error' in retVal:
-            return jsonify(retVal), 400  # Ako postoji greška - vraćamo status 400
+        if retVal:
+            if 'error' in retVal:
+                return jsonify(retVal), 400  # Ako postoji greška - vraćamo status 400
         
         return jsonify({'message': 'Tema je uspešno modifikovana!'}), 200
         

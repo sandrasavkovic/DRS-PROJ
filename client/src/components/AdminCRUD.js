@@ -39,14 +39,16 @@ const AdminCRUD = () => {
       alert("Please fill in both theme name and description!");
       return;
     }
-    
-    /*
-    if (checkThemeExists(themeName)) {
-        alert("A theme with this name already exists!");
-        return; 
-    } 
-    */ 
-   
+
+    const result = checkThemeExists(themeName);
+
+    if (result !== -1) {
+      if(result !== selectedThemeId){
+        alert("Theme name already exists. Please choose a different name.");
+        return;
+      }
+    }
+  
     const updatedTheme = {
       theme_name: themeName,
       description: themeDescription,
@@ -82,7 +84,8 @@ const AdminCRUD = () => {
   };
 
   const checkThemeExists = (themeName) => {
-    return themes.some((theme) => theme.theme_name === themeName);
+    const foundTheme = themes.find((theme) => theme.theme_name === themeName);
+    return foundTheme ? foundTheme.id : -1;
   };
 
   const handleThemeAdded = (newTheme) => {

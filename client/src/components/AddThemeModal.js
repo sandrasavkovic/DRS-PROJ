@@ -13,9 +13,11 @@ const AddThemeModal = ({ isOpen, closeModal, onThemeAdded, checkThemeExists }) =
       return;
     }
 
-    if (checkThemeExists(themeName)) {
-        alert("Theme name already exists. Please choose a different name.");
-        return;
+    const result = checkThemeExists(themeName);
+
+    if (result !== -1) {
+      alert("Theme name already exists. Please choose a different name.");
+      return;
     }
 
     const newTheme = { theme_name: themeName, description: themeDescription };

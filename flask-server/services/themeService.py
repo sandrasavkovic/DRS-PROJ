@@ -56,15 +56,17 @@ def add_new_theme(theme_name, description):
 
 
 def modify_existing_theme(theme_id, theme_name, description):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-
     try:
-        cursor.execute('SELECT COUNT(*) FROM themes WHERE theme_name = %s', (theme_name,))
-        count = cursor.fetchone()[0]
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        # Provera da li tema sa datim imenom postoji i njeno poređenje sa prosleđenim ID-jem
+        cursor.execute('SELECT id FROM themes WHERE theme_name = %s', (theme_name,))
+        result = cursor.fetchone()
         
-        if count > 0:
-            return {"error": "Theme name already exists."}
+        if result:
+            existing_id = result[0]
+            if existing_id != theme_id:
+                return {"error": "Theme name already exists."}
 
         cursor.execute('UPDATE themes SET theme_name = %s, description = %s WHERE id = %s', 
                        (theme_name, description, theme_id))
