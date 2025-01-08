@@ -3,7 +3,7 @@ import { fetchAllDiscussions, addDiscussion} from "../services/discussionService
 import { fetchThemes} from '../services/themeService';
 import DiscussionDisplay from './DiscussionDisplay'; 
 import 'font-awesome/css/font-awesome.min.css';
-
+import toast from 'react-hot-toast';
 // Ovdje se samo filtriraju sve diskusije!
 // NAPOMENA: BITNO!!!
 // Discussion objekat u discussions u svim fjama (edit i add) mora imati format kao i u getAllDiscussions
@@ -139,12 +139,12 @@ const Discussions = ({ userId , discussions:propDiscussions}) => {
 
   const handleAddDiscussion = () => {
     if (!selectedFromList) {
-      alert('Please select a theme.');
+      toast.error('Please select a theme.');
       return;
     }
 
     if (newDiscussionText.trim() === '') {
-      alert('Discussion text cannot be empty.');
+      toast.error('Discussion text cannot be empty.');
       return;
     }
     // saljemo user_id, theme_id, content
@@ -152,13 +152,13 @@ const Discussions = ({ userId , discussions:propDiscussions}) => {
    
       .then((newDiscussion) => {
         console.log("OVO JE ADMINOV ID : " ,userId);
-        alert('Discussion added successfully.');
+        toast.success('Discussion added successfully.');
         setDiscussions((prevDiscussions) => [newDiscussion, ...prevDiscussions]);
         closeAddModal();
       })
       .catch((error) => {
         console.error('Error adding discussion:', error);
-        alert('Failed to add discussion.');
+        toast.error('Failed to add discussion.');
       });
   };
 

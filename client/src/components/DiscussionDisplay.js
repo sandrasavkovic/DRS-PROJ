@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { modifyDiscussion, deleteDiscussion } from '../services/discussionService';
 import 'font-awesome/css/font-awesome.min.css';
 import DiscussionAction from './DiscussionAction';
+import { toast } from 'react-hot-toast';
 
 const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, onDiscussionDeleted }) => {
   const [isEditDiscussionModalOpen, setEditDiscussionModalOpen] = useState(false);
@@ -15,29 +16,27 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
   }, [discussion, themes]);
 
   const handleDeleteDiscussion = () => {
-    if (window.confirm('Are you sure you want to delete this discussion?')) {
     deleteDiscussion(discussion.id)
       .then(() => {
-        alert('Discussion deleted successfully.');
+        toast.success('Discussion deleted successfully.');
         onDiscussionDeleted(discussion.id); // Callback for parent component
       })
       .catch((error) => {
         console.error('Error deleting discussion:', error);
-        alert('Failed to delete discussion.');
+        toast.error('Failed to delete discussion.');
       })
-    }
   };
 
   const handleEditDiscussion = () => {
     modifyDiscussion(discussion.id, editDiscussion)
       .then((updatedDiscussion) => {
-        alert('Discussion updated successfully.');
+        toast.success('Discussion updated successfully.');
         onDiscussionUpdated(updatedDiscussion);  // Update in parent component
         setEditDiscussionModalOpen(false);
       })
       .catch((error) => {
         console.error('Error updating discussion:', error);
-        alert('Failed to update discussion.');
+        toast.error('Failed to update discussion.');
       })
   };
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { addTheme } from "../services/themeService";
-
+import toast from "react-hot-toast";
 const AddThemeModal = ({ isOpen, closeModal, onThemeAdded, checkThemeExists }) => {
   const [themeName, setThemeName] = useState("");
   const [themeDescription, setThemeDescription] = useState("");
@@ -9,14 +9,14 @@ const AddThemeModal = ({ isOpen, closeModal, onThemeAdded, checkThemeExists }) =
     e.preventDefault();  // ovo sprijeci ponovni submit
 
     if (!themeName || !themeDescription) {
-      alert("You must fill in the theme name and description fields!");
+      toast.error("You must fill in the theme name and description fields!");
       return;
     }
 
     const result = checkThemeExists(themeName);
 
     if (result !== -1) {
-      alert("Theme name already exists. Please choose a different name.");
+      toast.error("Theme name already exists. Please choose a different name.");
       return;
     }
 
@@ -24,7 +24,7 @@ const AddThemeModal = ({ isOpen, closeModal, onThemeAdded, checkThemeExists }) =
     
     addTheme(newTheme)
       .then((addedTheme) => {
-        alert('Theme added successfully.');
+        toast.success('Theme added successfully.');
         onThemeAdded(addedTheme);
         closeModal();
         // Reset polja za unos
@@ -33,7 +33,7 @@ const AddThemeModal = ({ isOpen, closeModal, onThemeAdded, checkThemeExists }) =
       })
       .catch((error) => {
         console.error('Error adding theme:', error);
-        alert(`Failed to add theme: ${error}`);
+        toast.error(`Failed to add theme: ${error}`);
       });
   };
 

@@ -9,7 +9,7 @@ import {
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import 'font-awesome/css/font-awesome.min.css';
-
+import toast from 'react-hot-toast';
 // Ovdje je def like, dislike i kom
 
 const DiscussionAction = ({ discussion, userId, role }) => {
@@ -48,11 +48,11 @@ const DiscussionAction = ({ discussion, userId, role }) => {
         })
         .catch((error) => {
           console.error(`Error reacting to discussion: ${reactionType}`, error);
-          alert(`Failed to ${reactionType} discussion.`);
+          toast.error(`Failed to ${reactionType} discussion.`);
         });
     } else {
       console.error('User ID is not available');
-      alert('User ID is not available');
+      toast.error('User ID is not available');
     }
   };
 
@@ -69,7 +69,7 @@ const DiscussionAction = ({ discussion, userId, role }) => {
 
   const handleCommentSubmit = () => {
     if (!newComment.trim()) {
-      alert('Comment cannot be empty!');
+      toast.error('Comment cannot be empty!');
       return;
     }
   
@@ -86,7 +86,6 @@ const DiscussionAction = ({ discussion, userId, role }) => {
   };
 
   const handleDeleteComment = (commentId) => {
-    if (window.confirm('Are you sure you want to delete this comment?')) {
       deleteComment(commentId)
         .then(() => {
           // Ukloni obrisani komentar iz lokalnog stanja
@@ -94,12 +93,13 @@ const DiscussionAction = ({ discussion, userId, role }) => {
             prevComments.filter((comment) => comment.id !== commentId)
           );
           console.log(`Deleted comment with ID: ${commentId}`);
+          toast.success("Comment successfully deleted!")
         })
         .catch((error) => {
           console.error('Error deleting comment:', error);
-          alert('Failed to delete comment.');
+          toast.error('Failed to delete comment.');
         });
-    }
+    
   };
 
   return (
@@ -154,8 +154,11 @@ const DiscussionAction = ({ discussion, userId, role }) => {
           {comments.map((comment) => (
   <div key={comment.id} className="mb-2 d-flex justify-content-between align-items-start">
     <div>
+      
       <small className="text-muted">
-        {comment.username} | {new Date(comment.datetime).toLocaleString()}
+        @{comment.username}   
+      </small>
+      <small className="text-muted">         {new Date(comment.datetime).toLocaleString()}
       </small>
       <p>{comment.content}</p>
     </div>

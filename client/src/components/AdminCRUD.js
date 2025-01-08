@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AddThemeModal from './AddThemeModal';
 import { deleteTheme, modifyTheme } from "../services/themeService"; 
 import 'font-awesome/css/font-awesome.min.css';
+import { toast } from 'react-hot-toast';
 
 const AdminCRUD = ({ themes:propThemes, isLoading }) => {
   const [themeName, setThemeName] = useState("");
@@ -19,21 +20,22 @@ const AdminCRUD = ({ themes:propThemes, isLoading }) => {
   
   //BRISANJE TEME
   const handleDeleteTheme = (themeId) => {
-    if (window.confirm('Are you sure you want to delete this topic?')) {
       deleteTheme(themeId)
       .then(() => {
         setThemes((prevThemes) =>
           prevThemes.filter((theme) => theme.id !== themeId)
         );
+        toast.success("Topic deleted successfully!");
       })
       .catch((error) => console.error("Error deleting theme:", error));
-    }
+      toast.error("Error deleting topic.");
+    
   };
 
   //IZMJENA TEME
   const handleModifyTheme = () => {
     if (!themeName || !themeDescription || !selectedThemeId) {
-      alert("Please fill in both theme name and description!");
+      toast.error("Please fill in both theme name and description!");
       return;
     }
 
@@ -41,7 +43,8 @@ const AdminCRUD = ({ themes:propThemes, isLoading }) => {
 
     if (result !== -1) {
       if(result !== selectedThemeId){
-        alert("Theme name already exists. Please choose a different name.");
+        console.log("Theme name already exists.");
+        toast.error('Theme name already exists. Please choose a different name.');
         return;
       }
     }
@@ -58,6 +61,7 @@ const AdminCRUD = ({ themes:propThemes, isLoading }) => {
             theme.id === selectedThemeId ? { ...theme, ...updatedTheme } : theme
           )
         );
+        toast.success("Topic successfully modified!");
   
         // Reset polja za unos
         setThemeName("");
@@ -67,7 +71,7 @@ const AdminCRUD = ({ themes:propThemes, isLoading }) => {
       })
       .catch((error) => {
         console.error('Error modifiying theme:', error);
-        alert(`Failed to modify theme: ${error}`);
+        toast.error('Failed to modify theme');
       });
   };
 

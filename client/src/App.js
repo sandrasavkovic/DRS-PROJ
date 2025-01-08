@@ -7,6 +7,7 @@ import LoginForm from "./components/LoginForm";
 import Admin from "./components/Admin";
 import User from "./components/User";
 import PrivateRoute from "./components/PrivateRoute";
+import { Toaster, toast } from "react-hot-toast";
 import "./styles/App.css";
 import "./styles/loginRegister.css";
 
@@ -62,7 +63,7 @@ function App() {
     loginUser(formData.email, formData.password)
       .then((data) => {
         if (data.success) {
-          alert("Login is successful!");
+          toast.success("Login successful!");
           localStorage.setItem("access_token", data.access_token);
           localStorage.setItem("userName", data.user.name);
           localStorage.setItem("isAdmin", JSON.stringify(data.user.is_admin));
@@ -71,7 +72,7 @@ function App() {
           const redirectPath = data.user.is_admin ? "/admin" : "/user";
           navigate(redirectPath);
         } else {
-          alert("Login failed. Check your email and password.");
+          toast.error("An error occurred during login.");
         }
       })
       .catch((err) => console.error("Error:", err));
@@ -91,10 +92,10 @@ function App() {
     )
       .then((data) => {
         if (data.success) {
-          alert("Registration is successful!");
+          toast.success("Registration successful!");
           setIsRegistering(false);
         } else {
-          alert("Registration failed.");
+          toast.error("Registration failed.");
         }
       })
       .catch((err) => console.error("Error:", err));
@@ -110,6 +111,8 @@ function App() {
 
   return (
     <div className="d-flex flex-column w-100" style={{ minHeight: '100vh'}}>
+            <Toaster position="top-center" reverseOrder={false} />
+
       <Routes>
         <Route
           path="/login"
