@@ -25,12 +25,31 @@ def add_new_theme(theme_name, description):
     cursor = connection.cursor()
     
     try:
+        cursor.execute('SELECT COUNT(*) FROM themes WHERE theme_name = %s', (theme_name,))
+        count = cursor.fetchone()[0]
+        
+        if count > 0:
+            return {"error": "Theme name already exists."}
+        
+        # Ako tema ne postoji, dodajemo je
         cursor.execute('INSERT INTO themes (theme_name, description) VALUES (%s, %s)', 
                        (theme_name, description))
         connection.commit()
+
+        # Dohvatanje poslednje dodate teme
+        theme_id = cursor.lastrowid
+        new_theme = {
+            "id": theme_id,
+            "theme_name": theme_name,
+            "description": description
+        }
+        return new_theme 
+
     except Exception as e:
         connection.rollback()
         print(f"Error while adding theme: {e}")
+        return {"error": "An error occurred while adding the theme."}
+    
     finally:
         cursor.close()
         connection.close()
@@ -41,9 +60,16 @@ def modify_existing_theme(theme_id, theme_name, description):
     cursor = connection.cursor()
 
     try:
+        cursor.execute('SELECT COUNT(*) FROM themes WHERE theme_name = %s', (theme_name,))
+        count = cursor.fetchone()[0]
+        
+        if count > 0:
+            return {"error": "Theme name already exists."}
+
         cursor.execute('UPDATE themes SET theme_name = %s, description = %s WHERE id = %s', 
                        (theme_name, description, theme_id))
         connection.commit()
+        return None
         
     except Exception as e:
         connection.rollback()  
@@ -102,68 +128,3 @@ def get_id_from_theme_name(theme_name):
         return theme['id']
     else:
         return None
-
-def add_discussion_service(userId, themeId, discussionText):
-    print("POKUSAJ DODAVANJA: ")
-    print(userId)
-    print(themeId)
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-
-    try:
-        # Ubacivanje nove diskusije u bazu
-        cursor.execute("""
-            INSERT INTO discussions (content, user_id, theme_id, datetime)
-            VALUES (%s, %s, %s, NOW())
-        """, (discussionText, userId, themeId))
-        connection.commit()
-
-        # Dohvatanje ID-a novokreirane diskusije
-        discussion_id = cursor.lastrowid
-
-        # Vraćanje svih podataka o novoj diskusiji
-        cursor.execute("""
-            SELECT 
-                d.id, 
-                d.content, 
-                d.user_id, 
-                d.theme_id, 
-                d.datetime AS post_time,
-                u.username, 
-                u.name, 
-                u.last_name AS surname, 
-                u.email, 
-                t.theme_name
-            FROM discussions d
-            LEFT JOIN users u ON d.user_id = u.id
-            LEFT JOIN themes t ON d.theme_id = t.id
-            WHERE d.id = %s
-        """, (discussion_id,))
-
-        new_discussion = cursor.fetchone()
-
-        if new_discussion:
-            new_discussion_dto = {
-                'id': new_discussion['id'],
-                'content': new_discussion['content'],
-                'username': new_discussion['username'],
-                'theme_name': new_discussion['theme_name'],
-                'theme_id': new_discussion['theme_id'],
-                'post_time': new_discussion['post_time'],
-                'name': new_discussion['name'],
-                'surname': new_discussion['surname'],
-                'email': new_discussion['email'],
-                'user_id': new_discussion['user_id']
-            }
-            return new_discussion_dto
-        else:
-            raise Exception("Failed to retrieve the new discussion.")
-
-    except Exception as e:
-        connection.rollback()
-        raise Exception(f"Failed to add discussion: {str(e)}")
-
-    finally:
-        cursor.close()
-        connection.close()
-   

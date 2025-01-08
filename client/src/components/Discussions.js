@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { fetchAllDiscussions } from "../services/discussionService";
+import { fetchAllDiscussions, addDiscussion} from "../services/discussionService";
 import { fetchThemes} from '../services/themeService';
-import { addDiscussion } from '../services/themeService';
 import DiscussionDisplay from './DiscussionDisplay'; 
 import 'font-awesome/css/font-awesome.min.css';
 
 // Ovdje se samo filtriraju sve diskusije!
 // NAPOMENA: BITNO!!!
 // Discussion objekat u discussions u svim fjama (edit i add) mora imati format kao i u getAllDiscussions
-// je ser druge fje oslanjaju na ove podatke - bez njih exception!
+// je se druge fje oslanjaju na ove podatke - bez njih exception!
 // Dakle: 
 /*
   'id': discussion['id'], 
@@ -23,39 +22,34 @@ import 'font-awesome/css/font-awesome.min.css';
   'user_id' : discussion['user_id']
 */
 
-//----------------NOVE INFO-------------------
-//BAZA IZMJENE:
-//Obrisana je kolona date_time u themes
+// IZMJENEEE:
 
-//Sta treba doraditi? 
-// EDIT USER
-  // - mejl se NE smije mijenjati (izmjene i front i back)
-  // - povecati Close dugme
-  // disabled u front-u, korisnik ce moci da pregleda svoj email, ali nece moci da ga menja
+// DODANE SU 2 NOVE KOMPONENTE 
+  // (AdminCRUD i AddThemeModal - uglavnom isti kod kao AdminManageTopics i AdminThemes):
+// Izmjene su uvedene da bi rad sa temama bio slican radu sa diskusijama
+// Update na addTheme (front i back), 
+// AddThemeModal - AdminCRUD sredjeni po uzoru na discussionDisplay - discussions (callback funkcije)
+// Azuriranje, dodavanje nove teme, edit postojece 
+  // (sredjen exception - dodavanje teme istog imena/izmjena na vec postojece)
 
-// EDIT DISCUSSION
-  // - povecati Close dugme
-  // -close i save button su sada iste velicine 
-// DELETE DISCUSSION
-  // - Treba prompt (Are you sure you want to delete discussion) - kao kod delete comment sto imamo 
-  // - uradjeno
-// DELETE THEME
-  // - Treba prompt (Are you sure you want to delete theme) - kao kod delete comment sto imamo
-  // -uradjeno
-// Myb--kad se odbije reg i taj korisnik se pokusa logovati da izadje posebna poruke (ne check username, password)
-  // dobijamo mejl ako nas admin odbije o odbijenoj registraciji
+// Sidebar - bootstrap, ne koristi se Admin.css vise (bitno zbog rasporeda komponenti - ne pravi prob vise)
 
-// Jos jedna zanimljivost:
-// Kad se edituje diskusija sve ok, aliii kad se otvori inspect i pokusa editovati diskusija izadje greska???
-  // meni ovo radi
-// I JAKO BITNO:  Brisati sav kod koji je visak i provjera da li cascade delete radi
-  // dodato cascade delete u themes tabelu
-    // provereno : kada se obrise topic brisu se njegove diskusije
-    // kada se obrise diskusija brisu se njeni komentari 
-    // kada se obrise diskusija brisu se i njene reakcije
-  // ---------------------  
-// Greska koja se pojavljuje u inspect-u (nisam sigurna kada se pojavila) - ispratiti :
-// user:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+// Jos nisam pogl sav kod da li je obrisann!! 
+// (samo diskusije i teme!)
+// Kod diskusija dodan DTO - Diskusija, Reakcija, Komentara
+
+//TO DO:
+// Ispraiviti modifyTheme: ime ne moze biti isto kao kod drugih tema
+  // Hvata BadRequest (dakle backend sredjen) ali mozemo na front sprijecit slanje takvog zatjeva
+  // ali ono sto je zakom ne moze jer theme_name moze ostati nepromijenjeno (ne unese se novo ime)
+  // i onda se ne moze edit jer ce trazitii izmjenu toga (return ce jer postoji tme tog imena - ona koja se mijenja)
+
+// STA BI JOS MOGLO?
+  // Mozda da Admin i User imaju themes i discussion 
+    // i kao prop da prosl child komp da ne bi dugo cekali na podatke
+  // Myb umjesto alert i are you sure you want to delete da ubacimo Toast sa bootstrap (ako nam se bude dalo)
+//OBAVEZNO Testiratii!! (mnogo izmjena i front i back)
+  // Obrisati AdminManageTopics i AdminThemes (sad sam ostavila za svaki slucaj)
 
 const Discussions = ({ userId }) => {
 
@@ -73,11 +67,12 @@ const Discussions = ({ userId }) => {
   });
 
   const handleDiscussionUpdated = (updatedDiscussion) => {
-    setDiscussions((prevDiscussions) =>
-      prevDiscussions.map((discussion) =>
+    setDiscussions((prevDiscussions) => {
+      const updatedDiscussions = prevDiscussions.map((discussion) =>
         discussion.id === updatedDiscussion.id ? updatedDiscussion : discussion
-      )
-    );
+      );
+      return updatedDiscussions.sort((a, b) => new Date(b.post_time) - new Date(a.post_time));
+    });
   };
 
   // Funkcija za brisanje diskusije

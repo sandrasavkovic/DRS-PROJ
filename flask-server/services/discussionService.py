@@ -1,23 +1,18 @@
 from app_init import socketio 
 from db import get_db_connection
 from services.themeService import get_current_user_id;
-from models.Discussion import DiscussionDTO
+from models.Discussion import DiscussionDTO, DiscussionReactionsDTO, DiscussionCommentsDTO
 from utils.email_utils import send_email
 
-def editDiscussion(discussion_id, theme_id, content):
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-
+#KORISTI SE!!!
+def get_all_discussions():
     try:
-        # Ažuriramo diskusiju u bazi podataka
-        cursor.execute('UPDATE discussions SET content = %s, theme_id = %s, datetime = NOW() WHERE id = %s',
-                       (content, theme_id, discussion_id))
-        connection.commit()
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
 
-        # Dohvatamo ažuriranu diskusiju
         cursor.execute("""
             SELECT 
-                d.id, 
+                d.id,  
                 d.content, 
                 d.user_id, 
                 d.theme_id, 
@@ -30,26 +25,180 @@ def editDiscussion(discussion_id, theme_id, content):
             FROM discussions d
             LEFT JOIN users u ON d.user_id = u.id
             LEFT JOIN themes t ON d.theme_id = t.id
+            ORDER BY d.datetime DESC
+        """)
+
+        discussions = cursor.fetchall() 
+        print("Fetched discussions:", discussions)
+
+        # vraćamo listu dictionary objekata (DTO)
+        discussion_dtos = [
+            DiscussionDTO(
+                discussion['id'], 
+                discussion['content'],
+                discussion['username'], 
+                discussion['theme_name'],
+                discussion['theme_id'], 
+                discussion['datetime'], 
+                discussion['name'],
+                discussion['last_name'],
+                discussion['email'],
+                discussion['user_id']
+            ).to_dict()
+            for discussion in discussions
+        ]
+
+        return discussion_dtos
+
+    except Exception as e:
+        print(f"Error fetching discussions: {e}")
+        return []  # Vrati praznu listu u slučaju greške
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+#KORISTI SE!!!
+def add_discussion_service(userId, themeId, discussionText):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        
+        # Ubacivanje nove diskusije u bazu
+        cursor.execute("""
+            INSERT INTO discussions (content, user_id, theme_id, datetime)
+            VALUES (%s, %s, %s, NOW())
+        """, (discussionText, userId, themeId))
+        connection.commit()
+
+        # Dohvatanje ID-a nove diskusije
+        discussion_id = cursor.lastrowid
+        
+        cursor.execute("""
+            SELECT 
+                d.id, 
+                d.content, 
+                d.user_id, 
+                d.theme_id, 
+                d.datetime AS post_time,
+                u.username, 
+                u.name, 
+                u.last_name AS surname, 
+                u.email, 
+                t.theme_name
+            FROM discussions d
+            LEFT JOIN users u ON d.user_id = u.id
+            LEFT JOIN themes t ON d.theme_id = t.id
             WHERE d.id = %s
         """, (discussion_id,))
+        
+        discussion = cursor.fetchone()
+        
+        if discussion:
+            new_discussion_dto = DiscussionDTO(
+                discussion['id'],
+                discussion['content'],
+                discussion['username'],
+                discussion['theme_name'],
+                discussion['theme_id'],
+                discussion['post_time'],
+                discussion['name'],
+                discussion['surname'],
+                discussion['email'],
+                discussion['user_id']
+            )
 
-        updated_discussion = cursor.fetchone()
+        if new_discussion_dto:
+            return new_discussion_dto.to_dict()
+        
+        else:
+            raise Exception("Failed to retrieve the new discussion.")
 
-        # Ako diskusija postoji, vraćamo je u odgovarajućem formatu
-        if updated_discussion:
-            updated_discussion_dto = {
-                'id': updated_discussion['id'],
-                'content': updated_discussion['content'],
-                'username': updated_discussion['username'],
-                'theme_name': updated_discussion['theme_name'],
-                'theme_id': updated_discussion['theme_id'], #dodan je theme_id 
-                'post_time': updated_discussion['datetime'],
-                'name': updated_discussion['name'],
-                'surname': updated_discussion['last_name'],
-                'email': updated_discussion['email'],
-                'user_id': updated_discussion['user_id']
-            }
-            return updated_discussion_dto
+    except Exception as e:
+        connection.rollback()
+        raise Exception(f"Failed to add discussion: {str(e)}")
+
+    finally:
+        cursor.close()
+        connection.close()
+
+#KORISTI SE!!!
+def delete_discussion_by_id_service(id):
+    try:
+        id = int(id)  
+    except ValueError:
+        return {"success": False, "message": "Invalid ID format"}, 400
+    
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        
+        # Provjeriti da li postoji prije brisanja
+        cursor.execute('SELECT * FROM discussions WHERE id = %s', (id,))
+        discussion = cursor.fetchone() 
+        if not discussion:
+            return {"success": False, "message": "No discussions found with the given ID"}, 404
+
+        # BRISANJE
+        cursor.execute('DELETE FROM discussions WHERE id = %s', (id,))
+        connection.commit() 
+
+        return {"success": True, "message": "Delete action successful!"}, 200
+    except Exception as e:
+        print(f"Error while deleting discussion: {e}")
+        return {"success": False, "message": str(e)}, 500
+    finally:
+        cursor.close()
+        connection.close()
+   
+#KORISTI SE!!!
+def editDiscussion(discussion_id, theme_id, content):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        # Ažuriranje diskusije u bazi podataka
+        cursor.execute('UPDATE discussions SET content = %s, theme_id = %s, datetime = NOW() WHERE id = %s',
+                       (content, theme_id, discussion_id))
+        connection.commit()
+        
+        cursor.execute("""
+            SELECT 
+                d.id, 
+                d.content, 
+                d.user_id, 
+                d.theme_id, 
+                d.datetime AS post_time,
+                u.username, 
+                u.name, 
+                u.last_name AS surname, 
+                u.email, 
+                t.theme_name
+            FROM discussions d
+            LEFT JOIN users u ON d.user_id = u.id
+            LEFT JOIN themes t ON d.theme_id = t.id
+            WHERE d.id = %s
+        """, (discussion_id,))
+        
+        discussion = cursor.fetchone()
+        
+        if discussion:
+            updated_discussion_dto = DiscussionDTO(
+                discussion['id'],
+                discussion['content'],
+                discussion['username'],
+                discussion['theme_name'],
+                discussion['theme_id'],
+                discussion['post_time'],
+                discussion['name'],
+                discussion['surname'],
+                discussion['email'],
+                discussion['user_id']
+            )
+        
+        if updated_discussion_dto:
+            return updated_discussion_dto.to_dict()
+        
         else:
             raise Exception(f"Discussion with id {discussion_id} not found.")
 
@@ -61,14 +210,11 @@ def editDiscussion(discussion_id, theme_id, content):
         cursor.close()
         connection.close()
 
-
+#KORISTI SE!!!
 def get_discussion_reactions(discussionId, userId):
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
-
-        print("Korisnik ID IZ rekacije zahtjeva: ")
-        print(userId)
 
         # Preuzimanje broja lajkova
         cursor.execute("""
@@ -95,12 +241,9 @@ def get_discussion_reactions(discussionId, userId):
         result = cursor.fetchone()
        
         user_reaction = result[0] if result else 'none'  # Ako nema reakcije, postavi 'none'
-
-        return {
-            'likes': likes,
-            'dislikes': dislikes,
-            'user_reaction': user_reaction
-        }
+        
+        discussion_reactions_dto = DiscussionReactionsDTO(likes, dislikes, user_reaction)
+        return discussion_reactions_dto.to_dict()
 
     except Exception as e:
         return {"error": f"Error fetching reactions for discussion {discussionId}: {str(e)}"}, 500
@@ -108,6 +251,76 @@ def get_discussion_reactions(discussionId, userId):
         cursor.close()
         connection.close()
 
+#KORISTI SE!!!
+# Ovdje imaju 3 slucaja
+# Korisnik je vec reagovao sa istom reakcijom --> brisanje te reakcije
+# Korisnik je vec reagovao ali drugm reakcijom --> azuriranje reakcije
+# Korisnik nije reagovao --> dodavanje reakcije
+def process_reaction(discussion_id, user_id, reaction_type):
+    try:
+        reakcija = None
+        
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        
+        cursor.execute("""
+            SELECT reaction_type 
+            FROM reactions 
+            WHERE discussion_id = %s AND user_id = %s;
+        """, (discussion_id, user_id))
+
+        result = cursor.fetchone()
+        print(result)
+        if result:
+            existing_reaction = result['reaction_type'] 
+            print(existing_reaction)
+                # ako je like/dislike vec bio prisutan obrisi ga
+            if existing_reaction == reaction_type:
+                cursor.execute("""
+                    DELETE FROM reactions 
+                    WHERE discussion_id = %s AND user_id = %s;
+                """, (discussion_id, user_id))
+            else:
+                # ako je promjenjena reakcija azuriraj je
+                cursor.execute("""
+                    UPDATE reactions 
+                    SET reaction_type = %s 
+                    WHERE discussion_id = %s AND user_id = %s;
+                """, (reaction_type, discussion_id, user_id))
+                reakcija = reaction_type
+        else:
+            # ako nema reakcije, dodaj novu
+            print("Nema reakcija")
+            cursor.execute("""
+                INSERT INTO reactions (discussion_id, user_id, reaction_type) 
+                VALUES (%s, %s, %s);
+            """, (discussion_id, user_id, reaction_type))
+            reakcija = reaction_type
+        connection.commit()
+       
+        # izračunaj broj lajkova i dislajkova za diskusiju
+        cursor.execute("""
+            SELECT 
+                SUM(CASE WHEN reaction_type = 'like' THEN 1 ELSE 0 END) AS likes,
+                SUM(CASE WHEN reaction_type = 'dislike' THEN 1 ELSE 0 END) AS dislikes
+            FROM reactions
+            WHERE discussion_id = %s;
+        """, (discussion_id,))
+      
+        counts = cursor.fetchone()
+        likes, dislikes = counts['likes'] or 0, counts['dislikes'] or 0
+        discussion_reactions_dto = DiscussionReactionsDTO(likes, dislikes, reakcija)
+        return discussion_reactions_dto.to_dict()
+
+    except Exception as e:
+        print(f"Error processing reaction: {e}")
+        return {'likes': 0, 'dislikes': 0}
+
+    finally:
+        if connection:
+            connection.close()
+
+#KORISTI SE!!!
 # za komentare
 def get_discussion_comments(discussionId):
     try:
@@ -124,20 +337,19 @@ def get_discussion_comments(discussionId):
 
         cursor.execute(query, (discussionId,))
         result = cursor.fetchall()
-
-        # Convert the result to a list of dictionaries for easy handling in the frontend
-        comments = [
-            {
-                "id": row[0],
-                "content": row[1],
-                "datetime": row[2],
-                "username": row[4],
-                "user_id" : row[3]
-            }
+        
+        comments_dtos = [
+            DiscussionCommentsDTO(
+                row[0],
+                row[1],
+                row[2],
+                row[4],
+                row[3]
+            ).to_dict()
             for row in result
         ]
 
-        return comments
+        return comments_dtos
 
     except Exception as e:
         return ({"error": f"Error fetching comments: {str(e)}"}), 500
@@ -145,19 +357,19 @@ def get_discussion_comments(discussionId):
         cursor.close()
         connection.close()
 
+#KORISTI SE!!!
 def post_new_comment(discussion_id, new_comment, user_id, mentions):
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        # Insert comment into the database
+        # dodavanje u bazu
         cursor.execute("""
             INSERT INTO comments (discussion_id, user_id, content, datetime)
             VALUES (%s, %s, %s, NOW())
         """, (discussion_id, user_id, new_comment))
         connection.commit()
 
-        # Fetch the inserted comment
         cursor.execute("""
             SELECT c.id, c.content, c.datetime, u.username
             FROM comments c
@@ -168,7 +380,7 @@ def post_new_comment(discussion_id, new_comment, user_id, mentions):
         """, (discussion_id, user_id))
         inserted_comment = cursor.fetchone()
         
-        # Notify mentioned users (optional logic)
+        # Mention 
         if mentions:
             print("MENTIONS POSTOJI")
             for username in mentions:
@@ -179,20 +391,17 @@ def post_new_comment(discussion_id, new_comment, user_id, mentions):
                 print(mentioned_user)
                 if mentioned_user:
                     if(mentioned_user[0] != user_id):
-                        print(f"User {username} (ID: {mentioned_user[0]}) was mentioned.")  # Replace with notification logic
+                        print(f"User {username} (ID: {mentioned_user[0]}) was mentioned.")  
                         subject = "Neko Vas je pomenuo u komentaru!"
                         body = f"Poštovani {mentioned_user[1]},\n\n Pomenuti ste u komentaru od strane {inserted_comment[3]}!"
                         send_email(subject, mentioned_user[9], body) 
 
-
-
-        return {
-            "id": inserted_comment[0],
-            "content": inserted_comment[1],
-            "datetime": inserted_comment[2],
-            "username": inserted_comment[3],
-            "user_id": user_id,
-        }
+        comment_dto = DiscussionCommentsDTO(inserted_comment[0], 
+                                            inserted_comment[1], 
+                                            inserted_comment[2],
+                                            inserted_comment[3], 
+                                            user_id,)
+        return comment_dto.to_dict()
 
     except Exception as e:
         return {"error": f"Error posting comment: {str(e)}"}, 500
@@ -200,7 +409,7 @@ def post_new_comment(discussion_id, new_comment, user_id, mentions):
         cursor.close()
         connection.close()
 
-
+#KORISTI SE!!!
 def delete_comment_service(comment_id):
     try:
         try:
@@ -232,6 +441,9 @@ def delete_comment_service(comment_id):
             connection.close()
 
 
+
+
+## NE ZNAM DA LI SE OVO KORISTI???
 def get_user_id_from_username(username):
     try:
         connection = get_db_connection() 
@@ -250,215 +462,6 @@ def get_user_id_from_username(username):
     finally:
         if connection:
             connection.close()
-
-def process_reaction(discussion_id, user_id, reaction_type):
-    try:
-        print("Izmjena reakcija")
-        print(reaction_type)
-        print(discussion_id)
-        print(user_id)
-
-        reakcija = None
-        
-        connection = get_db_connection()
-        cursor = connection.cursor(dictionary=True)
-        
-        cursor.execute("""
-            SELECT reaction_type 
-            FROM reactions 
-            WHERE discussion_id = %s AND user_id = %s;
-        """, (discussion_id, user_id))
-
-        result = cursor.fetchone()
-        print(result)
-        if result:
-            existing_reaction = result['reaction_type'] 
-            print(existing_reaction)
-                # ako je like/dislike vec bio prisutan obrisi ga
-            if existing_reaction == reaction_type:
-                cursor.execute("""
-                    DELETE FROM reactions 
-                    WHERE discussion_id = %s AND user_id = %s;
-                """, (discussion_id, user_id))
-                print("Uspjesno")
-            else:
-                # ako je promjenjena reakcija azuriraj je
-                cursor.execute("""
-                    UPDATE reactions 
-                    SET reaction_type = %s 
-                    WHERE discussion_id = %s AND user_id = %s;
-                """, (reaction_type, discussion_id, user_id))
-                print("Uspjesno")
-                reakcija = reaction_type
-        else:
-            # ako nema reakcije, dodaj novu
-            print("Nema reakcija")
-            cursor.execute("""
-                INSERT INTO reactions (discussion_id, user_id, reaction_type) 
-                VALUES (%s, %s, %s);
-            """, (discussion_id, user_id, reaction_type))
-            reakcija = reaction_type
-        connection.commit()
-        print("OVO OK")
-        # izračunaj broj lajkova i dislajkova za diskusiju
-        cursor.execute("""
-            SELECT 
-                SUM(CASE WHEN reaction_type = 'like' THEN 1 ELSE 0 END) AS likes,
-                SUM(CASE WHEN reaction_type = 'dislike' THEN 1 ELSE 0 END) AS dislikes
-            FROM reactions
-            WHERE discussion_id = %s;
-        """, (discussion_id,))
-        print("OVO e")
-        counts = cursor.fetchone()
-        print(counts)
-        likes, dislikes = counts['likes'] or 0, counts['dislikes'] or 0
-
-        return {'likes': likes, 'dislikes': dislikes, 'user_reaction': reakcija}
-
-    except Exception as e:
-        print(f"Error processing reaction: {e}")
-        return {'likes': 0, 'dislikes': 0}
-
-    finally:
-        if connection:
-            connection.close()
-
-
-def get_all_discussions():
-    try:
-        print("DISKUSIJE GET")
-        connection = get_db_connection()
-        cursor = connection.cursor(dictionary=True)
-
-        cursor.execute("""
-            SELECT 
-                d.id,  
-                d.content, 
-                d.user_id, 
-                d.theme_id, 
-                u.username, 
-                u.name,
-                u.last_name,
-                u.email,
-                t.theme_name,
-                d.datetime
-            FROM discussions d
-            LEFT JOIN users u ON d.user_id = u.id
-            LEFT JOIN themes t ON d.theme_id = t.id
-            ORDER BY d.datetime DESC
-        """)
-
-        discussions = cursor.fetchall()  # Svi podaci uključujući korisničko ime i ime teme
-        print("Fetched discussions:", discussions)
-
-        # Umjesto DTO klase, vraćamo listu dictionary objekata
-        discussion_dtos = [
-            {
-                'id': discussion['id'], 
-                'content': discussion['content'],
-                'username': discussion['username'], 
-                'theme_name': discussion['theme_name'],
-                'theme_id': discussion['theme_id'], #dodan je theme_id 
-                'post_time': discussion['datetime'], #myb nam ne treba ovo post time al eto nek se nadje
-                'name': discussion['name'],
-                'surname': discussion['last_name'],
-                'email': discussion['email'],
-                'user_id' : discussion['user_id']
-            }
-            for discussion in discussions
-        ]
-        
-        # Vraćamo kao JSON
-        return discussion_dtos
-
-    except Exception as e:
-        print(f"Error fetching discussions: {e}")
-        return []  # Vrati praznu listu u slučaju greške
-    finally:
-        if cursor:
-            cursor.close()
-        if connection:
-            connection.close()
-
-# Funkcija za preuzimanje svih diskusija za specifičnu temu
-def get_discussions_by_theme(theme_id):
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM discussions WHERE theme_id = %s ORDER BY id ASC', (theme_id,))
-    discussions = cursor.fetchall()  # Vraća sve diskusije za zadatu temu
-    cursor.close()
-    connection.close()
-    return discussions
-
-# Funkcija za dodavanje nove diskusije
-# druga funkcija u themeService!
-def add_new_discussion(id, title, content, user_id, theme_id):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute('INSERT INTO discussions ( id, title, content, user_id, theme_id) VALUES (%d ,%s, %s, %d, %d)', 
-                   (id, title, content, user_id, theme_id))
-    connection.commit()
-    cursor.close()
-    connection.close()
-
-# Funkcija za dobijanje diskusije prema ID-u
-# prekopirana dole sa dopunom za try i catch!
-# def get_discussion_by_id(id):
-#     connection = get_db_connection()
-#     cursor = connection.cursor(dictionary=True)
-#     cursor.execute('SELECT * FROM discussions WHERE id = %d', (id))
-#     discussion = cursor.fetchone()  # Vraća samo jednu diskusiju
-#     cursor.close()
-#     connection.close()
-#     return discussion
-
-# Funkcija za pretragu diskusija po temi (ako je potrebno)
-def search_discussions_by_theme(theme_id):
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute(
-        'SELECT * FROM discussions WHERE theme_id = %d ',
-        (theme_id,)
-    )
-    discussions = cursor.fetchall()  # Vraća diskusije koje odgovaraju pretrazi
-    cursor.close()
-    connection.close()
-    return discussions
-
-
-def update_discussion_service(id, updated_discussion_data):
-    print("Update discussion with ID:", id)
-    try:
-        id = int(id)  # Convert to integer explicitly
-    except ValueError:
-        return {"success": False, "message": "Invalid ID format"}, 400
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    print(updated_discussion_data['title'])
-    # pazi!!! i za id ide %s!!!
-    try:
-        # Ažuriramo samo title i content za zadati ID
-        cursor.execute("""
-            UPDATE discussions
-            SET title = %s, 
-                content = %s,
-                datetime = NOW()
-            WHERE id = %s
-        """, (updated_discussion_data['title'], updated_discussion_data['content'], id))
-
-        connection.commit()
-
-        # Proveravamo da li je ažuriran neki red
-        if cursor.rowcount == 0:
-            return {"success": False, "message": "Discussion not found"}, 404
-
-        return {"success": True, "message": "Discussion updated successfully"}, 200
-    except Exception as e:
-        connection.rollback()
-        return {"success": False, "message": str(e)}, 500
-    finally:
-        cursor.close()
-        connection.close()
 
 def get_discussions_for_user_service(username):
     print("DOBAVLJAM DISKUSIJE ZA :", username)
@@ -514,49 +517,4 @@ def get_discussion_by_id_service(id):
         cursor.close()
         connection.close()
 
-def delete_discussion_by_id_service(id):
-    print("DOBAVLJAM DISKUSIJU ZA BRISANJE SA ID-em:")
-    print(id)
-    try:
-        id = int(id)  # Convert to integer explicitly
-    except ValueError:
-        return {"success": False, "message": "Invalid ID format"}, 400
 
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-
-    try:
-        # Check if the discussion exists before deletion
-        cursor.execute('SELECT * FROM discussions WHERE id = %s', (id,))
-        discussion = cursor.fetchone()  # Fetch the discussion
-        if not discussion:
-            return {"success": False, "message": "No discussions found with the given ID"}, 404
-
-        # Proceed with deletion
-        cursor.execute('DELETE FROM discussions WHERE id = %s', (id,))
-        connection.commit()  # Commit the deletion
-
-        return {"success": True, "message": "Delete action successful!"}, 200
-    except Exception as e:
-        print(f"Error while deleting discussion: {e}")
-        return {"success": False, "message": str(e)}, 500
-    finally:
-        cursor.close()
-        connection.close()
-
-def modify_existing_discussion(discussion_id, discussion_name, description):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-
-    try:
-        cursor.execute('UPDATE discussions SET title = %s,  content = %s, datetime = NOW() WHERE id = %s', 
-                       (discussion_name, description, discussion_id))
-        connection.commit()
-        
-    except Exception as e:
-        connection.rollback()  
-        raise Exception(f"Failed to modify discussion with id {discussion_id}: {str(e)}")  
-    
-    finally:
-        cursor.close()
-        connection.close()      

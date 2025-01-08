@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { modifyDiscussion, deleteDiscussion } from '../services/themeService';
+import { modifyDiscussion, deleteDiscussion } from '../services/discussionService';
 import 'font-awesome/css/font-awesome.min.css';
 import DiscussionAction from './DiscussionAction';
 

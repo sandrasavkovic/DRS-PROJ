@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request,Blueprint
-from services.themeService import add_discussion_service, get_all_themes, add_new_theme, modify_existing_theme, delete_existing_theme
+from services.themeService import get_all_themes, add_new_theme, modify_existing_theme, delete_existing_theme
 theme_routes = Blueprint("theme_routes", __name__)
 
 @theme_routes.route('/theme', methods=['GET'])
@@ -16,8 +16,13 @@ def create_theme():
         data = request.get_json()
         theme_name = data['theme_name']
         description = data['description']
-        add_new_theme(theme_name, description)
-        return jsonify({'message': 'Tema je uspešno dodata!'}), 201
+        
+        new_theme = add_new_theme(theme_name, description)
+        
+        if 'error' in new_theme:
+            return jsonify(new_theme), 400  # Ako postoji greška - vraćamo status 400
+        
+        return jsonify(new_theme), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -31,7 +36,11 @@ def modify_theme(theme_id):
         if not theme_name or not description:
             return jsonify({'error': 'Theme name and description are required'}), 400
     
-        modify_existing_theme(theme_id, theme_name, description)
+        retVal = modify_existing_theme(theme_id, theme_name, description)
+        
+        if 'error' in retVal:
+            return jsonify(retVal), 400  # Ako postoji greška - vraćamo status 400
+        
         return jsonify({'message': 'Tema je uspešno modifikovana!'}), 200
         
     except Exception as e:
@@ -63,22 +72,3 @@ def theme_by_id(theme_id):
 #if __name__ == '__main__':
  #   app.run(debug=True, port=5000)  # Pokrećemo server na portu 5000
 
-@theme_routes.route('/addDiscussion', methods=['POST'])
-def add_discussion():
-    try:
-        print("Usao u funkciju za dodavanje diskusije")
-        # kroz data.themeId ..
-        data = request.get_json()
-        print(data)
-        if not data:
-            return jsonify({"success": False, "message": "No data provided for update"}), 400
-
-        userId = data.get('userId')
-        themeId = data.get('themeId')
-        discussion_text = data.get('discussionText')
-     
-        newDiscussion = add_discussion_service(userId, themeId, discussion_text)
-        print(newDiscussion)
-        return jsonify(newDiscussion), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500  

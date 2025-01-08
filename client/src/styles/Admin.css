@@ -1,8 +1,7 @@
 /* Sidebar container */
+/* Main content area */
 .admin-page {
   display: flex; /* Flexbox layout */
-  flex-direction: row; /* Align content and sidebar horizontally */
-
   min-height: 100vh; /* Ensure full height */
 }
 
@@ -56,11 +55,7 @@
   color: white;
 }
 
-/* Main content area */
-.admin-page {
-  display: flex; /* Flexbox layout */
-  min-height: 100vh; /* Ensure full height */
-}
+
 
 
 
