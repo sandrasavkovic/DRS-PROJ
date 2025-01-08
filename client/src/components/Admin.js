@@ -4,14 +4,35 @@ import ThemePanel from "./AdminThemes";
 import ThemePanel2 from "./AdminManageTopics";
 import AdminCRUD from "./AdminCRUD";
 import Discussions from "./Discussions";
+import { fetchThemes } from "../services/themeService";
+import useDiscussions from "./useDiscussions";
 
 const Admin = ({ socket, handleLogout }) => {
   const [selectedOption, setSelectedOption] = useState("pendingRequests");
   const [pendingRequests, setPendingRequests] = useState([]);
+  const [isThemesLoading, setThemesLoading] = useState(false);
+  const [themes, setPropThemes] = useState([]);
+  const { discussions: propDiscussions, loading, error } = useDiscussions();  // Use the custom hook to fetch discussions
 
   const handleSidebarSelect = (option) => {
     setSelectedOption(option);
   };
+  // ovde cemo fetch-ovati teme da bi vec bile spremne
+  // kada se prebaci na topicsView
+  useEffect(() => {
+    setThemesLoading(true);
+    fetchThemes()
+      .then((response) => {
+        setPropThemes(response.data);
+        setThemesLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching themes:", error);
+        setThemesLoading(false);
+      });
+  }, []);
+  
+
 
   useEffect(() => {
     if (!socket) return;
@@ -94,10 +115,11 @@ const Admin = ({ socket, handleLogout }) => {
 
           {/*{selectedOption === "manageTopics" && <ThemePanel2 />}*/}
 
-          {selectedOption === "topicsView" && <AdminCRUD />}
-
+          {selectedOption === "topicsView" && (
+            <AdminCRUD themes={themes} isLoading={isThemesLoading} />
+          )}
           {selectedOption === "discussionsView" && (
-            <Discussions
+            <Discussions discussions={propDiscussions}
               className="w-60 bg-light"
               style={{
                 width: "100%",

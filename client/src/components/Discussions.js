@@ -51,7 +51,7 @@ import 'font-awesome/css/font-awesome.min.css';
 //OBAVEZNO Testiratii!! (mnogo izmjena i front i back)
   // Obrisati AdminManageTopics i AdminThemes (sad sam ostavila za svaki slucaj)
 
-const Discussions = ({ userId }) => {
+const Discussions = ({ userId , discussions:propDiscussions}) => {
 
   // dodavanje diskusije
   const [themes, setThemes] = useState([]); // Lista tema
@@ -83,12 +83,8 @@ const Discussions = ({ userId }) => {
   };
 
   useEffect(() => {
-    fetchAllDiscussions()
-      .then((response) => {
-        setDiscussions(response.data);
-      })
-      .catch((error) => console.error('Error fetching discussions:', error));
-  }, []); 
+    setDiscussions(propDiscussions);
+  }, [propDiscussions]); 
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;

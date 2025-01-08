@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import AddThemeModal from './AddThemeModal';
-import { fetchThemes, deleteTheme, modifyTheme } from "../services/themeService"; 
+import { deleteTheme, modifyTheme } from "../services/themeService"; 
 import 'font-awesome/css/font-awesome.min.css';
 
-const AdminCRUD = () => {
+const AdminCRUD = ({ themes:propThemes, isLoading }) => {
   const [themeName, setThemeName] = useState("");
   const [themeDescription, setThemeDescription] = useState("");
   const [selectedThemeId, setSelectedThemeId] = useState(null);
@@ -12,14 +12,11 @@ const AdminCRUD = () => {
   
   const [isAddThemeModalOpen, setAddThemeModalOpen] = useState(false); // Za dodavanje teme
 
+ 
   useEffect(() => {
-    fetchThemes()
-      .then((response) => {
-        setThemes(response.data);
-      })
-      .catch((error) => console.error("Error fetching themes:", error));
-  }, []);
-
+    setThemes(propThemes);
+  }, [propThemes]);
+  
   //BRISANJE TEME
   const handleDeleteTheme = (themeId) => {
     if (window.confirm('Are you sure you want to delete this topic?')) {
@@ -130,7 +127,11 @@ const AdminCRUD = () => {
       />
   
       {/* Lista tema */}
-      {themes.length === 0 ? (
+       {isLoading ? (
+        <div className="d-flex justify-content-center align-items-start" style={{ height: "100vh" }}>
+          <p>Loading themes...</p>
+        </div>
+      ) : themes.length === 0 ? (
         <div className="d-flex justify-content-center align-items-start" style={{ height: '100vh' }}>
         <p>No themes available.</p>
       </div>
