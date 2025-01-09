@@ -282,7 +282,7 @@ flex-direction: column;
 }
 
 .top-right-controls {
-position: fixed;
+position: absolute;
 top: 10px;
 right: 10px;
 display: flex;

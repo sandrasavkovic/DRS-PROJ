@@ -1,0 +1,47 @@
+
+services:
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app/frontend
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./flask-server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./flask-server:/app/backend
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=sandra
+      - MYSQL_DATABASE=discussion_app
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    container_name: mysql
+    ports:
+      - "3307:3306"  # Map host port 3307 to container's 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: sandra
+      MYSQL_DATABASE: discussion_app
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./discussion_app.sql:/docker-entrypoint-initdb.d/discussion_app.sql
+
+
+volumes:
+  db_data:

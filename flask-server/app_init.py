@@ -1,5 +1,5 @@
-from flask import Flask
 from flask_socketio import SocketIO
+from flask import Flask
 from flask_mail import Mail, Message
 from extensions import jwt 
 from multiprocessing import Process, Queue

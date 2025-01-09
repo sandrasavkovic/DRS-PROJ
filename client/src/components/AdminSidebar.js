@@ -13,9 +13,9 @@ const Sidebar = ({ onSelect, handleLogout }) => {
   return (
     <div className="d-flex flex-column h-100" style={{ backgroundColor: "#2c3e50", color: "#fff" }}>
       {/* Opcije */}
-      <ul className="nav flex-column mt-2">
+      <ul className="nav flex-column mt-2" style={{position:'fixed'}}>
         {options.map((option) => (
-          <li className="nav-item" key={option.value}>
+          <li className="nav-item" key={option.value} >
             <button
               className="nav-link text-start w-100"
               style={{

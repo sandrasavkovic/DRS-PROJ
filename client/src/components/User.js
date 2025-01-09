@@ -3,6 +3,7 @@ import '../styles/user.css';
 import { getUserByUsername, updateUser } from '../services/authService';
 import Discussions from "./Discussions";
 import { getUserIdByUsername } from '../services/discussionService'; // ovo treba
+import toast from 'react-hot-toast';
 
 const User = ({ socket, handleLogout }) => {
   //TREBA ZA PROP - kod DISKUSIJA
@@ -32,7 +33,7 @@ const User = ({ socket, handleLogout }) => {
     console.log(userString);
     
     if (!userString) {
-      alert('No user data in session.');
+      toast.error('No user data in session.');
       return;
     }
   
@@ -43,11 +44,11 @@ const User = ({ socket, handleLogout }) => {
       if (response) {
         setEditUser(response.user);  // Update state with the response
       } else {
-        alert('User not found.');
+        toast.error('User not found.');
       }
     } catch (error) {
       console.error('Error parsing user data:', error);
-      alert('An error occurred while loading user data.');
+      toast.error('An error occurred while loading user data.');
     }
   };
   
@@ -66,14 +67,14 @@ const User = ({ socket, handleLogout }) => {
 
   const handleEdit = () => {
     if (!editUser) {
-        alert('There is no data to update the user.');
+        toast.error('There is no data to update the user.');
         return;
     }
 
     const username = localStorage.getItem("userName");
 
     if (!username) {
-        alert('Username not found.');
+        toast.error('Username not found.');
         return;
     }
   
@@ -81,12 +82,12 @@ const User = ({ socket, handleLogout }) => {
     updateUser(userString, editUser)
         .then((updatedUser) => {
             console.log('User successfully updated:', updatedUser);
-            alert('User successfully updated.');
+            toast.success('User successfully updated.');
             closeEditModal(); 
         })
         .catch((error) => {
             console.error('Error updating user:', error);
-            alert('An error occurred while updating the user.');
+            toast.error('An error occurred while updating the user.');
         });
   };
 

@@ -98,6 +98,8 @@ const DiscussionAction = ({ discussion, userId, role }) => {
           setComments((prevComments) =>
             prevComments.filter((comment) => comment.id !== commentId)
           );
+          setCommentsCount(prevCount => prevCount - 1); 
+
           console.log(`Deleted comment with ID: ${commentId}`);
           toast.success("Comment successfully deleted!")
         })

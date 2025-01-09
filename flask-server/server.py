@@ -1,3 +1,4 @@
+from flask import Flask
 from app_init import create_app, create_socketio, mail, socketio  # Import initialization functions and extensions
 from routes.auth_routes import auth_routes  # Import blueprints
 from routes.approving_routes import approving_routes
@@ -5,6 +6,7 @@ from routes.theme_routes import theme_routes
 from routes.discussion_routes import discussion_routes
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS  # Import CORS
+
 
 # Inicijalizacija soketa
 app = create_app()
@@ -36,7 +38,7 @@ def handle_button_click():
 
 # Run the application
 if __name__ == "__main__":
-    socketio.run(app, debug=True, host="127.0.0.1", port=5000)
+    socketio.run(app, debug=True, host="0.0.0.0", port=5000, allow_unsafe_werkzeug=True)
 
 # from app_init import app, socketio  # Importovanje app i socketio iz app_init.py
 # from routes.auth_routes import auth_routes
