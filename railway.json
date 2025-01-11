@@ -1,0 +1,19 @@
+{
+    "services": [
+      {
+        "name": "frontend",
+        "docker": {
+          "dockerfilePath": "./client/Dockerfile"
+        },
+        "startCommand": "npm start"
+      },
+      {
+        "name": "backend",
+        "docker": {
+          "dockerfilePath": "./flask-server/Dockerfile"
+        },
+        "startCommand": "python server.py"
+      }
+    ]
+  }
+  
