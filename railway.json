@@ -1,19 +1,28 @@
 {
-    "services": [
-      {
-        "name": "frontend",
-        "docker": {
-          "dockerfilePath": "./client/Dockerfile"
-        },
-        "startCommand": "npm start"
+  "services": [
+    {
+      "name": "frontend",
+      "docker": {
+        "dockerfilePath": "./client/Dockerfile"
       },
-      {
-        "name": "backend",
-        "docker": {
-          "dockerfilePath": "./flask-server/Dockerfile"
-        },
-        "startCommand": "python server.py"
+      "startCommand": "npm start"
+    },
+    {
+      "name": "backend",
+      "docker": {
+        "dockerfilePath": "./flask-server/Dockerfile"
+      },
+      "startCommand": "python server.py"
+    },
+    {
+      "name": "db",
+      "docker": {
+        "image": "mysql:8"
+      },
+      "environment": {
+        "MYSQL_ROOT_PASSWORD": "sandra",
+        "MYSQL_DATABASE": "discussion_app"
       }
-    ]
-  }
-  
+    }
+  ]
+}
