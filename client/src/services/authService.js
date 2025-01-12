@@ -4,7 +4,7 @@ import { getApiUrl } from "./api";
 
 // primer kako cemo koristiti :
 export const loginUser = (email, password) => {
-  return fetch(getApiUrl("/auth/login"), {
+  return fetch("/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
