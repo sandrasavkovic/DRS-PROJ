@@ -63,7 +63,6 @@ function App() {
   
     
     const newSocket = io('wss://drs-proj-production.up.railway.app:8080/ws');
-    console.log('Socket.IO initialized at:', socketURL);
     setSocket(newSocket);
   
     newSocket.on("connect", () => {
