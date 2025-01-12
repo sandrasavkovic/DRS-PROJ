@@ -57,10 +57,11 @@ function App() {
     // Check if we're in production or local environment
     const isProduction = window.location.hostname !== 'localhost';
     
-    const socketURL = isProduction
-      ? 'wss://drs-proj-production.up.railway.app:8080/ws'  // Update this with your actual deployed URL
-      : 'ws://localhost:5000';  // Local development URL
+    // const socketURL = isProduction
+    //   ? 'wss://drs-proj-production.up.railway.app:8080/ws'  // Update this with your actual deployed URL
+    //   : 'ws://localhost:5000';  // Local development URL
   
+    socketURL='wss://drs-proj-production.up.railway.app:8080/ws' ;
     const newSocket = io(socketURL);
     console.log('Socket.IO initialized at:', socketURL);
     setSocket(newSocket);

@@ -18,7 +18,8 @@ socketio = create_socketio(app)
 # )
 
 
-CORS(app, resources={r"/*": {"origins": ["https://drs-proj-production.up.railway.app", "https://stellar-wholeness-production.up.railway.app"]}})
+#CORS(app, resources={r"/*": {"origins": ["https://drs-proj-production.up.railway.app", "https://stellar-wholeness-production.up.railway.app"]}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Registracija blueprint-a
 app.register_blueprint(auth_routes, url_prefix="/auth")
@@ -50,7 +51,7 @@ def handle_button_click():
 import os
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Use the port provided by Railway
+    port = int(os.environ.get("PORT", 8080))  # Use the port provided by Railway
     socketio.run(app, debug=True, host="0.0.0.0", port=port,allow_unsafe_werkzeug=True )
 
 # from app_init import app, socketio  # Importovanje app i socketio iz app_init.py
