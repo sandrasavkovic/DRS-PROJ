@@ -11,6 +11,7 @@ from flask_cors import CORS  # Import CORS
 # Inicijalizacija soketa
 app = create_app()
 socketio = create_socketio(app)
+port = int(os.environ.get("PORT", 5000))  # Fallback to 5000 if not set by Railway
 
 # CORS(
 #     app,
@@ -51,7 +52,7 @@ def handle_button_click():
 import os
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))  # Use the port provided by Railway
+    print(port)
     socketio.run(app, debug=True, host="0.0.0.0", port=port,allow_unsafe_werkzeug=True )
 
 # from app_init import app, socketio  # Importovanje app i socketio iz app_init.py

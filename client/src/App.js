@@ -54,17 +54,13 @@ function App() {
   // }, []);
 
   useEffect(() => {
-    // Check if we're in production or local environment
-    const isProduction = window.location.hostname !== 'localhost';
-    
-    // const socketURL = isProduction
-    //   ? 'wss://drs-proj-production.up.railway.app:8080/ws'  // Update this with your actual deployed URL
-    //   : 'ws://localhost:5000';  // Local development URL
+    const socketURL = window.location.hostname === 'localhost'
+      ? 'ws://localhost:5000'  // Use localhost for local development
+      : `wss://${window.location.hostname}:${process.env.REACT_APP_PORT || 5000}/`; // Use dynamic port in production
   
-    
-    const newSocket = io('wss://drs-proj-production.up.railway.app:8080/ws');
+    const newSocket = io(socketURL);
     setSocket(newSocket);
-  
+    
     newSocket.on("connect", () => {
       console.log("Socket.IO connected.");
     });
@@ -77,11 +73,11 @@ function App() {
       newSocket.off("connect");
       newSocket.off("disconnect");
       newSocket.off("serverReaction");
-  
       console.log('Cleaning up socket');
       newSocket.close();
     };
   }, []);
+  
   
 
   const toggleForm = () => {
