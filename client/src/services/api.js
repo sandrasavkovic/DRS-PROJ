@@ -3,6 +3,6 @@
 // na lokalnoj masini ili na cloud-u
 
 // api.js
-const apiUrl = process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const getApiUrl = (path) => `${API_URL}${path}`;
