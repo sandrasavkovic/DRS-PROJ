@@ -49,7 +49,7 @@ import os
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Use the port provided by Railway
-    socketio.run(app, debug=True, host="0.0.0.0", port=port)
+    socketio.run(app, debug=True, host="0.0.0.0", port=port,allow_unsafe_werkzeug=True )
 
 # from app_init import app, socketio  # Importovanje app i socketio iz app_init.py
 # from routes.auth_routes import auth_routes
