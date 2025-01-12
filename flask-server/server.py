@@ -16,7 +16,9 @@ socketio = create_socketio(app)
 #     app,
 #  resources={r"/*": {"origins": ["http://localhost:3000", "https://drs-proj-production.up.railway.app"]}},
 # )
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://stellar-wholeness-production.up.railway.app"]}})
+
+
+CORS(app, resources={r"/*": {"origins": ["https://drs-proj-production.up.railway.app", "https://stellar-wholeness-production.up.railway.app"]}})
 
 # Registracija blueprint-a
 app.register_blueprint(auth_routes, url_prefix="/auth")
