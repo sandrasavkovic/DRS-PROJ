@@ -28,28 +28,61 @@ function App() {
 
   const navigate = useNavigate();
 
+
+// pre railway-a
+  // useEffect(() => {
+  //   const newSocket = io('http://localhost:5000');
+  //   console.log('Socket.IO JE inicijaliziran', newSocket);
+  //   setSocket(newSocket);
+
+  //   newSocket.on("connect", () => {
+  //     console.log("Socket.IO je ukljucen.");
+  //   });
+
+  //   newSocket.on("disconnect", () => {
+  //     console.log("Socket.IO je iskljucen.");
+  //   });
+
+  //   return () => {
+  //     newSocket.off("connect");
+  //     newSocket.off("disconnect");
+  //     newSocket.off("serverReaction");
+
+  //     console.log('Cleaning up socket');
+  //     newSocket.close();
+  //   };
+  // }, []);
+
   useEffect(() => {
-    const newSocket = io('http://localhost:5000');
-    console.log('Socket.IO JE inicijaliziran', newSocket);
+    // Check if we're in production or local environment
+    const isProduction = window.location.hostname !== 'localhost';
+    
+    const socketURL = isProduction
+      ? 'wss://drs-proj-production.up.railway.app:8080/ws'  // Update this with your actual deployed URL
+      : 'ws://localhost:5000';  // Local development URL
+  
+    const newSocket = io(socketURL);
+    console.log('Socket.IO initialized at:', socketURL);
     setSocket(newSocket);
-
+  
     newSocket.on("connect", () => {
-      console.log("Socket.IO je ukljucen.");
+      console.log("Socket.IO connected.");
     });
-
+  
     newSocket.on("disconnect", () => {
-      console.log("Socket.IO je iskljucen.");
+      console.log("Socket.IO disconnected.");
     });
-
+  
     return () => {
       newSocket.off("connect");
       newSocket.off("disconnect");
       newSocket.off("serverReaction");
-
+  
       console.log('Cleaning up socket');
       newSocket.close();
     };
   }, []);
+  
 
   const toggleForm = () => {
     setIsRegistering(!isRegistering);
