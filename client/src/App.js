@@ -61,8 +61,8 @@ function App() {
     //   ? 'wss://drs-proj-production.up.railway.app:8080/ws'  // Update this with your actual deployed URL
     //   : 'ws://localhost:5000';  // Local development URL
   
-    socketURL='wss://drs-proj-production.up.railway.app:8080/ws' ;
-    const newSocket = io(socketURL);
+    
+    const newSocket = io('wss://drs-proj-production.up.railway.app:8080/ws');
     console.log('Socket.IO initialized at:', socketURL);
     setSocket(newSocket);
   
