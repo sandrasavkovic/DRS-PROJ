@@ -20,7 +20,8 @@ port = int(os.environ.get("PORT", 5000))  # Fallback to 5000 if not set by Railw
 
 
 #CORS(app, resources={r"/*": {"origins": "*"}})
-CORS(app, resources={r"/*": {"origins": ["https://drs-proj-production.up.railway.app", "https://stellar-wholeness-production.up.railway.app"]}})
+#CORS(app, resources={r"/*": {"origins": ["https://drs-proj-production.up.railway.app", "https://stellar-wholeness-production.up.railway.app"]}})
+CORS(app, resources={r"/*": {"origins": ["https://frontend-production.8dbd.up.railway.app", "https://backend-production.28c8.up.railway.app"]}})
 
 # Registracija blueprint-a
 app.register_blueprint(auth_routes, url_prefix="/auth")
