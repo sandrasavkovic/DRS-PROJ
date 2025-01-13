@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://backend:5000",
-  "homepage": "https://frontend-production.8dbd.up.railway.app",
+  "homepage": "https://frontend-production-8dbd.up.railway.app",
   "start": "DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.1",
