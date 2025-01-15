@@ -11,7 +11,7 @@ import os
 
 def get_db_connection():
     # Uzimanje vrednosti iz environment varijabli
-    host = os.getenv("MYSQL_HOST", "localhost")  # Default je 'localhost' ako nije postavljeno
+    host = os.getenv("MYSQL_HOST", "db")  # Default je 'localhost' ako nije postavljeno
     user = os.getenv("MYSQL_USER", "root")
     password = os.getenv("MYSQL_PASSWORD","duska")
     database = os.getenv("MYSQL_DATABASE", "discussion_app")

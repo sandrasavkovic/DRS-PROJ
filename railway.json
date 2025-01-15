@@ -12,7 +12,13 @@
       "docker": {
         "dockerfilePath": "./flask-server/Dockerfile"
       },
-      "startCommand": "python server.py"
+      "startCommand": "python server.py",
+      "environment": {
+        "MYSQL_HOST": "db",         
+        "MYSQL_USER": "root",
+        "MYSQL_PASSWORD": "duska",
+        "MYSQL_DATABASE": "discussion_app"
+      }
     },
     {
       "name": "db",
