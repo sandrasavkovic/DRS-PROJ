@@ -14,10 +14,10 @@
       },
       "startCommand": "python server.py",
       "environment": {
-        "MYSQL_HOST": "mysql.railway.internal",         
-        "MYSQL_USER": "root",
-        "MYSQL_PASSWORD": "duska",
-        "MYSQL_DATABASE": "discussion_app"
+        "MYSQLHOST": "mysql.railway.internal",         
+        "MYSQLUSER": "root",
+        "MYSQLPASSWORD": "duska",
+        "MYSQLDATABASE": "discussion_app"
       }
     },
     {
@@ -27,7 +27,7 @@
       },
       "environment": {
         "MYSQL_ROOT_PASSWORD": "duska",
-        "MYSQL_DATABASE": "discussion_app"
+        "MYSQLDATABASE": "discussion_app"
       }
     }
   ]

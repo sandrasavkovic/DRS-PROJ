@@ -26,10 +26,10 @@ services:
     volumes:
       - ./flask-server:/app/backend
     environment:
-      - MYSQL_HOST=${MYSQL_HOST}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQLHOST=${MYSQLHOST}
+      - MYSQLUSER=${MYSQLUSER}
+      - MYSQLPASSWORD=${MYSQLPASSWORD}
+      - MYSQLDATABASE=db
     depends_on:
       - db
 
@@ -40,7 +40,7 @@ services:
       - "3307:3306"  # Map host port 3307 to container's 3306
     environment:
       MYSQL_ROOT_PASSWORD: duska
-      MYSQL_DATABASE: discussion_app
+      MYSQLDATABASE: discussion_app
     volumes:
       - db_data:/var/lib/mysql
       - ./discussion_app.sql:/docker-entrypoint-initdb.d/discussion_app.sql
