@@ -14,7 +14,7 @@
       },
       "startCommand": "python server.py",
       "environment": {
-        "MYSQLHOST": "mysql.railway.internal",         
+        "MYSQLHOST": "localhost",         
         "MYSQLUSER": "root",
         "MYSQLPASSWORD": "duska",
         "MYSQLDATABASE": "discussion_app"
