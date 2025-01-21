@@ -16,8 +16,8 @@
       "environment": {
         "MYSQLHOST": "mysql.railway.internal",         
         "MYSQLUSER": "root",
-        "MYSQLPASSWORD": "AryaxhVkWZiXECrmlJdTsiZVDoeRpPwS",
-        "MYSQLDATABASE": "railway"
+        "MYSQLPASSWORD": "duska",
+        "MYSQLDATABASE": "discussion_app"
       }
     },
     {

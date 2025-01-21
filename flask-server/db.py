@@ -13,8 +13,8 @@ def get_db_connection():
     # Uzimanje vrednosti iz environment varijabli
     host = os.getenv("MYSQLHOST", "mysql.railway.internal")  # Default je 'localhost' ako nije postavljeno izmeni ako treba za railway
     user = os.getenv("MYSQLUSER", "root")
-    password = os.getenv("MYSQLPASSWORD","AryaxhVkWZiXECrmlJdTsiZVDoeRpPwS")
-    database = os.getenv("MYSQLDATABASE", "railway")
+    password = os.getenv("MYSQLPASSWORD","duska")
+    database = os.getenv("MYSQLDATABASE", "discussion_app")
     
      # Debug: Prikazivanje vrednosti varijabli
     print(f"MYSQLHOST: {host}")
