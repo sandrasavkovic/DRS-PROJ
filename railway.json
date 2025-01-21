@@ -14,10 +14,10 @@
       },
       "startCommand": "python server.py",
       "environment": {
-        "MYSQLHOST": "monorail.proxy.rlwy.net",         
+        "MYSQLHOST": "mysql.railway.internal",         
         "MYSQLUSER": "root",
-        "MYSQLPASSWORD": "duska",
-        "MYSQLDATABASE": "discussion_app"
+        "MYSQLPASSWORD": "AryaxhVkWZiXECrmlJdTsiZVDoeRpPwS",
+        "MYSQLDATABASE": "railway"
       }
     },
     {
