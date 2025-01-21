@@ -14,7 +14,7 @@
       },
       "startCommand": "python server.py",
       "environment": {
-        "MYSQLHOST": "mysql-production-ce98.up.railway.app",         
+        "MYSQLHOST": "monorail.proxy.rlwy.net",         
         "MYSQLUSER": "root",
         "MYSQLPASSWORD": "duska",
         "MYSQLDATABASE": "discussion_app"
