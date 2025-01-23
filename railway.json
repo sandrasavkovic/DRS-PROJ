@@ -14,7 +14,7 @@
       },
       "startCommand": "python server.py",
       "environment": {
-        "MYSQLHOST": "junction.proxy.rlwy.net",         
+        "MYSQLHOST": "mysql-lrr3-production.up.railway.app",         
         "MYSQLUSER": "root",
         "MYSQLPASSWORD": "duska",
         "MYSQLDATABASE": "discussion_app"

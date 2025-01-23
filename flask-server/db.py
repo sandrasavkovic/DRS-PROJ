@@ -11,7 +11,7 @@ import os
 
 def get_db_connection():
     # Uzimanje vrednosti iz environment varijabli
-    host = os.getenv("MYSQLHOST", "junction.proxy.rlwy.net")  # Default je 'localhost' ako nije postavljeno izmeni ako treba za railway
+    host = os.getenv("MYSQLHOST", "mysql-lrr3-production.up.railway.app")  # Default je 'localhost' ako nije postavljeno izmeni ako treba za railway
     user = os.getenv("MYSQLUSER", "root")
     password = os.getenv("MYSQLPASSWORD","duska")
     database = os.getenv("MYSQLDATABASE", "discussion_app")
