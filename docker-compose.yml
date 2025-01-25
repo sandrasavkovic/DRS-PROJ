@@ -26,10 +26,10 @@ services:
     volumes:
       - ./flask-server:/app/backend
     environment:
-      - MYSQLHOST=${MYSQLHOST}
-      - MYSQLUSER=${MYSQLUSER}
-      - MYSQLPASSWORD=${MYSQLPASSWORD}
-      - MYSQLDATABASE=db
+      - MYSQLHOST=db
+      - MYSQLUSER=root
+      - MYSQLPASSWORD=duska
+      - MYSQLDATABASE=discussion_app
     depends_on:
       - db
 
