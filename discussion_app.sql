@@ -19,8 +19,6 @@
 -- Table structure for table `comments`
 --
 
---CREATE DATABASE IF NOT EXISTS discussion_app;
---USE discussion_app;
 
 
 DROP TABLE IF EXISTS `comments`;
