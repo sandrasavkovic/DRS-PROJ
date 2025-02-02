@@ -57,7 +57,8 @@ export const updateUser = (username, updatedUser) => {
   return fetch(`/auth/users/${username}`, {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
       },
       body: JSON.stringify(updatedUser),
   })

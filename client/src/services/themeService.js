@@ -7,6 +7,7 @@ export const deleteTheme = (themeId) => {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
   })
     .then((response) => {
@@ -31,6 +32,7 @@ export const modifyTheme = (themeId, updatedTheme) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
     body: JSON.stringify({
       theme_name: updatedTheme.theme_name,
@@ -59,6 +61,7 @@ export const addTheme = (newTheme) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
     body: JSON.stringify({
       theme_name: newTheme.theme_name,
@@ -89,6 +92,7 @@ export const fetchThemes = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
       },
     })
       .then((res) => {
@@ -113,6 +117,7 @@ export const fetchThemes = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
       },
     })
       .then((res) => {
@@ -165,7 +170,8 @@ export const updateDiscussion = (discussionId, updatedDiscussion) => {
   return fetch(`/discussion/editDiscussion?id=${discussionId}`, {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
       },
       body: JSON.stringify(updatedDiscussion), // Send updated data in the request body
   })
@@ -186,8 +192,9 @@ export const fetchDiscussionsOfUser = (username) =>{
   return fetch(`/discussion/get_discussions_for?username=${username}`, {  
     method: "GET",
     headers: {
-      "Content-Type": "application/json",  // You can still include headers, but no body for GET
-    },  
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+    },
   })
   .then((response) => {
     if (!response.ok) {
@@ -206,8 +213,9 @@ export const getDiscussionById = (discussionId) =>{
   return fetch(`/discussion/get_discussion_by_id?discussionId=${discussionId}`, {  
     method: "GET",
     headers: {
-      "Content-Type": "application/json",  // You can still include headers, but no body for GET
-    },  
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+    }, 
   })
   .then((response) => {
     if (!response.ok) {

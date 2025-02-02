@@ -41,10 +41,14 @@ def login_user(email, password):
                     connection.commit()
                 except Exception as e:
                     print(f"GRESKA!!: {str(e)}")
-                
-            access_token = create_access_token(identity={"email": email, "is_admin": user.is_admin}) #Token se kreira ako je uspjesan login
-            # ne zanima ga da dobije obavestenje ako korisnik nije logovan
+            
+            #Token ovako ne moze:    
+                # access_token = create_access_token(identity={"email": email, "is_admin": user.is_admin}) #Token se kreira ako je uspjesan login
+            
+            # Izmjena:
+            access_token = create_access_token(identity=email) # izmjena jer jwt_required ima prob sa dictionary
             return user_dto, access_token
+        
         return None
     except Exception as e:
         connection.rollback()

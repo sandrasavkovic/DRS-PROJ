@@ -1,11 +1,11 @@
 //SVE za DISKUSIJE
 
-//KORISTI SE!!!
 export const fetchAllDiscussions = () => {
   return fetch("/discussion/getAllDiscussions", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
   })
     .then((res) => {
@@ -30,6 +30,7 @@ export const addDiscussion = (user_id, theme_id, discussionText) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
     body: JSON.stringify({
       userId: user_id,
@@ -56,6 +57,7 @@ export const modifyDiscussion = (discussionId, updatedDiscussion) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
     body: JSON.stringify({
       theme_id: updatedDiscussion.theme_id, 
@@ -76,11 +78,11 @@ export const modifyDiscussion = (discussionId, updatedDiscussion) => {
 
 //KORISTI SE!!!
 export const deleteDiscussion = (discussionId) =>{
-  console.log("PROSLEDJEN ID DISKUSIJE : ", discussionId)
   return fetch(`/discussion/deleteDiscussion`, {
     method: 'POST',
     headers: {
-        'Content-Type': 'application/json',
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
     body: JSON.stringify(discussionId), 
   })
@@ -102,6 +104,7 @@ export const fetchDiscussionReactions = (discussionId, userId) => {
     method: "POST", 
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
     body: JSON.stringify({ discussionId, userId }), 
   })
@@ -127,6 +130,7 @@ export const reactToDiscussion = (discussionId, userId, reactionType) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
     body: JSON.stringify({ discussionId, userId, reactionType }),
   }).then((res) => {
@@ -144,6 +148,7 @@ export const fetchDiscussionComments = (discussionId) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
     body: JSON.stringify({ discussionId }),
   })
@@ -169,7 +174,8 @@ export const postComment = (discussionId, userId, newComment, mentions) => {
   return fetch('/discussion/postComment', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
     body: JSON.stringify({ discussionId, userId, newComment, mentions }),
   })
@@ -192,6 +198,7 @@ export const deleteComment = (commentId) =>
     method: "POST", 
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
     },
     body: JSON.stringify({commentId }), 
   })

@@ -23,33 +23,16 @@ import toast from 'react-hot-toast';
 */
 
 // IZMJENEEE:
+// *****************************************************************************************************************************
+// U servisima klijenta dodano polje Authorization (discussionService.js, themeService.js, kod authService.js samo za updateUser)
+// SERVER: 
+  // U authService.py izmjenjen nacin kreiranja tokena (nije dict vise, samo email) => fja handleLogin
+  // U rutama dodano jwt_required 
 
-// DODANE SU 2 NOVE KOMPONENTE 
-  // (AdminCRUD i AddThemeModal - uglavnom isti kod kao AdminManageTopics i AdminThemes):
-// Izmjene su uvedene da bi rad sa temama bio slican radu sa diskusijama
-// Update na addTheme (front i back), 
-// AddThemeModal - AdminCRUD sredjeni po uzoru na discussionDisplay - discussions (callback funkcije)
-// Azuriranje, dodavanje nove teme, edit postojece 
-  // (sredjen exception - dodavanje teme istog imena/izmjena na vec postojece)
+// TO DO (napomena):
+  // approvingService.js se ne koristi? Accept, decline i sl ide preko socket-a, ne htpp zahtjeva
+  // osim toga ima i dr stvari koje se ne koriste, brisemo na kraju!
 
-// Sidebar - bootstrap, ne koristi se Admin.css vise (bitno zbog rasporeda komponenti - ne pravi prob vise)
-
-// Jos nisam pogl sav kod da li je obrisann!! 
-// (samo diskusije i teme!)
-// Kod diskusija dodan DTO - Diskusija, Reakcija, Komentara
-
-//TO DO:
-// Ispraiviti modifyTheme: ime ne moze biti isto kao kod drugih tema
-  // Hvata BadRequest (dakle backend sredjen) ali mozemo na front sprijecit slanje takvog zatjeva
-  // ali ono sto je zakom ne moze jer theme_name moze ostati nepromijenjeno (ne unese se novo ime)
-  // i onda se ne moze edit jer ce trazitii izmjenu toga (return ce jer postoji tme tog imena - ona koja se mijenja)
-
-// STA BI JOS MOGLO?
-  // Mozda da Admin i User imaju themes i discussion 
-    // i kao prop da prosl child komp da ne bi dugo cekali na podatke
-  // Myb umjesto alert i are you sure you want to delete da ubacimo Toast sa bootstrap (ako nam se bude dalo)
-//OBAVEZNO Testiratii!! (mnogo izmjena i front i back)
-  // Obrisati AdminManageTopics i AdminThemes (sad sam ostavila za svaki slucaj)
 
 const Discussions = ({ userId , discussions:propDiscussions}) => {
 
