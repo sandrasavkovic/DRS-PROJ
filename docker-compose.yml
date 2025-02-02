@@ -11,9 +11,6 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
-      - REACT_APP_API_URL=${REACT_APP_API_URL}
-      - DANGEROUSLY_DISABLE_HOST_CHECK=${DANGEROUSLY_DISABLE_HOST_CHECK}
-      - REACT_APP_PORT=${REACT_APP_PORT}
     depends_on:
       - backend
 
@@ -26,10 +23,10 @@ services:
     volumes:
       - ./flask-server:/app/backend
     environment:
-      - MYSQLHOST=${MYSQLHOST}
-      - MYSQLUSER=${MYSQLUSER}
-      - MYSQLPASSWORD=${MYSQLPASSWORD}
-      - MYSQLDATABASE=db
+      - MYSQL_HOST=db
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=sandra
+      - MYSQL_DATABASE=discussion_app
     depends_on:
       - db
 
@@ -39,8 +36,8 @@ services:
     ports:
       - "3307:3306"  # Map host port 3307 to container's 3306
     environment:
-      MYSQL_ROOT_PASSWORD: duska
-      MYSQLDATABASE: discussion_app
+      MYSQL_ROOT_PASSWORD: sandra
+      MYSQL_DATABASE: discussion_app
     volumes:
       - db_data:/var/lib/mysql
       - ./discussion_app.sql:/docker-entrypoint-initdb.d/discussion_app.sql

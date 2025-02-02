@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-WORKDIR /app
+WORKDIR /app/frontend
 
 # Copy package.json and install dependencies
 COPY package*.json ./

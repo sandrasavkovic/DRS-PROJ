@@ -30,53 +30,53 @@ function App() {
 
 
 // pre railway-a
+   useEffect(() => {
+     const newSocket = io('http://localhost:5000');
+     console.log('Socket.IO JE inicijaliziran', newSocket);
+     setSocket(newSocket);
+
+     newSocket.on("connect", () => {
+       console.log("Socket.IO je ukljucen.");
+     });
+
+     newSocket.on("disconnect", () => {
+       console.log("Socket.IO je iskljucen.");
+     });
+
+     return () => {
+       newSocket.off("connect");
+       newSocket.off("disconnect");
+       newSocket.off("serverReaction");
+
+       console.log('Cleaning up socket');
+       newSocket.close();
+     };
+   }, []);
+
   // useEffect(() => {
-  //   const newSocket = io('http://localhost:5000');
-  //   console.log('Socket.IO JE inicijaliziran', newSocket);
+  //   const socketURL = window.location.hostname === 'localhost'
+  //     ? 'ws://localhost:5000'  // Use localhost for local development
+  //     : `wss://${window.location.hostname}:${process.env.REACT_APP_PORT || 5000}/`; // Use dynamic port in production
+  
+  //   const newSocket = io(socketURL);
   //   setSocket(newSocket);
-
+    
   //   newSocket.on("connect", () => {
-  //     console.log("Socket.IO je ukljucen.");
+  //     console.log("Socket.IO connected.");
   //   });
-
+  
   //   newSocket.on("disconnect", () => {
-  //     console.log("Socket.IO je iskljucen.");
+  //     console.log("Socket.IO disconnected.");
   //   });
-
+  
   //   return () => {
   //     newSocket.off("connect");
   //     newSocket.off("disconnect");
   //     newSocket.off("serverReaction");
-
   //     console.log('Cleaning up socket');
   //     newSocket.close();
   //   };
   // }, []);
-
-  useEffect(() => {
-    const socketURL = window.location.hostname === 'localhost'
-      ? 'ws://localhost:5000'  // Use localhost for local development
-      : `wss://${window.location.hostname}:${process.env.REACT_APP_PORT || 5000}/`; // Use dynamic port in production
-  
-    const newSocket = io(socketURL);
-    setSocket(newSocket);
-    
-    newSocket.on("connect", () => {
-      console.log("Socket.IO connected.");
-    });
-  
-    newSocket.on("disconnect", () => {
-      console.log("Socket.IO disconnected.");
-    });
-  
-    return () => {
-      newSocket.off("connect");
-      newSocket.off("disconnect");
-      newSocket.off("serverReaction");
-      console.log('Cleaning up socket');
-      newSocket.close();
-    };
-  }, []);
   
   
 
