@@ -2,9 +2,6 @@ from flask import Blueprint, request, jsonify
 from app_init import socketio 
 from services.authService import login_user, register_user, get_user_by_username_service, update_user_service
 from routes.approving_routes import emit_pending_requests
-
-from flask_jwt_extended import jwt_required
-
 # Pomocu Blueprint se samo grupisu rute - treba nam jer rute ne pisemo u server.py fajlu
 auth_routes = Blueprint("auth_routes", __name__)
 
@@ -69,7 +66,6 @@ def get_user_by_username():
     return jsonify(user_data), status_code
 
 @auth_routes.route("/users/<string:username>", methods=["POST"])
-@jwt_required()
 def update_user(username):
     try:
         print("EDIT ::: %s" , username)

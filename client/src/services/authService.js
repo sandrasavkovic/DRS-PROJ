@@ -1,8 +1,6 @@
 
 // Dakle samo SLANJE podataka serveru
-import { getApiUrl } from "./api";
 
-// primer kako cemo koristiti :
 export const loginUser = (email, password) => {
   return fetch("/auth/login", {
     method: "POST",
@@ -57,8 +55,7 @@ export const updateUser = (username, updatedUser) => {
   return fetch(`/auth/users/${username}`, {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'application/json',
       },
       body: JSON.stringify(updatedUser),
   })

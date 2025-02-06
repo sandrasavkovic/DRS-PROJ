@@ -1,11 +1,8 @@
 from flask import Flask, jsonify, request,Blueprint
 from services.themeService import get_all_themes, add_new_theme, modify_existing_theme, delete_existing_theme
-from flask_jwt_extended import jwt_required
-
 theme_routes = Blueprint("theme_routes", __name__)
 
 @theme_routes.route('/theme', methods=['GET'])
-@jwt_required()
 def themes():
     try:
         themes = get_all_themes() 
@@ -14,7 +11,6 @@ def themes():
         return jsonify({'error': str(e)}), 500
 
 @theme_routes.route('/add_theme', methods=['POST'])
-@jwt_required()
 def create_theme():
     try:
         data = request.get_json()
@@ -31,7 +27,6 @@ def create_theme():
         return jsonify({'error': str(e)}), 500
 
 @theme_routes.route('/modify_theme/<int:theme_id>', methods=['PUT'])
-@jwt_required()
 def modify_theme(theme_id):
     try:
         data = request.get_json()
@@ -53,7 +48,6 @@ def modify_theme(theme_id):
         return jsonify({'error': str(e)}), 500  
     
 @theme_routes.route('/delete_theme/<int:theme_id>', methods=['DELETE'])
-@jwt_required()
 def delete_theme(theme_id):
     try:
         delete_existing_theme(theme_id)
@@ -65,7 +59,6 @@ def delete_theme(theme_id):
 
 # Endpoint za dobijanje jedne teme po ID-u myb ne treba
 @theme_routes.route('/theme/<int:theme_id>', methods=['GET'])
-@jwt_required()
 def theme_by_id(theme_id):
     try:
         theme = ""

@@ -12,14 +12,11 @@ from services.discussionService import (
 
     get_discussions_for_user_service, get_discussion_by_id_service, get_user_id_from_username
 )
-# dodano za tokene
-from flask_jwt_extended import jwt_required
 
 discussion_routes = Blueprint("discussion_routes", __name__)
 
 #KORISTI SE!!!
 @discussion_routes.route('/getAllDiscussions', methods=['GET'])
-@jwt_required() # Ovo se dodaje kod svih ruta servera => tokeni!
 def getAllDiscussions():
     try:
         discussions = get_all_discussions()
@@ -29,7 +26,6 @@ def getAllDiscussions():
 
 #KORISTI SE!!!    
 @discussion_routes.route('/addDiscussion', methods=['POST'])
-@jwt_required() # Ovo se dodaje kod svih ruta servera => tokeni!
 def add_discussion():
     try:
         print("Usao u funkciju za dodavanje diskusije")
@@ -51,7 +47,6 @@ def add_discussion():
 
 #KORISTI SE!!!
 @discussion_routes.route("/deleteDiscussion",methods =['POST'])
-@jwt_required() # Ovo se dodaje kod svih ruta servera => tokeni!
 def delete_discussion_by_id():
     try:
         discussionId = request.json
@@ -66,7 +61,6 @@ def delete_discussion_by_id():
 #KORISTI SE!!!
 #Najnovija ruta za edit diskusije
 @discussion_routes.route('/edit/<int:discussion_id>', methods=['PUT'])
-@jwt_required() # Ovo se dodaje kod svih ruta servera => tokeni!
 def edit_discussion(discussion_id):
     try:
         print("RUTA PRONADJENA")
@@ -80,7 +74,6 @@ def edit_discussion(discussion_id):
 
 #KORISTI SE!!!
 @discussion_routes.route('/fetchReactions', methods=['POST'])
-@jwt_required() # Ovo se dodaje kod svih ruta servera => tokeni!
 def fetch_reactions():
     try:
         data = request.get_json()
@@ -95,7 +88,6 @@ def fetch_reactions():
 
 # KORISTI SE!!!
 @discussion_routes.route('/react', methods=['POST'])
-@jwt_required() # Ovo se dodaje kod svih ruta servera => tokeni!
 def react_to_discussion():
     try:
         data = request.get_json()
@@ -115,7 +107,6 @@ def react_to_discussion():
 #KORISTI SE!!!
 # za komentare
 @discussion_routes.route('/fetchComments', methods=['POST'])
-@jwt_required() # Ovo se dodaje kod svih ruta servera => tokeni!
 def fetch_comments():
     try:
         data = request.get_json()
@@ -128,7 +119,6 @@ def fetch_comments():
 
 #KORISTI SE!!!
 @discussion_routes.route('/postComment', methods=['POST'])
-@jwt_required() # Ovo se dodaje kod svih ruta servera => tokeni!
 def post_comment():
     try:
         data = request.get_json()
@@ -145,7 +135,6 @@ def post_comment():
 
 #KORISTI SE!!!
 @discussion_routes.route('/deleteComment', methods=['POST'])
-@jwt_required() # Ovo se dodaje kod svih ruta servera => tokeni!
 def delete_comment():
     try:
         print("U RUTI ZA DELETE!")
