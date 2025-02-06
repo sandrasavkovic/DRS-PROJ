@@ -8,7 +8,7 @@ services:
       - "3000:3000"
     volumes:
       - ./client:/app/frontend
-      - /app/node_modules
+      - /app/frontend/node_modules
     environment:
       - NODE_ENV=development
     depends_on:
@@ -25,7 +25,7 @@ services:
     environment:
       - MYSQL_HOST=db
       - MYSQL_USER=root
-      - MYSQL_PASSWORD=sandra
+      - MYSQL_PASSWORD=Marija007
       - MYSQL_DATABASE=discussion_app
     depends_on:
       - db
@@ -36,7 +36,7 @@ services:
     ports:
       - "3307:3306"  # Map host port 3307 to container's 3306
     environment:
-      MYSQL_ROOT_PASSWORD: sandra
+      MYSQL_ROOT_PASSWORD: Marija007
       MYSQL_DATABASE: discussion_app
     volumes:
       - db_data:/var/lib/mysql
