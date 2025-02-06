@@ -10,6 +10,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import { Toaster, toast } from "react-hot-toast";
 import "./styles/App.css";
 import "./styles/loginRegister.css";
+import { jwtDecode } from "jwt-decode";
 
 function App() {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -84,33 +85,58 @@ function App() {
     return "Data will get lost!";
   };
 
-  // deo za zatvaranje tab-a
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      sessionStorage.setItem('isClosing', 'true');
-      setTimeout(() => {
-        sessionStorage.removeItem('isClosing'); // zbog ovog delay-a ako je u pitanju refresh a ne zatv taba
-        // flag ce se ukloniti pa se nece desiti unload tj logout
-      }, 100); 
-      
-      e.preventDefault();
-      e.returnValue = "Data will get lost!";
-    };
+  // // deo za zatvaranje tab-a
+  // useEffect(() => {
+  //   const handleBeforeUnload = (e) => {
+  //     console.log(sessionStorage.getItem('isClosing'));
+  //     sessionStorage.setItem('isClosing', 'true');
+  //     setTimeout(() => {
+  //       sessionStorage.removeItem('isClosing'); // zbog ovog delay-a ako je u pitanju refresh a ne zatv taba
+  //       // flag ce se ukloniti pa se nece desiti unload tj logout
+  //     }, 100); 
+  //     console.log("AA");
+  //     console.log(sessionStorage.getItem('isClosing'));
 
-    const handleUnload = () => {
-      if (sessionStorage.getItem('isClosing') === 'true') {
-          handleLogout();
+  //     e.preventDefault();
+  //     e.returnValue = "Data will get lost!";
+  //   };
+
+  //   const handleUnload = () => {
+  //     if (sessionStorage.getItem('isClosing') === 'true') {
+  //         handleLogout();
+  //     }
+  //   };
+
+  //   window.addEventListener('beforeunload', handleBeforeUnload);
+  //   window.addEventListener('unload', handleUnload);
+
+  //   return () => {
+  //     window.removeEventListener('beforeunload', handleBeforeUnload);
+  //     window.removeEventListener('unload', handleUnload);
+  //   };
+  // }, []); 
+
+    const isTokenExpired = (token) => {
+      try {
+        const decoded = jwtDecode(token);
+        const currentTime = Date.now() / 1000; // in seconds
+        const expirationDate = new Date(decoded.exp * 1000);
+    
+        console.log("Token istice: ", expirationDate.toLocaleString());
+        return decoded.exp < currentTime; // Check if the token has expired
+      } catch (e) {
+        console.error("Error decoding token", e);
+        return true;
       }
     };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    window.addEventListener('unload', handleUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      window.removeEventListener('unload', handleUnload);
-    };
-  }, []); 
+  
+    useEffect(() => {
+      const token = localStorage.getItem("access_token");
+      if (token && isTokenExpired(token)) {
+        toast.error("Session expired. Please log in again.");
+        handleLogout();
+      }
+    }, []);
 
 
   const toggleForm = () => {
