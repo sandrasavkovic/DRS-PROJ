@@ -28,28 +28,90 @@ function App() {
 
   const navigate = useNavigate();
 
+
+// pre railway-a
+   useEffect(() => {
+     const newSocket = io('http://localhost:5000');
+     console.log('Socket.IO JE inicijaliziran', newSocket);
+     setSocket(newSocket);
+
+     newSocket.on("connect", () => {
+       console.log("Socket.IO je ukljucen.");
+     });
+
+     newSocket.on("disconnect", () => {
+       console.log("Socket.IO je iskljucen.");
+     });
+
+     return () => {
+       newSocket.off("connect");
+       newSocket.off("disconnect");
+       newSocket.off("serverReaction");
+
+       console.log('Cleaning up socket');
+       newSocket.close();
+     };
+   }, []);
+
+  // useEffect(() => {
+  //   const socketURL = window.location.hostname === 'localhost'
+  //     ? 'ws://localhost:5000'  // Use localhost for local development
+  //     : `wss://${window.location.hostname}:${process.env.REACT_APP_PORT || 5000}/`; // Use dynamic port in production
+  
+  //   const newSocket = io(socketURL);
+  //   setSocket(newSocket);
+    
+  //   newSocket.on("connect", () => {
+  //     console.log("Socket.IO connected.");
+  //   });
+  
+  //   newSocket.on("disconnect", () => {
+  //     console.log("Socket.IO disconnected.");
+  //   });
+  
+  //   return () => {
+  //     newSocket.off("connect");
+  //     newSocket.off("disconnect");
+  //     newSocket.off("serverReaction");
+  //     console.log('Cleaning up socket');
+  //     newSocket.close();
+  //   };
+  // }, []);
+  
+  const preventRefresh = (e) => {
+    e.preventDefault();
+    e.returnValue = "Data will get lost!";
+    return "Data will get lost!";
+  };
+
+  // deo za zatvaranje tab-a
   useEffect(() => {
-    const newSocket = io('http://localhost:5000');
-    console.log('Socket.IO JE inicijaliziran', newSocket);
-    setSocket(newSocket);
+    const handleBeforeUnload = (e) => {
+      sessionStorage.setItem('isClosing', 'true');
+      setTimeout(() => {
+        sessionStorage.removeItem('isClosing'); // zbog ovog delay-a ako je u pitanju refresh a ne zatv taba
+        // flag ce se ukloniti pa se nece desiti unload tj logout
+      }, 100); 
+      
+      e.preventDefault();
+      e.returnValue = "Data will get lost!";
+    };
 
-    newSocket.on("connect", () => {
-      console.log("Socket.IO je ukljucen.");
-    });
+    const handleUnload = () => {
+      if (sessionStorage.getItem('isClosing') === 'true') {
+          handleLogout();
+      }
+    };
 
-    newSocket.on("disconnect", () => {
-      console.log("Socket.IO je iskljucen.");
-    });
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('unload', handleUnload);
 
     return () => {
-      newSocket.off("connect");
-      newSocket.off("disconnect");
-      newSocket.off("serverReaction");
-
-      console.log('Cleaning up socket');
-      newSocket.close();
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('unload', handleUnload);
     };
-  }, []);
+  }, []); 
+
 
   const toggleForm = () => {
     setIsRegistering(!isRegistering);
@@ -108,6 +170,8 @@ function App() {
     localStorage.removeItem("user_name");
     navigate("/login");
   };
+  
+
 
   return (
     <div className="d-flex flex-column w-100" style={{ minHeight: '100vh'}}>

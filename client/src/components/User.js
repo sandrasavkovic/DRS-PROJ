@@ -12,6 +12,7 @@ const User = ({ socket, handleLogout }) => {
 
   // USER
   const [editUser, setEditUser] = useState(null); // Podaci o korisniku za uređivanje
+  const [originalUser, setOriginalUser] = useState(null);
   const [isEditModalOpen, setEditModalOpen] = useState(false); // Modal za uređivanje
   
   //treba za PROP ZA diskusije
@@ -43,6 +44,7 @@ const User = ({ socket, handleLogout }) => {
       console.log(response.user); // Logs the response
       if (response) {
         setEditUser(response.user);  // Update state with the response
+        setOriginalUser(response.user);
       } else {
         toast.error('User not found.');
       }
@@ -71,6 +73,14 @@ const User = ({ socket, handleLogout }) => {
         return;
     }
 
+    const isDataChanged = Object.keys(editUser).some(
+      (key) => editUser[key] !== originalUser[key]
+    );
+
+    if (!isDataChanged) {
+      toast.error('No changes detected.'); // Show a message if no fields were changed
+      return;
+    }
     const username = localStorage.getItem("userName");
 
     if (!username) {

@@ -8,7 +8,7 @@ services:
       - "3000:3000"
     volumes:
       - ./client:/app/frontend
-      - /app/node_modules
+      - /app/frontend/node_modules
     environment:
       - NODE_ENV=development
     depends_on:
@@ -33,6 +33,7 @@ services:
   db:
     image: mysql:8
     container_name: mysql
+    restart: always
     ports:
       - "3307:3306"  # Map host port 3307 to container's 3306
     environment:
