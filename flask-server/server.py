@@ -6,7 +6,7 @@ from routes.theme_routes import theme_routes
 from routes.discussion_routes import discussion_routes
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS  # Import CORS
-
+import os
 
 # Inicijalizacija soketa
 app = create_app()
@@ -38,5 +38,11 @@ def handle_button_click():
 
 # Run the application
 if __name__ == "__main__":
-    socketio.run(app, debug=True, host="0.0.0.0", port=5000, allow_unsafe_werkzeug=True)
+    if os.getenv("FLASK_ENV") == "production":
+        port = 10000  # Production port for Render
+    else:
+        port = 5000  # Local development port
 
+    print(f"Running on port {port}...")
+
+    socketio.run(app, debug=True, host="0.0.0.0", port=port, allow_unsafe_werkzeug=True)
