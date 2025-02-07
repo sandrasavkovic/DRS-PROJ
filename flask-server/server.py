@@ -1,36 +1,30 @@
-import os
 from flask import Flask
-from app_init import create_app, create_socketio
-from routes.auth_routes import auth_routes
+from app_init import create_app, create_socketio, mail, socketio  # Import initialization functions and extensions
+from routes.auth_routes import auth_routes  # Import blueprints
 from routes.approving_routes import approving_routes
 from routes.theme_routes import theme_routes
 from routes.discussion_routes import discussion_routes
-from flask_cors import CORS
-from flask_socketio import emit
+from flask_socketio import SocketIO, emit
+from flask_cors import CORS  # Import CORS
+import os
 
-# Initialize Flask app & Socket.IO
+# Inicijalizacija soketa
 app = create_app()
 socketio = create_socketio(app)
 
-# Determine environment (local or Render)
-IS_RENDER = "RENDER" in os.environ
+CORS(app, resources={r"/*": {"origins": ["https://drs-proj.onrender.com/", "http://localhost:3000"]}})
 
-# Configure CORS
-allowed_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
-if IS_RENDER:
-    allowed_origins.append("https://drs-proj.onrender.com")
-
-CORS(app, resources={r"/*": {"origins": allowed_origins}})
-
-# Register Blueprints
+# Registracija blueprint-a
 app.register_blueprint(auth_routes, url_prefix="/auth")
 app.register_blueprint(approving_routes, url_prefix="/approving")
 app.register_blueprint(theme_routes, url_prefix='/theme')
 app.register_blueprint(discussion_routes, url_prefix='/discussion')
 
+
 @app.route("/")
 def home():
     return "Welcome to the home page!"
+
 
 # WebSocket event handler
 @socketio.on("button_click")
@@ -38,12 +32,18 @@ def handle_button_click():
     try:
         message = "Cao"
         print("Received 'button_click' event from client.")
-        emit("serverReaction", {"message": message})  # Send response back to client
+        emit("serverReaction", {"message": message})  # Send a response back to the client
     except Exception as e:
         print(f"Error occurred: {e}")
         emit("error", {"message": str(e)})
 
-# Run application using eventlet
+# Run the application via gunicorn or socketio depending on the environment
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 5000))  # Use 5000 locally, Render assigns its own
-    socketio.run(app, debug=not IS_RENDER, host="0.0.0.0", port=port)
+    # Check if we're in a development environment or not
+    if os.getenv("FLASK_ENV") == "development":
+        # In development, we can use socketio.run() directly
+        app.run(debug=True, host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
+    else:
+        # In production, use gunicorn (this block won't be reached if using gunicorn directly)
+        print("Running in production mode, using gunicorn.")
+        socketio.run(app, debug=False, host="0.0.0.0", port=int(os.getenv("PORT", 10000)))

@@ -31,9 +31,9 @@ function App() {
 
 
 // pre railway-a
-/*
+
    useEffect(() => {
-     const newSocket = io('http://localhost:5000');
+     const newSocket = io('https://drs-proj-server.onrender.com');
      console.log('Socket.IO JE inicijaliziran', newSocket);
      setSocket(newSocket);
 
@@ -79,8 +79,8 @@ function App() {
   //     newSocket.close();
   //   };
   // }, []);
-  */
-
+  
+/*
   useEffect(() => {
     const socketURL = window.location.hostname === 'localhost' 
       ? 'http://localhost:5000'  // Use localhost for local development
@@ -116,7 +116,7 @@ function App() {
     e.returnValue = "Data will get lost!";
     return "Data will get lost!";
   };
-
+*/
   // // deo za zatvaranje tab-a
   // useEffect(() => {
   //   const handleBeforeUnload = (e) => {

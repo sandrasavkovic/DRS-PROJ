@@ -2,6 +2,8 @@
 // Dakle samo SLANJE podataka serveru
 
 export const loginUser = (email, password) => {
+  // pazi ! ovo radi samo za production
+  // kada se pokrene na dockeru postoji greska -> apiUrl je undefined
   const apiUrl = process.env.REACT_APP_API_URL
   console.log(apiUrl)
   return fetch(`${apiUrl}/auth/login`, {
