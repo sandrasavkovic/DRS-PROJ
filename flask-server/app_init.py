@@ -7,7 +7,6 @@ import time
 mail = Mail()
 mail_queue = Queue()
 socketio = SocketIO(cors_allowed_origins="*")
-#socketio = SocketIO(cors_allowed_origins=["http://localhost:3000", "https://drs-proj.onrender.com"])
 
 def send_mail_worker(queue):
     """Worker process that sends emails from the queue."""
@@ -16,7 +15,7 @@ def send_mail_worker(queue):
         while True:
             try:
                 # Get mail data from the queue
-                subject, recipient, body = queue.g et()
+                subject, recipient, body = queue.get()
                 if subject is None:  # Stop signal
                     break
                 msg = Message(subject=subject, recipients=[recipient], body=body)
