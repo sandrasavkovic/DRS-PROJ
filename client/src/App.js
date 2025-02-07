@@ -38,6 +38,7 @@ useEffect(() => {
   // Initialize the socket connection
   const newSocket = io('https://drs-proj-server.onrender.com', {
     transports: ['websocket'], // Explicitly define the transport (WebSocket)
+    secure: true,
   });
 
   // Log Socket.IO connection and error events
