@@ -12,7 +12,7 @@ import os
 app = create_app()
 socketio = create_socketio(app)
 
-CORS(app, resources={r"/*": {"origins": ["https://drs-proj.onrender.com/", "http://localhost:3000"]}})
+CORS(app) 
 
 # Registracija blueprint-a
 app.register_blueprint(auth_routes, url_prefix="/auth")
@@ -25,7 +25,6 @@ app.register_blueprint(discussion_routes, url_prefix='/discussion')
 def home():
     return "Welcome to the home page!"
 
-
 # WebSocket event handler
 @socketio.on("button_click")
 def handle_button_click():
@@ -37,7 +36,7 @@ def handle_button_click():
         print(f"Error occurred: {e}")
         emit("error", {"message": str(e)})
 
-# Run the application via gunicorn or socketio depending on the environment
+# Run the application
 if __name__ == "__main__":
     # Check if we're in a development environment or not
     if os.getenv("FLASK_ENV") == "development":
