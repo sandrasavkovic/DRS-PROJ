@@ -40,23 +40,3 @@ def handle_button_click():
 if __name__ == "__main__":
     socketio.run(app, debug=True, host="0.0.0.0", port=5000, allow_unsafe_werkzeug=True)
 
-# from app_init import app, socketio  # Importovanje app i socketio iz app_init.py
-# from routes.auth_routes import auth_routes
-# from routes.approving_routes import approving_routes
-# from routes.theme_routes import theme_routes
-# from flask_socketio import SocketIO
-
-# # Registrujte rute
-# app.register_blueprint(auth_routes, url_prefix='/auth')
-# app.register_blueprint(approving_routes, url_prefix='/approving')
-# app.register_blueprint(theme_routes, url_prefix='/theme')
-
-# @app.route("/") 
-# def pocStr(): 
-#     return "Pocetna stranica"
-
-
-# # Pokrenite aplikaciju
-# if __name__ == "__main__":
-#     socketio.run(app, debug=True)  # Pokreće server koristeći SocketIO umesto app.run()
-

@@ -2,7 +2,8 @@
 // Dakle samo SLANJE podataka serveru
 
 export const loginUser = (email, password) => {
-  return fetch("/auth/login", {
+  const apiUrl = process.env.REACT_APP_API_URL
+  return fetch(`${apiUrl}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
