@@ -8,6 +8,7 @@ RUN npm install
 
 # Copy the rest of the application
 COPY . .
+ENV REACT_APP_API_URL=http://localhost:5000
 
 
 # Serve the React app

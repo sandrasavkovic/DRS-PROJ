@@ -41,8 +41,8 @@ if __name__ == "__main__":
     # Check if we're in a development environment or not
     if os.getenv("FLASK_ENV") == "development":
         # In development, we can use socketio.run() directly
-        app.run(debug=True, host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
+        app.run(debug=True, host="0.0.0.0", port=5000)
     else:
         # In production, use gunicorn (this block won't be reached if using gunicorn directly)
         print("Running in production mode, using gunicorn.")
-        socketio.run(app, debug=False, host="0.0.0.0", port=int(os.getenv("PORT", 10000)))
+        socketio.run(app, debug=False, host="0.0.0.0", port=10000)

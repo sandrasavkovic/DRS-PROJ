@@ -31,29 +31,48 @@ function App() {
 
 
 // pre railway-a
+// pazi !! ovde sam dodala direktno adresu za render, nema localhosta
 
-   useEffect(() => {
-     const newSocket = io('https://drs-proj-server.onrender.com');
-     console.log('Socket.IO JE inicijaliziran', newSocket);
-     setSocket(newSocket);
 
-     newSocket.on("connect", () => {
-       console.log("Socket.IO je ukljucen.");
-     });
+useEffect(() => {
+  // Initialize the socket connection
+  const newSocket = io('https://drs-proj-server.onrender.com', {
+    transports: ['websocket'], // Explicitly define the transport (WebSocket)
+  });
 
-     newSocket.on("disconnect", () => {
-       console.log("Socket.IO je iskljucen.");
-     });
+  // Log Socket.IO connection and error events
+  newSocket.on("connect", () => {
+    console.log("Socket.IO je ukljucen.");
+  });
 
-     return () => {
-       newSocket.off("connect");
-       newSocket.off("disconnect");
-       newSocket.off("serverReaction");
+  newSocket.on("connect_error", (error) => {
+    console.log("Socket.IO connection error:", error);  // Log any connection errors
+  });
 
-       console.log('Cleaning up socket');
-       newSocket.close();
-     };
-   }, []);
+  newSocket.on("disconnect", () => {
+    console.log("Socket.IO je iskljucen.");
+  });
+
+  newSocket.on("serverReaction", (data) => {
+    console.log("Server reaction:", data.message);  // Handling server reaction
+  });
+
+  console.log('Socket.IO JE inicijaliziran', newSocket);
+
+  // Set the socket in the state
+  setSocket(newSocket);
+
+  // Cleanup function to remove event listeners and close the socket
+  return () => {
+    console.log('Cleaning up socket');
+    newSocket.off("connect");
+    newSocket.off("connect_error");
+    newSocket.off("disconnect");
+    newSocket.off("serverReaction");
+
+    newSocket.close();  // Close the socket connection
+  };
+}, []);  // Empty dependency array ensures this runs only once when component mounts
 
   // useEffect(() => {
   //   const socketURL = window.location.hostname === 'localhost'
