@@ -88,6 +88,7 @@ function App() {
   
     const newSocket = io(socketURL, {
       transports: ['websocket'],  // Ensure WebSocket transport is used
+      withCredentials: true,  // jer koristimo tokene za aut
     });
   
     console.log('Socket.IO initialized', newSocket);

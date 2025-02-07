@@ -1,25 +1,18 @@
-# Use an official Python runtime as a parent image
+# Use official Python image
 FROM python:3.10
 
-# Set the working directory in the container
+# Set working directory
 WORKDIR /app/backend
 
-# Copy the current directory contents into the container at /app
+# Copy app files
 COPY . .
 
-
-# Install dependencies using pip from the venv/bin directory
-# Install pipenv
+# Install dependencies
 RUN pip install pipenv
-
-# Copy the current directory contents (including Pipfile and Pipfile.lock) into the container
-COPY . .
-
-# Install dependencies using pipenv (uses Pipfile.lock to ensure exact versions)
 RUN pipenv install --dev --system --deploy
 
-# Expose the Flask app's port
+# Expose Flask's local port (Render dynamically assigns one)
 EXPOSE 5000
 
-# Run the application using the virtual environment's python
-CMD ["python", "server.py"]  
+# Run Gunicorn for production & local testing
+CMD ["gunicorn", "-k", "eventlet", "-w", "1", "-b", "0.0.0.0:5000", "server:app"]
