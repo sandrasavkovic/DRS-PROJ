@@ -11,9 +11,7 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
   const loggedUser = localStorage.getItem("user_name");
   const role = localStorage.getItem("isAdmin");
   
-  useEffect(() => {
-    console.log("diskusija se mijenja mora u uglaste zagrade")
-  }, [discussion, themes]);
+ 
 
   const handleDeleteDiscussion = () => {
     deleteDiscussion(discussion.id)
@@ -62,7 +60,7 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
   };
 
   return (
-  <div className="mb-4" style={{ width: '65%' }}> {/* širinu ovdje podesiti 65% */}
+  <div className="mb-4" style={{ width: '65%' }}> 
     <div className="shadow-sm p-3 mb-4 rounded bg-white">
         {/* Header */}
         <div className="d-flex align-items-center justify-content-between">
@@ -118,10 +116,9 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
           </div>
         </div>
 
-        {/* Siva linija - kao granica za preglednost */}
         <hr style={{ border: '1px solid #dee2e6', margin: '1rem 0' }} />
 
-        {/* Content */}
+        {/* Sadrzaj diskusije */}
         <div className="mt-3">
           <p className="mb-2">{discussion.content}</p>
           <h6 className="text-primary mb-1">#{discussion.theme_name}</h6>

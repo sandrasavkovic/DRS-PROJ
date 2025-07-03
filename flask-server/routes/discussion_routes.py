@@ -9,13 +9,12 @@ from services.discussionService import (
     get_discussion_comments, 
     post_new_comment, 
     delete_comment_service,
-
-    get_discussions_for_user_service, get_discussion_by_id_service, get_user_id_from_username
+    get_user_id_from_username
 )
 
 discussion_routes = Blueprint("discussion_routes", __name__)
 
-#KORISTI SE!!!
+
 @discussion_routes.route('/getAllDiscussions', methods=['GET'])
 def getAllDiscussions():
     try:
@@ -24,12 +23,11 @@ def getAllDiscussions():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-#KORISTI SE!!!    
+    
 @discussion_routes.route('/addDiscussion', methods=['POST'])
 def add_discussion():
     try:
         print("Usao u funkciju za dodavanje diskusije")
-        # kroz data.themeId ..
         data = request.get_json()
         print(data)
         if not data:
@@ -45,7 +43,6 @@ def add_discussion():
     except Exception as e:
         return jsonify({'error': str(e)}), 500  
 
-#KORISTI SE!!!
 @discussion_routes.route("/deleteDiscussion",methods =['POST'])
 def delete_discussion_by_id():
     try:
@@ -58,12 +55,10 @@ def delete_discussion_by_id():
         print(f"Error in get_discussions_for_user: {e}")
         return jsonify({"error": "An error occurred while fetching discussions"}), 500
 
-#KORISTI SE!!!
-#Najnovija ruta za edit diskusije
+
 @discussion_routes.route('/edit/<int:discussion_id>', methods=['PUT'])
 def edit_discussion(discussion_id):
     try:
-        print("RUTA PRONADJENA")
         data = request.get_json()
         theme_id = data.get('theme_id')
         content = data.get('content')
@@ -72,7 +67,7 @@ def edit_discussion(discussion_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500  
 
-#KORISTI SE!!!
+
 @discussion_routes.route('/fetchReactions', methods=['POST'])
 def fetch_reactions():
     try:
@@ -86,7 +81,7 @@ def fetch_reactions():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# KORISTI SE!!!
+
 @discussion_routes.route('/react', methods=['POST'])
 def react_to_discussion():
     try:
@@ -104,8 +99,7 @@ def react_to_discussion():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-#KORISTI SE!!!
-# za komentare
+
 @discussion_routes.route('/fetchComments', methods=['POST'])
 def fetch_comments():
     try:
@@ -117,7 +111,6 @@ def fetch_comments():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-#KORISTI SE!!!
 @discussion_routes.route('/postComment', methods=['POST'])
 def post_comment():
     try:
@@ -133,11 +126,9 @@ def post_comment():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-#KORISTI SE!!!
 @discussion_routes.route('/deleteComment', methods=['POST'])
 def delete_comment():
     try:
-        print("U RUTI ZA DELETE!")
         data = request.get_json()
         comment_id = data.get('commentId')
         response = delete_comment_service(comment_id)
@@ -166,44 +157,6 @@ def get_user_id_by_username(username):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@discussion_routes.route("/get_discussions_for", methods=['GET'])
-def get_discussions_for_user():
-    try:
-        print("TRAZIM DISKUSIJE KORISNIKA!")
-        # Get the username from the query parameters
-        username = request.args.get('username')
-        if not username:
-            return jsonify({"error": "Username is required"}), 400
-
-        # Call the service function
-        response, status_code = get_discussions_for_user_service(username)
-        print(response)
-        # Return the response and the appropriate status code
-        return jsonify(response), status_code
-
-    except Exception as e:
-        print(f"Error in get_discussions_for_user: {e}")
-        return jsonify({"error": "An error occurred while fetching discussions"}), 500
-
-@discussion_routes.route("/get_discussion_by_id", methods=['GET'])
-def get_discussion_for_id():
-    try:
-        print("TRAZIM DISKUSIJE KORISNIKA!")
-        # Get the username from the query parameters
-        discussionId = request.args.get('discussionId')
-        if not discussionId:
-            return jsonify({"error": "discussionId is required"}), 400
-
-        # Call the service function
-        response, status_code = get_discussion_by_id_service(discussionId)
-        print(response)
-        # Return the response and the appropriate status code
-        return jsonify(response), status_code
-
-    except Exception as e:
-        print(f"Error in get_discussions_for_user: {e}")
-        return jsonify({"error": "An error occurred while fetching discussions"}), 500
-    
 
     
 

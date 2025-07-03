@@ -20,7 +20,7 @@ def create_theme():
         new_theme = add_new_theme(theme_name, description)
         
         if 'error' in new_theme:
-            return jsonify(new_theme), 400  # Ako postoji greška - vraćamo status 400
+            return jsonify(new_theme), 400  
         
         return jsonify(new_theme), 200
     except Exception as e:

@@ -54,7 +54,7 @@ def register():
 
 @auth_routes.route("/get_user_by_username", methods=['GET'])
 def get_user_by_username():
-    username = request.args.get('username')  # Get the username from query parameters
+    username = request.args.get('username')  
     
     # If no username is provided, return an error
     if not username:

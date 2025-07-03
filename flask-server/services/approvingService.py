@@ -1,7 +1,7 @@
 from app_init import socketio 
 from db import get_db_connection
 from flask_mail import Message, Mail
-from utils.email_utils import send_email
+from app_init import send_email
 import logging
 
 email_sent_cache = set()

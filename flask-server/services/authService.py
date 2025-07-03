@@ -2,15 +2,14 @@ from flask import jsonify
 from db import get_db_connection
 from flask_jwt_extended import create_access_token
 from models.User import User, UserDTO
-from utils.email_utils import send_email
 
 # pravi upit u bazu i vidi koji korisnici koji nisu adminu imaju isApproved = False
 # admin ga odobrava samo prvi put 
 # ?? ako je rejected onda ga izbaci iz baze
-cashe_for_admin = set()
+#cashe_for_admin = set() ne koristi se, dodata kolona u bazi
 
 def login_user(email, password):
-    print("EEVO ME")
+   # print("EEVO ME")
     connection = get_db_connection()
     cursor = connection.cursor()
     try:

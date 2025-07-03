@@ -1,6 +1,3 @@
-//SVE za DISKUSIJE
-
-//KORISTI SE!!!
 export const fetchAllDiscussions = () => {
   return fetch("/discussion/getAllDiscussions", {
     method: "GET",
@@ -24,7 +21,7 @@ export const fetchAllDiscussions = () => {
     });
 };
 
-// KORISTI SE!!!
+
 export const addDiscussion = (user_id, theme_id, discussionText) => {
   return fetch(`/discussion/addDiscussion`, {
     method: "POST",
@@ -49,8 +46,7 @@ export const addDiscussion = (user_id, theme_id, discussionText) => {
   });
 };
 
-//KORISTI SE!!!
-//NAJNOVIJI KOD ZA IZMJENU DISKUSIJE
+
 export const modifyDiscussion = (discussionId, updatedDiscussion) => {
   return fetch(`/discussion/edit/${discussionId}`, {
     method: "PUT",
@@ -74,9 +70,8 @@ export const modifyDiscussion = (discussionId, updatedDiscussion) => {
     });
 };
 
-//KORISTI SE!!!
+
 export const deleteDiscussion = (discussionId) =>{
-  console.log("PROSLEDJEN ID DISKUSIJE : ", discussionId)
   return fetch(`/discussion/deleteDiscussion`, {
     method: 'POST',
     headers: {
@@ -96,7 +91,7 @@ export const deleteDiscussion = (discussionId) =>{
   });
 }; 
 
-//KORISTI SE!!!
+
 export const fetchDiscussionReactions = (discussionId, userId) => {
   return fetch(`/discussion/fetchReactions`, {
     method: "POST", 
@@ -121,7 +116,7 @@ export const fetchDiscussionReactions = (discussionId, userId) => {
     });
 };
 
-// KORISTI SE!!!
+
 export const reactToDiscussion = (discussionId, userId, reactionType) => {
   return fetch(`/discussion/react`, {
     method: "POST",
@@ -137,8 +132,7 @@ export const reactToDiscussion = (discussionId, userId, reactionType) => {
   });
 };
 
-// KORISTI SE!!!
-// za komentare
+
 export const fetchDiscussionComments = (discussionId) => {
   return fetch(`/discussion/fetchComments`, {
     method: "POST",
@@ -164,7 +158,7 @@ export const fetchDiscussionComments = (discussionId) => {
     });
 };
 
-//KORISTI SE!!!
+
 export const postComment = (discussionId, userId, newComment, mentions) => {
   return fetch('/discussion/postComment', {
     method: 'POST',
@@ -185,7 +179,6 @@ export const postComment = (discussionId, userId, newComment, mentions) => {
     });
 };
 
-//KORISTI SE!!!
 export const deleteComment = (commentId) =>
 {
   return fetch(`/discussion/deleteComment`, {
@@ -207,8 +200,7 @@ export const deleteComment = (commentId) =>
     });
 }
 
-// Provjeri jos jednom koristi li se???
-// u bazi je id pa pomocu username pronalazimo id!
+
 export const getUserIdByUsername = (username) => {
   return fetch(`/discussion/getUserId/${username}`, {
     method: 'GET',

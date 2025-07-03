@@ -30,7 +30,6 @@ function App() {
   const navigate = useNavigate();
 
 
-// pre railway-a
    useEffect(() => {
      const newSocket = io('http://localhost:5000');
      console.log('Socket.IO JE inicijaliziran', newSocket);
@@ -54,76 +53,15 @@ function App() {
      };
    }, []);
 
-  // useEffect(() => {
-  //   const socketURL = window.location.hostname === 'localhost'
-  //     ? 'ws://localhost:5000'  // Use localhost for local development
-  //     : `wss://${window.location.hostname}:${process.env.REACT_APP_PORT || 5000}/`; // Use dynamic port in production
-  
-  //   const newSocket = io(socketURL);
-  //   setSocket(newSocket);
-    
-  //   newSocket.on("connect", () => {
-  //     console.log("Socket.IO connected.");
-  //   });
-  
-  //   newSocket.on("disconnect", () => {
-  //     console.log("Socket.IO disconnected.");
-  //   });
-  
-  //   return () => {
-  //     newSocket.off("connect");
-  //     newSocket.off("disconnect");
-  //     newSocket.off("serverReaction");
-  //     console.log('Cleaning up socket');
-  //     newSocket.close();
-  //   };
-  // }, []);
-  
-  const preventRefresh = (e) => {
-    e.preventDefault();
-    e.returnValue = "Data will get lost!";
-    return "Data will get lost!";
-  };
-
-  // // deo za zatvaranje tab-a
-  // useEffect(() => {
-  //   const handleBeforeUnload = (e) => {
-  //     console.log(sessionStorage.getItem('isClosing'));
-  //     sessionStorage.setItem('isClosing', 'true');
-  //     setTimeout(() => {
-  //       sessionStorage.removeItem('isClosing'); // zbog ovog delay-a ako je u pitanju refresh a ne zatv taba
-  //       // flag ce se ukloniti pa se nece desiti unload tj logout
-  //     }, 100); 
-  //     console.log("AA");
-  //     console.log(sessionStorage.getItem('isClosing'));
-
-  //     e.preventDefault();
-  //     e.returnValue = "Data will get lost!";
-  //   };
-
-  //   const handleUnload = () => {
-  //     if (sessionStorage.getItem('isClosing') === 'true') {
-  //         handleLogout();
-  //     }
-  //   };
-
-  //   window.addEventListener('beforeunload', handleBeforeUnload);
-  //   window.addEventListener('unload', handleUnload);
-
-  //   return () => {
-  //     window.removeEventListener('beforeunload', handleBeforeUnload);
-  //     window.removeEventListener('unload', handleUnload);
-  //   };
-  // }, []); 
 
     const isTokenExpired = (token) => {
       try {
         const decoded = jwtDecode(token);
-        const currentTime = Date.now() / 1000; // in seconds
+        const currentTime = Date.now() / 1000;
         const expirationDate = new Date(decoded.exp * 1000);
     
         console.log("Token istice: ", expirationDate.toLocaleString());
-        return decoded.exp < currentTime; // Check if the token has expired
+        return decoded.exp < currentTime; 
       } catch (e) {
         console.error("Error decoding token", e);
         return true;

@@ -3,8 +3,6 @@ import React from "react";
 const Sidebar = ({ onSelect, handleLogout }) => {
   const options = [
     { label: "Pending Requests", value: "pendingRequests" },
-    //{ label: "Add Topic", value: "addTopic" },
-    //{ label: "Manage Topics", value: "manageTopics" },
     { label: "Topics View", value: "topicsView" },
     { label: "Discussions View", value: "discussionsView" },
     { label: "Logout", value: "logout" }, // Dodali smo opciju Logout kao dugme
@@ -23,19 +21,19 @@ const Sidebar = ({ onSelect, handleLogout }) => {
                 color: "#fff",
                 border: "none",
                 textAlign: "left",
-                padding: "15px 20px", // Povećano vertikalno i horizontalno
-                fontSize: "18px", // Povećana veličina fonta
-                fontWeight: "400", // Polubold font
+                padding: "15px 20px", 
+                fontSize: "18px", 
+                fontWeight: "400", 
               }}
               onClick={() => {
                 if (option.value === "logout") {
-                  handleLogout(); // Poziva handleLogout kada se klikne na Logout
+                  handleLogout(); 
                 } else {
                   onSelect(option.value);
                 }
               }}
               onMouseEnter={(e) => e.target.style.backgroundColor = "#34495e"} // Hover efekat
-              onMouseLeave={(e) => e.target.style.backgroundColor = "transparent"} // Vraća u originalnu boju
+              onMouseLeave={(e) => e.target.style.backgroundColor = "transparent"} 
             >
               {option.label}
             </button>

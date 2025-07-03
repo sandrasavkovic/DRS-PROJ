@@ -2,9 +2,8 @@ from app_init import socketio
 from db import get_db_connection
 from services.themeService import get_current_user_id;
 from models.Discussion import DiscussionDTO, DiscussionReactionsDTO, DiscussionCommentsDTO
-from utils.email_utils import send_email
+from app_init import send_email
 
-#KORISTI SE!!!
 def get_all_discussions():
     try:
         connection = get_db_connection()
@@ -31,7 +30,7 @@ def get_all_discussions():
         discussions = cursor.fetchall() 
         print("Fetched discussions:", discussions)
 
-        # vraćamo listu dictionary objekata (DTO)
+        # vracamo listu dictionary objekata (DTO)
         discussion_dtos = [
             DiscussionDTO(
                 discussion['id'], 
@@ -52,14 +51,14 @@ def get_all_discussions():
 
     except Exception as e:
         print(f"Error fetching discussions: {e}")
-        return []  # Vrati praznu listu u slučaju greške
+        return [] 
     finally:
         if cursor:
             cursor.close()
         if connection:
             connection.close()
 
-#KORISTI SE!!!
+
 def add_discussion_service(userId, themeId, discussionText):
     try:
         connection = get_db_connection()
@@ -123,7 +122,7 @@ def add_discussion_service(userId, themeId, discussionText):
         cursor.close()
         connection.close()
 
-#KORISTI SE!!!
+
 def delete_discussion_by_id_service(id):
     try:
         id = int(id)  
@@ -151,13 +150,12 @@ def delete_discussion_by_id_service(id):
     finally:
         cursor.close()
         connection.close()
+        
    
-#KORISTI SE!!!
 def editDiscussion(discussion_id, theme_id, content):
     try:
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
-        # Ažuriranje diskusije u bazi podataka
         cursor.execute('UPDATE discussions SET content = %s, theme_id = %s, datetime = NOW() WHERE id = %s',
                        (content, theme_id, discussion_id))
         connection.commit()
@@ -210,7 +208,7 @@ def editDiscussion(discussion_id, theme_id, content):
         cursor.close()
         connection.close()
 
-#KORISTI SE!!!
+
 def get_discussion_reactions(discussionId, userId):
     try:
         connection = get_db_connection()
@@ -251,7 +249,7 @@ def get_discussion_reactions(discussionId, userId):
         cursor.close()
         connection.close()
 
-#KORISTI SE!!!
+
 # Ovdje imaju 3 slucaja
 # Korisnik je vec reagovao sa istom reakcijom --> brisanje te reakcije
 # Korisnik je vec reagovao ali drugm reakcijom --> azuriranje reakcije
@@ -320,11 +318,9 @@ def process_reaction(discussion_id, user_id, reaction_type):
         if connection:
             connection.close()
 
-#KORISTI SE!!!
-# za komentare
+
 def get_discussion_comments(discussionId):
     try:
-        print("U SERVISU ZA KOMENTARE")
         connection = get_db_connection()
         cursor = connection.cursor()
 
@@ -355,7 +351,6 @@ def get_discussion_comments(discussionId):
         cursor.execute(query, (discussionId,))
         count = cursor.fetchone()[0]
         
-        print("@22222222222222222")
         print(comments_dtos)
         print(count)
         return comments_dtos, count
@@ -367,7 +362,7 @@ def get_discussion_comments(discussionId):
         cursor.close()
         connection.close()
 
-#KORISTI SE!!!
+
 def post_new_comment(discussion_id, new_comment, user_id, mentions):
     try:
         connection = get_db_connection()
@@ -400,10 +395,11 @@ def post_new_comment(discussion_id, new_comment, user_id, mentions):
                 mentioned_user = cursor.fetchone()
                 print(mentioned_user)
                 if mentioned_user:
-                    if(mentioned_user[0] != user_id):
+                    # izbegavamo slucaj pominjanja samog sebe 
+                    #if(mentioned_user[0] != user_id):
                         print(f"User {username} (ID: {mentioned_user[0]}) was mentioned.")  
                         subject = "Neko Vas je pomenuo u komentaru!"
-                        body = f"Poštovani {mentioned_user[1]},\n\n Pomenuti ste u komentaru od strane {inserted_comment[3]}!"
+                        body = f"Poštovani {mentioned_user[1]},\n\n Pomenuti ste u komentaru od strane {inserted_comment[3]}, Sadržaj komentara : \n {inserted_comment[1]}!"
                         send_email(subject, mentioned_user[9], body) 
 
         comment_dto = DiscussionCommentsDTO(inserted_comment[0], 
@@ -419,7 +415,7 @@ def post_new_comment(discussion_id, new_comment, user_id, mentions):
         cursor.close()
         connection.close()
 
-#KORISTI SE!!!
+
 def delete_comment_service(comment_id):
     try:
         try:
@@ -451,9 +447,6 @@ def delete_comment_service(comment_id):
             connection.close()
 
 
-
-
-## NE ZNAM DA LI SE OVO KORISTI???
 def get_user_id_from_username(username):
     try:
         connection = get_db_connection() 
@@ -472,59 +465,4 @@ def get_user_id_from_username(username):
     finally:
         if connection:
             connection.close()
-
-def get_discussions_for_user_service(username):
-    print("DOBAVLJAM DISKUSIJE ZA :", username)
-    
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)  
-    user_id = get_current_user_id(username)
-
-    if not user_id:
-        return {"success": False, "message": "User not found"}, 404
-
-    try:
-        cursor.execute('SELECT * FROM discussions WHERE user_id = %s', (user_id,))
-        discussions = cursor.fetchall()
-
-        if not discussions:  
-            return {"success": False, "message": "No discussions found for the user"}, 404
-
-        return {"success": True, "discussions": discussions}, 200
-
-    except Exception as e:
-        print(f"Error while fetching discussions: {e}")
-        return {"success": False, "message": str(e)}, 500
-
-    finally:
-        cursor.close()
-        connection.close()
-
-def get_discussion_by_id_service(id):
-    print("DOBAVLJAM DISKUSIJU SA ID-em:")
-    print(id)
-    
-    # Ensure `id` is an integer
-    try:
-        id = int(id)  # Convert to integer explicitly
-    except ValueError:
-        return {"success": False, "message": "Invalid ID format"}, 400
-
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    try:
-        # Wrap `id` in a tuple
-        cursor.execute('SELECT * FROM discussions WHERE id = %s', (id,))
-        discussion = cursor.fetchone()  # Fetch a single discussion
-        if not discussion:
-            return {"success": False, "message": "No discussions found with the given ID"}, 404
-
-        return {"success": True, "discussion": discussion}, 200
-    except Exception as e:
-        print(f"Error while fetching discussion: {e}")
-        return {"success": False, "message": str(e)}, 500
-    finally:
-        cursor.close()
-        connection.close()
-
 

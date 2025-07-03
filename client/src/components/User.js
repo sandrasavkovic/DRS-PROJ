@@ -14,6 +14,7 @@ const User = ({ socket, handleLogout }) => {
   const [editUser, setEditUser] = useState(null); // Podaci o korisniku za uređivanje
   const [originalUser, setOriginalUser] = useState(null);
   const [isEditModalOpen, setEditModalOpen] = useState(false); // Modal za uređivanje
+
   
   //treba za PROP ZA diskusije
   useEffect(() => {
@@ -39,9 +40,8 @@ const User = ({ socket, handleLogout }) => {
     }
   
     try {
-      // treba dobaviti po id-u, jer se id ne menja, medjutim greska kod tokena
       const response = await getUserByUsername(userString);
-      console.log(response.user); // Logs the response
+      console.log(response.user); 
       if (response) {
         setEditUser(response.user);  // Update state with the response
         setOriginalUser(response.user);
@@ -81,18 +81,19 @@ const User = ({ socket, handleLogout }) => {
       toast.error('No changes detected.'); // Show a message if no fields were changed
       return;
     }
-    const username = localStorage.getItem("userName");
+   const username = localStorage.getItem("userName");
 
-    if (!username) {
-        toast.error('Username not found.');
-        return;
-    }
+     if (!username) {
+         toast.error('Username not found.');
+         return;
+     }
   
     const userString = localStorage.getItem("user_name");
     updateUser(userString, editUser)
         .then((updatedUser) => {
             console.log('User successfully updated:', updatedUser);
             toast.success('User successfully updated.');
+            setOriginalUser(updatedUser);
             closeEditModal(); 
         })
         .catch((error) => {
@@ -107,7 +108,6 @@ const User = ({ socket, handleLogout }) => {
   };
 
   useEffect(() => {
-    // Ovde možemo dodati socket logiku, ako je potrebno
     return () => {
       socket.off("serverReaction");
       socket.off("mention_notification");
@@ -127,19 +127,18 @@ const User = ({ socket, handleLogout }) => {
       <div className="top-right-controls">
         <div className="in_line">
         {/* Edit Button with Profile Icon */}
-<button
-  className="btn btn-white border-0"
-  onClick={openEditModal}
-  style={{
-    margin: '1rem',
-    color: '#2980b9', // Blue color for the profile icon
-    fontSize: '1.8em', // Adjust icon size
-    backgroundColor: 'transparent', // Transparent background
-  }}
-  title="Edit Profile"
->
-  <i className="bi bi-person-circle"></i> {/* Profile icon */}
-</button>
+        <button
+            className="btn btn-white border-0"
+            onClick={openEditModal}
+            style={{
+              margin: '1rem',
+              color: '#2980b9', // Blue color for the profile icon
+              fontSize: '1.8em', // Adjust icon size
+              backgroundColor: 'transparent', // Transparent background
+             }}
+            title="Edit Profile">
+           <i className="bi bi-person-circle"></i> {/* Profile icon */}
+        </button>
 
 {/* Logout Button with Logout Icon */}
 <button

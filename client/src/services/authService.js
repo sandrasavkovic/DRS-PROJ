@@ -1,6 +1,4 @@
 
-// Dakle samo SLANJE podataka serveru
-
 export const loginUser = (email, password) => {
   return fetch("/auth/login", {
     method: "POST",
@@ -23,12 +21,12 @@ export const registerUser = (username, password, name, last_name, address, city,
 
 export const getUserByUsername = (username) => {
   console.log("TUUUUUUUUUUUUUUUUU");
-  console.log("Sending request for username:", username);  // Add logging to verify the request
+  console.log("Sending request for username:", username);  
 
-  return fetch(`/auth/get_user_by_username?username=${username}`, {  // Pass username as a query parameter
+  return fetch(`/auth/get_user_by_username?username=${username}`, { 
     method: "GET",
     headers: {
-      "Content-Type": "application/json",  // You can still include headers, but no body for GET
+      "Content-Type": "application/json",  
     },
   })
     .then((response) => {
@@ -44,14 +42,9 @@ export const getUserByUsername = (username) => {
 };
 
 
-// mozemo koristiti umesto await-a , then i catch
-// za obradu asinhronih zahteva
 
-// saljemo id usera, on se ne menja
-// i novu vrednost iz input polja za edit
 export const updateUser = (username, updatedUser) => {
-  console.log("EDITUJEM : ", username)
-  console.log(updatedUser)
+
   return fetch(`/auth/users/${username}`, {
       method: 'POST',
       headers: {

@@ -98,13 +98,12 @@ export const fetchThemes = () => {
         return res.json();
       })
       .then((data) => {
-        // Pretpostavljamo da API vraća listu tema u JSON formatu
         console.log(data)
         return { data };
       })
       .catch((error) => {
         console.error("Error fetching themes:", error);
-        throw error; // Prosljeđujemo grešku kako bi se mogla obraditi u `User` komponenti
+        throw error; 
       });
   };
 
@@ -132,31 +131,6 @@ export const fetchThemes = () => {
   };
   
 
-  
-
-/*
-export const getDiscussionById = (discussionId) => {
-  console.log("disc je tu");
-  console.log("Sending request for id:", discussionId);  // Add logging to verify the request
-
-  return fetch(`/discussion/${discussionId}`, {  // Pass username as a query parameter
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",  // You can still include headers, but no body for GET
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      console.error("Error fetching discussion:", error);
-      throw error;
-    });
-};
-*/
 
 export const updateDiscussion = (discussionId, updatedDiscussion) => {
   console.log("EDITING: ", discussionId);

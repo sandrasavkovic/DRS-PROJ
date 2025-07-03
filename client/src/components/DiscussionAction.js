@@ -10,7 +10,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import 'font-awesome/css/font-awesome.min.css';
 import toast from 'react-hot-toast';
-// Ovdje je def like, dislike i kom
 
 const DiscussionAction = ({ discussion, userId, role }) => {
   const [likesCount, setLikesCount] = useState(0);
@@ -40,7 +39,7 @@ const DiscussionAction = ({ discussion, userId, role }) => {
       })
       .catch((error) => console.error('Error fetching comments:', error));
 
-  }, [discussion]);
+  }, [discussion, userId]);
 
   const handleReaction = (reactionType) => {
     if (userId) {
@@ -61,15 +60,16 @@ const DiscussionAction = ({ discussion, userId, role }) => {
   };
 
   const toggleComments = () => {
-    setShowComments((prev) => !prev);
-    if (!showComments) { 
-      fetchDiscussionComments(discussion.id)
-        .then((data) => {
-          setComments(data[0]);
-        })
-        .catch((error) => console.error('Error fetching comments:', error));
-    }
+    setShowComments(prev => !prev);
   };
+
+  useEffect(() => {
+    if(!showComments) return;
+    fetchDiscussionComments(discussion.id)
+      .then(data => setComments(data[0]))
+      .catch(err => console.log('Error fetching comments: ', err));
+
+  }, [showComments, discussion.id]);
 
   const handleCommentSubmit = () => {
     if (!newComment.trim()) {
@@ -78,7 +78,10 @@ const DiscussionAction = ({ discussion, userId, role }) => {
     }
   
     // Detect mentions using regex (e.g., @username)
+    // Pronalazi sva korisnicka imena koja su pomenuta u komentaru
     const mentionPattern = /@(\w+)/g;
+    // iterator se pretvara u niz sa poklapanjima sa regex izrazom
+    // i uzima se samo username tj. bez @ 
     const mentions = [...newComment.matchAll(mentionPattern)].map(match => match[1]);
   
     postComment(discussion.id, userId, newComment, mentions)
@@ -168,12 +171,13 @@ const DiscussionAction = ({ discussion, userId, role }) => {
       <small className="text-muted">
         @{comment.username}   
       </small>
-      <small className="text-muted">         {new Date(comment.datetime).toLocaleString()}
+      <small className="text-muted">
+        {new Date(comment.datetime).toLocaleString()}
       </small>
       <p>{comment.content}</p>
     </div>
     
-    {/* Trash can button aligned to the right side */}
+
     {(discussion.user_id === userId || userId === comment.user_id || Number(role) === 1) && (
       <button
         className="btn p-0 mx-1"
@@ -181,13 +185,13 @@ const DiscussionAction = ({ discussion, userId, role }) => {
         style={{
           background: 'none',
           border: 'none',
-          color: '#dc3545', // Red color for the trash icon
+          color: '#dc3545', 
           fontSize: '1.2em',
           cursor: 'pointer',
           transition: 'color 0.2s',
         }}
-        onMouseEnter={(e) => (e.target.style.color = '#ff6666')} // Lighter red on hover
-        onMouseLeave={(e) => (e.target.style.color = '#dc3545')} // Default red color
+        onMouseEnter={(e) => (e.target.style.color = '#ff6666')} 
+        onMouseLeave={(e) => (e.target.style.color = '#dc3545')} 
       >
         <i className="fa fa-trash"></i>
       </button>

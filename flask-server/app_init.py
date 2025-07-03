@@ -9,7 +9,6 @@ mail_queue = Queue()
 socketio = SocketIO(cors_allowed_origins="*")
 
 def send_mail_worker(queue):
-    """Worker process that sends emails from the queue."""
     app = create_app()  # Create a new app context for the worker
     with app.app_context():
         while True:
@@ -52,6 +51,5 @@ def create_socketio(app):
 
 
 def send_email(subject, recipient, body):
-    """Enqueue email data."""
     mail_queue.put((subject, recipient, body))
     print(f"Email queued for {recipient}")

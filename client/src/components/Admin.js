@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./AdminSidebar";
-import ThemePanel from "./AdminThemes";
-import ThemePanel2 from "./AdminManageTopics";
 import AdminCRUD from "./AdminCRUD";
 import Discussions from "./Discussions";
 import { fetchThemes } from "../services/themeService";
@@ -122,9 +120,6 @@ const Admin = ({ socket, handleLogout }) => {
             </div>
           )}
 
-          {/*{selectedOption === "addTopic" && <ThemePanel />}*/}
-
-          {/*{selectedOption === "manageTopics" && <ThemePanel2 />}*/}
 
           {selectedOption === "topicsView" && (
             <AdminCRUD themes={themes} isLoading={isThemesLoading} />
