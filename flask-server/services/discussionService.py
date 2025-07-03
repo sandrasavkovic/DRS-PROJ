@@ -396,7 +396,7 @@ def post_new_comment(discussion_id, new_comment, user_id, mentions):
                 print(mentioned_user)
                 if mentioned_user:
                     # izbegavamo slucaj pominjanja samog sebe 
-                    #if(mentioned_user[0] != user_id):
+                    if(mentioned_user[0] != user_id):
                         print(f"User {username} (ID: {mentioned_user[0]}) was mentioned.")  
                         subject = "Neko Vas je pomenuo u komentaru!"
                         body = f"Poštovani {mentioned_user[1]},\n\n Pomenuti ste u komentaru od strane {inserted_comment[3]}, Sadržaj komentara : \n {inserted_comment[1]}!"
