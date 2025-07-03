@@ -2,6 +2,7 @@ from flask import jsonify
 from db import get_db_connection
 from flask_jwt_extended import create_access_token
 from models.User import User, UserDTO
+from app_init import send_email
 
 # pravi upit u bazu i vidi koji korisnici koji nisu adminu imaju isApproved = False
 # admin ga odobrava samo prvi put 
@@ -30,7 +31,6 @@ def login_user(email, password):
                 body = (
                     f"Korisnik: '{user.name} {user.last_name}' je uspesno prijavljen!.\n\n"
                        )
-                print("TU SAM!")
                 send_email(subject, "projekat.drs6@gmail.com", body)
                 try:
                     cursor.execute(
