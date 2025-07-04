@@ -4,13 +4,8 @@ from flask_jwt_extended import create_access_token
 from models.User import User, UserDTO
 from app_init import send_email
 
-# pravi upit u bazu i vidi koji korisnici koji nisu adminu imaju isApproved = False
-# admin ga odobrava samo prvi put 
-# ?? ako je rejected onda ga izbaci iz baze
-#cashe_for_admin = set() ne koristi se, dodata kolona u bazi
 
 def login_user(email, password):
-   # print("EEVO ME")
     connection = get_db_connection()
     cursor = connection.cursor()
     try:
@@ -18,11 +13,10 @@ def login_user(email, password):
                        (email, password, 'APPROVED'))
         user_data = cursor.fetchone()
         print("Rezultat upita:", user_data)
-        if user_data: # Paziti - citamo iz baze na user_data[0] je ID
+        if user_data: 
             print("****************")
             user = User(user_data[1], user_data[2], user_data[3], user_data[4], user_data[5], 
                     user_data[6], user_data[7], user_data[8], user_data[9], user_data[10], user_data[12])
-            # Kad pravite .py fajlove za models folder pratite redoslijed polja u bazi
             user_dto = UserDTO(user.name, user.is_admin, user.username)
             print("da li je admin : ? %s", user.is_admin)
             print("prva prijava? :%s", user.first_login)
@@ -41,8 +35,7 @@ def login_user(email, password):
                 except Exception as e:
                     print(f"GRESKA!!: {str(e)}")
                 
-            access_token = create_access_token(identity={"email": email, "is_admin": user.is_admin}) #Token se kreira ako je uspjesan login
-            # ne zanima ga da dobije obavestenje ako korisnik nije logovan
+            access_token = create_access_token(identity={"email": email, "is_admin": user.is_admin}) 
             return user_dto, access_token
         return None
     except Exception as e:
@@ -74,52 +67,32 @@ def register_user(username, password, name, last_name, address, city, country, p
         cursor.close()
         connection.close()
 
-# funkicja za odobravanje
 def user_approving(email, is_approved):
     # pristup bazi i promena is_approved
     return True
 
-# funkcija za dobavljanje user-a na osnovu mejl adrese
-def get_user_by_email(email):
-   
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)  # `dictionary=True` za vraćanje rezultata kao rečnik
-    try:
-        query = "SELECT * FROM users WHERE email = %s"
-        cursor.execute(query, (email,))
-        user = cursor.fetchone()  # Dohvata prvi rezultat (korisnika)
-    except Exception as e:
-        connection.rollback()
-        user = None
-        return False, str(e)
-    finally:
-        cursor.close()
-        connection.close()
-    return user
 
 
 def get_user_by_username_service(username):
-    print("TUUUUUUUUUUUU")
-
     if not username:
-        return {"error": "Username is required"}, 400  # Return an error if username is not provided
+        return {"error": "Username is required"}, 400  
     
     connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)  # `dictionary=True` to get results as a dictionary
+    cursor = connection.cursor(dictionary=True)  
     
     try:
         query = "SELECT * FROM users WHERE username = %s"
         cursor.execute(query, (username,))
-        user = cursor.fetchone()  # Fetch the first result (user)
+        user = cursor.fetchone()  
         
         if user:
-            return {"user": user}, 200  # Return the user data if found
+            return {"user": user}, 200  
         else:
-            return {"error": "User not found"}, 404  # Return an error if no user found
+            return {"error": "User not found"}, 404 
     
     except Exception as e:
         connection.rollback()
-        return {"error": str(e)}, 500  # Return an error message if any exception occurs
+        return {"error": str(e)}, 500
     
     finally:
         cursor.close()
@@ -152,10 +125,8 @@ def update_user_service(username, updated_user_data):
             updated_user_data["country"], updated_user_data["phone_number"], updated_user_data["email"], 
             updated_user_data["is_admin"], updated_user_data["is_approved"], updated_user_data["first_login"], username))
 
-       # cursor.execute(query, tuple(values)))
         connection.commit()
         
-        # Check if any row was updated
         if cursor.rowcount == 0:
             return {"success": False, "message": "User not found"}, 404
 

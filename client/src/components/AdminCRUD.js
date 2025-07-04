@@ -32,7 +32,6 @@ const AdminCRUD = ({ themes:propThemes, isLoading }) => {
     
   };
 
-  //IZMJENA TEME
   const handleModifyTheme = () => {
     if (!themeName || !themeDescription || !selectedThemeId) {
       toast.error("Please fill in both theme name and description!");
@@ -63,7 +62,6 @@ const AdminCRUD = ({ themes:propThemes, isLoading }) => {
         );
         toast.success("Topic successfully modified!");
   
-        // Reset polja za unos
         setThemeName("");
         setThemeDescription("");
         setSelectedThemeId(null);
@@ -75,7 +73,6 @@ const AdminCRUD = ({ themes:propThemes, isLoading }) => {
       });
   };
 
-  //DODAVANJE NOVE TEME
   const openAddThemeModal = () => {
     setAddThemeModalOpen(true);
   };

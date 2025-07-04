@@ -1,8 +1,6 @@
 from app_init import socketio 
 from db import get_db_connection
-from flask_mail import Message, Mail
 from app_init import send_email
-import logging
 
 email_sent_cache = set()
 def get_pending_requests():

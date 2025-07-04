@@ -40,7 +40,7 @@ def modify_theme(theme_id):
         
         if retVal:
             if 'error' in retVal:
-                return jsonify(retVal), 400  # Ako postoji greška - vraćamo status 400
+                return jsonify(retVal), 400  
         
         return jsonify({'message': 'Tema je uspešno modifikovana!'}), 200
         
@@ -56,20 +56,4 @@ def delete_theme(theme_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500 
 
-
-# Endpoint za dobijanje jedne teme po ID-u myb ne treba
-@theme_routes.route('/theme/<int:theme_id>', methods=['GET'])
-def theme_by_id(theme_id):
-    try:
-        theme = ""
-        #theme = get_theme_by_id(theme_id)
-        if theme:
-            return jsonify(theme), 200
-        else:
-            return jsonify({'error': 'Tema nije pronađena'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-#if __name__ == '__main__':
- #   app.run(debug=True, port=5000)  # Pokrećemo server na portu 5000
 

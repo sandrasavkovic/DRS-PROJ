@@ -17,7 +17,7 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
     deleteDiscussion(discussion.id)
       .then(() => {
         toast.success('Discussion deleted successfully.');
-        onDiscussionDeleted(discussion.id); // Callback for parent component
+        onDiscussionDeleted(discussion.id); 
       })
       .catch((error) => {
         console.error('Error deleting discussion:', error);
@@ -29,7 +29,7 @@ const DiscussionDisplay = ({ discussion, userId, themes, onDiscussionUpdated, on
     modifyDiscussion(discussion.id, editDiscussion)
       .then((updatedDiscussion) => {
         toast.success('Discussion updated successfully.');
-        onDiscussionUpdated(updatedDiscussion);  // Update in parent component
+        onDiscussionUpdated(updatedDiscussion);  
         setEditDiscussionModalOpen(false);
       })
       .catch((error) => {

@@ -14,8 +14,8 @@ const Admin = ({ socket, handleLogout }) => {
   const handleSidebarSelect = (option) => {
     setSelectedOption(option);
   };
-  // ovde cemo fetch-ovati teme da bi vec bile spremne
-  // kada se prebaci na topicsView
+  
+  
   useEffect(() => {
     setThemesLoading(true);
     fetchThemes()
@@ -29,7 +29,6 @@ const Admin = ({ socket, handleLogout }) => {
       });
   }, []);
   
-  // da bismo kao prop za diskusiju mogli da prosledimo adminov id
  useEffect(() => {
       const username = localStorage.getItem("user_name");
   

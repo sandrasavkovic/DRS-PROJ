@@ -1,5 +1,3 @@
-# PAZI KADA PRAVIS KONSTRUKTORE DA PRATI REDOSLED U BAZI
-
 class User:
     def __init__(self, username, password, name, last_name, address, city, country, phone_number, email, is_admin=False, is_approved=False, first_login = True):
         self.username = username
@@ -21,7 +19,6 @@ class User:
             f"first_name='{self.name}', last_name='{self.last_name}')"
         )
 
-# UserDTO
 class UserDTO:
     def __init__(self, name, is_admin, username):
         self.name = name

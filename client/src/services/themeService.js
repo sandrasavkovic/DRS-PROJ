@@ -1,7 +1,6 @@
 const username = sessionStorage.getItem("user_name");
 const discussionId = parseInt(sessionStorage.getItem("id"), 10);
 
-//KORISTI SE!!!
 export const deleteTheme = (themeId) => {
   return fetch(`/theme/delete_theme/${themeId}`, {
     method: "DELETE",
@@ -25,7 +24,6 @@ export const deleteTheme = (themeId) => {
     });
 };
 
-//KORISTI SE!!!
 export const modifyTheme = (themeId, updatedTheme) => {
   return fetch(`/theme/modify_theme/${themeId}`, {
     method: "PUT",
@@ -52,7 +50,6 @@ export const modifyTheme = (themeId, updatedTheme) => {
     });
 };
 
-//KORISTI SE!!!
 export const addTheme = (newTheme) => {
   console.log(newTheme);
   return fetch("/theme/add_theme", {
@@ -83,7 +80,6 @@ export const addTheme = (newTheme) => {
     });
 };
 
-//KORISTI SE!!!
 export const fetchThemes = () => {
     return fetch("/theme/theme", {
       method: "GET",
@@ -121,37 +117,33 @@ export const fetchThemes = () => {
         return res.json();
       })
       .then((data) => {
-        // Pretpostavljamo da API vraća listu diskusija u JSON formatu
         return { data };
       })
       .catch((error) => {
         console.error("Error fetching discussions:", error);
-        throw error; // Prosljeđujemo grešku kako bi se mogla obraditi u `User` komponenti
+        throw error; 
       });
   };
   
 
 
 export const updateDiscussion = (discussionId, updatedDiscussion) => {
-  console.log("EDITING: ", discussionId);
-  console.log("UPDATED DATA: ", updatedDiscussion);
-
   return fetch(`/discussion/editDiscussion?id=${discussionId}`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedDiscussion), // Send updated data in the request body
+      body: JSON.stringify(updatedDiscussion), 
   })
   .then((response) => {
       if (!response.ok) {
           throw new Error('Error updating discussion');
       }
-      return response.json(); // Parse and return the JSON response
+      return response.json(); 
   })
   .catch((error) => {
       console.error('Error in updatedDiscussion:', error);
-      throw error; // Re-throw to propagate the error to the calling function
+      throw error; 
   });
 };
 
@@ -160,7 +152,7 @@ export const fetchDiscussionsOfUser = (username) =>{
   return fetch(`/discussion/get_discussions_for?username=${username}`, {  
     method: "GET",
     headers: {
-      "Content-Type": "application/json",  // You can still include headers, but no body for GET
+      "Content-Type": "application/json",  
     },  
   })
   .then((response) => {
@@ -180,7 +172,7 @@ export const getDiscussionById = (discussionId) =>{
   return fetch(`/discussion/get_discussion_by_id?discussionId=${discussionId}`, {  
     method: "GET",
     headers: {
-      "Content-Type": "application/json",  // You can still include headers, but no body for GET
+      "Content-Type": "application/json", 
     },  
   })
   .then((response) => {

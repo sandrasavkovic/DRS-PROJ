@@ -5,12 +5,11 @@ const Sidebar = ({ onSelect, handleLogout }) => {
     { label: "Pending Requests", value: "pendingRequests" },
     { label: "Topics View", value: "topicsView" },
     { label: "Discussions View", value: "discussionsView" },
-    { label: "Logout", value: "logout" }, // Dodali smo opciju Logout kao dugme
+    { label: "Logout", value: "logout" }, 
   ];
 
   return (
     <div className="d-flex flex-column h-100" style={{ backgroundColor: "#2c3e50", color: "#fff" }}>
-      {/* Opcije */}
       <ul className="nav flex-column mt-2" style={{position:'fixed'}}>
         {options.map((option) => (
           <li className="nav-item" key={option.value} >

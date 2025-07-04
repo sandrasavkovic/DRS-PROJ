@@ -47,7 +47,6 @@ const Discussions = ({ userId , discussions:propDiscussions}) => {
     });
   };
 
-  // Funkcija za brisanje diskusije
   const handleDiscussionDeleted = (deletedDiscussionId) => {
     setDiscussions((prevDiscussions) =>
       prevDiscussions.filter((discussion) => discussion.id !== deletedDiscussionId)
@@ -98,7 +97,6 @@ const Discussions = ({ userId , discussions:propDiscussions}) => {
     return matchesSearch;
   });
 
- //***ZA DODAVANJE DISKUSIJE */
   const openAddModal = () => {
     setAddModalOpen(true);
   };
@@ -119,7 +117,7 @@ const Discussions = ({ userId , discussions:propDiscussions}) => {
       toast.error('Discussion text cannot be empty.');
       return;
     }
-    // saljemo user_id, theme_id, content
+
     addDiscussion(userId, selectedFromList.id, newDiscussionText)
    
       .then((newDiscussion) => {
@@ -205,18 +203,18 @@ const Discussions = ({ userId , discussions:propDiscussions}) => {
           key={type}
           className="btn"
           style={{
-            color: '#6c757d', // Siva boja teksta
-            backgroundColor: filters.searchBy === type ? '#f8f9fa' : 'transparent', // Bela pozadina kada je selektovano
-            border: 'none', // Ukloni border
-            padding: '5px 10px', // Malo razmaka oko teksta
-            cursor: 'pointer', // Pokazuje da je klikabilno
+            color: '#6c757d', 
+            backgroundColor: filters.searchBy === type ? '#f8f9fa' : 'transparent',
+            border: 'none', 
+            padding: '5px 10px', 
+            cursor: 'pointer', 
           }}
           onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#f8f9fa'; // Pozadina se menja na hover
+            e.target.style.backgroundColor = '#f8f9fa'; 
           }}
           onMouseLeave={(e) => {
             if (filters.searchBy !== type) {
-              e.target.style.backgroundColor = 'transparent'; // Vraća se u transparent ako nije selektovano
+              e.target.style.backgroundColor = 'transparent'; 
             }
           }}
         >
@@ -227,8 +225,8 @@ const Discussions = ({ userId , discussions:propDiscussions}) => {
             checked={filters.searchBy === type}
             onChange={handleRadioChange}
             style={{
-              marginRight: '8px', // Razmak između inputa i teksta
-              accentColor: '#6c757d', // Postavljanje boje radio dugmeta (ako je selektovano)
+              marginRight: '8px', 
+              accentColor: '#6c757d', 
             }}
           />
           {type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')}
@@ -252,7 +250,7 @@ const Discussions = ({ userId , discussions:propDiscussions}) => {
           className="btn btn-outline-secondary"
           onClick={openAddModal}
           style={{ margin: '1rem' }}>
-          <i className="fa fa-plus" style={{ marginRight: '0.5rem' }}></i> {/* Plus ikona */}
+          <i className="fa fa-plus" style={{ marginRight: '0.5rem' }}></i> 
           Create Post
         </button>
       </div>
@@ -265,7 +263,7 @@ const Discussions = ({ userId , discussions:propDiscussions}) => {
           key={discussion.id} 
           discussion={discussion} 
           userId={userId} 
-          themes={themes} // OVO je dodano za meni kod selektovanja teme
+          themes={themes} 
           onDiscussionUpdated={handleDiscussionUpdated}
           onDiscussionDeleted={handleDiscussionDeleted}/>
         ))

@@ -56,11 +56,11 @@ export const updateUser = (username, updatedUser) => {
       if (!response.ok) {
           throw new Error('Error updating user');
       }
-      return response.json(); // Parse and return the JSON response
+      return response.json(); 
   })
   .catch((error) => {
       console.error('Error in updateUser:', error);
-      throw error; // Re-throw to propagate the error to the calling function
+      throw error; 
   });
 };
 

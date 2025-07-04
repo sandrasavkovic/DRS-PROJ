@@ -1,8 +1,7 @@
-/* Sidebar container */
-/* Main content area */
+
 .admin-page {
-  display: flex; /* Flexbox layout */
-  min-height: 100vh; /* Ensure full height */
+  display: flex; 
+  min-height: 100vh; 
 }
 
 .sidebar {
@@ -10,31 +9,28 @@
   background-color: #2c3e50;
   color: white;
   padding: 20px;
-  height: 100vh; /* Full height */
+  height: 100vh; 
   top: 0;
   left: 0;
   transition: all 0.3s ease;
-  z-index: 1000; /* Ensure the sidebar stays on top */
+  z-index: 1000; 
 }
 
-/* Content styling */
 .content {
   padding: 10px;
   margin-top: 20px;
   flex-grow: 1;
   align-content: flex-start;
-  height: calc(100vh - 40px); /* Adjusted height to leave space for header/footer */
-  overflow-y: auto; /* Enable vertical scrolling */
+  height: calc(100vh - 40px); 
+  overflow-y: auto; 
 }
 
-/* List styling */
 .sidebar ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-/* List item styling */
 .sidebar ul li {
   padding: 15px;
   cursor: pointer;
@@ -43,34 +39,27 @@
   transition: background-color 0.3s ease;
 }
 
-/* Hover effect for list items */
 .sidebar ul li:hover {
   background-color: #1abc9c;
   color: white;
 }
 
-/* Active item styling */
 .sidebar ul li.active {
   background-color: #16a085;
   color: white;
 }
 
 
-
-
-
-/* Container margin */
 .container {
-  margin-top: 0; /* Adjust margin-top */
-  margin-left: 0; /* Ensure no left margin */
+  margin-top: 0; 
+  margin-left: 0; 
 }
 
 
-/* Make sure list is responsive and doesn’t overflow the screen */
 ul.list-group {
   margin-top: 20px;
-  max-height: calc(100vh - 120px); /* Limit the height of the list to fit within the available space */
-  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: calc(100vh - 120px); 
+  overflow-y: auto; 
 }
 
 .list-group-item {
@@ -84,139 +73,125 @@ ul.list-group {
 
 }
 
-/* Button styling inside list */
 .list-group-item .btn {
   margin-left: 10px;
   
 }
 
-/* Modal styling for editing */
 .modal.show {
-  display: block; /* Show the modal when editing */
+  display: block; 
 }
 
 .modal-dialog {
-  max-width: 500px; /* Max width for modal */
-  margin: 0 auto; /* Center the modal */
+  max-width: 500px; 
+  margin: 0 auto; 
 }
 
-/* buttons!!
-/* General button styling inside list items */
+
 .list-group-item .btn {
-  padding: 8px 12px; /* Adjust button size */
-  font-size: 14px;    /* Set button text size */
-  border-radius: 5px; /* Rounded corners */
-  border: none;       /* Remove border */
-  cursor: pointer;    /* Pointer on hover */
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+  padding: 8px 12px; 
+  font-size: 14px;    
+  border-radius: 5px; 
+  border: none;       
+  cursor: pointer;   
+  transition: background-color 0.3s ease, transform 0.2s ease; 
 }
 
-/* Edit button (specific styles) */
 .list-group-item .btn-primary {
-  background-color: #3498db; /* Blue background */
-  color: white; /* White text */
+  background-color: #3498db; 
+  color: white; 
 }
 
 .list-group-item .btn-primary:hover {
-  background-color: #2980b9; /* Darker blue when hovered */
-  transform: scale(1.05); /* Slightly enlarge button on hover */
+  background-color: #2980b9; 
+  transform: scale(1.05); 
 }
 
-/* Delete button (specific styles) */
 .list-group-item .btn-danger {
-  background-color: #e74c3c; /* Red background */
-  color: white; /* White text */
+  background-color: #e74c3c; 
+  color: white; 
 }
 
 .list-group-item .btn-danger:hover {
-  background-color: red; /* Darker red when hovered */
-  transform: scale(1.05); /* Slightly enlarge button on hover */
+  background-color: red; 
+  transform: scale(1.05); 
 }
 
-/* Optional: Style for disabled buttons */
 .list-group-item .btn:disabled {
-  background-color: #bdc3c7; /* Grey background */
-  color: #7f8c8d; /* Grey text */
-  cursor: not-allowed; /* No pointer cursor */
-  transform: none; /* No scaling effect */
+  background-color: #bdc3c7; 
+  color: #7f8c8d; 
+  cursor: not-allowed; 
+  transform: none; 
 }
-/* Modal footer button positioning */
-/* Apply background color to all .btn-secondary buttons globally */
+
+
 .btn-secondary {
-  background-color: #2c3e50 !important; /* Dark background */
-  color: white !important; /* White text */
-  border: none; /* Remove border */
-  border-radius: 5px; /* Rounded corners */
-  padding: 8px 16px; /* Adjust button size */
-  font-size: 14px; /* Font size */
-  cursor: pointer; /* Pointer cursor */
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+  background-color: #2c3e50 !important;
+  color: white !important; 
+  border: none; 
+  border-radius: 5px; 
+  padding: 8px 16px; 
+  font-size: 14px; 
+  cursor: pointer; 
+  transition: background-color 0.3s ease, transform 0.2s ease; 
 }
 
-/* Hover effect for .btn-secondary buttons */
 .btn-secondary:hover {
-  background-color: #34495e !important; /* Darker shade for hover effect */
-  transform: scale(1.05); /* Slightly enlarge button on hover */
+  background-color: #34495e !important; 
+  transform: scale(1.05); 
 }
 
-/* Modal footer button positioning */
 .modal-footer {
-  display: flex; /* Use flexbox to arrange buttons */
-  justify-content: space-between; /* Space out buttons */
-  padding: 10px 20px; /* Adjust padding around the buttons */
+  display: flex; 
+  justify-content: space-between;
+  padding: 10px 20px; 
 }
 
-/* Close button styling (left aligned inside modal footer) */
 .modal-footer .btn-secondary {
-  background-color: #2c3e50 !important; /* Dark background */
-  color: white !important; /* White text */
-  border: none; /* Remove border */
-  border-radius: 5px; /* Rounded corners */
-  padding: 8px 16px; /* Adjust button size */
-  font-size: 14px; /* Font size */
-  cursor: pointer; /* Pointer cursor */
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+  background-color: #2c3e50 !important; 
+  color: white !important; 
+  border: none; 
+  border-radius: 5px; 
+  padding: 8px 16px; 
+  font-size: 14px; 
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease; 
 }
 
-/* Hover effect for Close button inside modal footer */
 .modal-footer .btn-secondary:hover {
-  background-color: #34495e !important; /* Darker shade for hover effect */
-  transform: scale(1.05); /* Slightly enlarge button on hover */
+  background-color: #34495e !important; 
+  transform: scale(1.05); 
 }
 
-/* Save Changes button styling (right aligned inside modal footer) */
 .modal-footer .btn-primary {
-  background-color: #3498db !important; /* Blue background */
-  color: white !important; /* White text */
+  background-color: #3498db !important; 
+  color: white !important; 
 }
 
-/* Hover effect for Save Changes button */
 .modal-footer .btn-primary:hover {
-  background-color: #2980b9 !important; /* Darker blue when hovered */
-  transform: scale(1.05); /* Slightly enlarge button on hover */
+  background-color: #2980b9 !important; 
+  transform: scale(1.05); 
 }
 
-/* Custom styles for btn-secondary with your desired background color */
 .logout-btn.btn-secondary {
-  background-color: #2c3e50; /* Set your custom background color */
-  border-color: #2c3e50; /* Optional: Change border color to match the background */
+  background-color: #2c3e50; 
+  border-color: #2c3e50;
   text-align: left;
 }
 
 .logout-btn.btn-secondary:hover {
-  background-color: #34495e; /* A slightly lighter shade on hover for better UX */
-  border-color: #34495e; /* Optional: Lighter border on hover */
+  background-color: #34495e; 
+  border-color: #34495e; 
 }
 
 
-/* Optional: Responsive design for smaller screens */
 @media (max-width: 768px) {
   .sidebar {
     width: 200px;
   }
 
   .content {
-    margin-left: 200px; /* Adjust for smaller sidebar */
+    margin-left: 200px; 
   }
 
   .sidebar ul li {
@@ -224,26 +199,26 @@ ul.list-group {
   }
 
   ul.list-group {
-    width: calc(100% - 220px); /* Adjust list width for smaller sidebar */
+    width: calc(100% - 220px);
   }
 }
 
 .btn-info {
-  background-color: #2980b9 !important; /* Set the button background color */
-  color: white; /* Ensure the text is readable */
-  border: none; /* Remove any border */
+  background-color: #2980b9 !important;
+  color: white; 
+  border: none; 
 }
 
 .btn-info:hover {
-  background-color: #1f6391 !important; /* Slightly darker shade for hover effect */
+  background-color: #1f6391 !important;
 }
 
 button.custom-btn-info {
-  background-color: #2c3e50 !important; /* Set the button background color */
-  color: white !important; /* Ensure the text is white */
-  border: none; /* Remove any border */
+  background-color: #2c3e50 !important; 
+  color: white !important; 
+  border: none;
 }
 
 button.custom-btn-info:hover {
-  background-color: #1f6391 !important; /* Slightly darker shade for hover effect */
+  background-color: #1f6391 !important; 
 }

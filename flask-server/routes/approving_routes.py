@@ -5,7 +5,7 @@ from services.approvingService import (
     approve_request,
     reject_request,
 )
-from app_init import socketio  # Pretpostavka da je socketio inicijalizovan
+from app_init import socketio  
 
 approving_routes = Blueprint("approving_routes", __name__)
 

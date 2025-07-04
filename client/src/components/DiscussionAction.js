@@ -97,7 +97,6 @@ const DiscussionAction = ({ discussion, userId, role }) => {
   const handleDeleteComment = (commentId) => {
       deleteComment(commentId)
         .then(() => {
-          // Ukloni obrisani komentar iz lokalnog stanja
           setComments((prevComments) =>
             prevComments.filter((comment) => comment.id !== commentId)
           );
@@ -115,20 +114,20 @@ const DiscussionAction = ({ discussion, userId, role }) => {
 
   return (
     <div>
-     <div className="d-flex align-items-center"> {/* Poravnanje svih elemenata */}
+     <div className="d-flex align-items-center"> 
         {/* Like dugme */}
         <button
           onClick={() => handleReaction('like')}
           className="btn border-0 p-0 mx-2"
           style={{
-            fontSize: userReaction === 'like' ? '1.8em' : '1.5em', // Veća ikonica ako je aktivna
-            color: userReaction === 'like' ? '#007bff' : '#6c757d', // Plava ako je aktivna, siva inače
+            fontSize: userReaction === 'like' ? '1.8em' : '1.5em', 
+            color: userReaction === 'like' ? '#007bff' : '#6c757d', 
             transition: 'font-size 0.2s, color 0.2s',
           }}
         >
           <i className="fa fa-thumbs-up"></i>
         </button>
-        <span className="me-3">{likesCount}</span> {/* Razmak između dugmeta i broja */}
+        <span className="me-3">{likesCount}</span> 
 
         {/* Dislike dugme */}
         <button
@@ -149,14 +148,14 @@ const DiscussionAction = ({ discussion, userId, role }) => {
           onClick={toggleComments}
           className="btn border-0 p-0 mx-2"
           style={{
-            fontSize: showComments ? '1.8em' : '1.5em', // Veća ikonica ako je aktivno
-            color: showComments ? '#495057' : '#6c757d', // Tamnosiva ako je aktivno, svetlosiva inače
+            fontSize: showComments ? '1.8em' : '1.5em', 
+            color: showComments ? '#495057' : '#6c757d', 
             transition: 'font-size 0.2s, color 0.2s',
           }}
         >
           <i className="fa fa-comment"></i>
         </button>
-        <span className="me-3">{commentsCount}</span> {/* Razmak između dugmeta i broja */}
+        <span className="me-3">{commentsCount}</span> 
 
       
       </div>

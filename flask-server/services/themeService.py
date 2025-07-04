@@ -2,7 +2,6 @@ from app_init import socketio
 from db import get_db_connection
 from flask import jsonify
 
-# Funkcija za preuzimanje svih tema
 def get_all_themes():
     try:
         print("TEME GET")
@@ -102,7 +101,6 @@ def get_current_user_id(username):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
-    # SQL query to get the user ID based on the username
     sql = "SELECT id FROM users WHERE username = %s"
     cursor.execute(sql, (username,))
     user = cursor.fetchone()
@@ -110,7 +108,6 @@ def get_current_user_id(username):
     cursor.close()
     connection.close()
 
-    # Return the user ID if found, otherwise None
     if user:
         return user['id']
     else:
@@ -125,7 +122,6 @@ def get_id_from_theme_name(theme_name):
     cursor.close()
     connection.close()
 
-    # Return the user ID if found, otherwise None
     if theme:
         return theme['id']
     else:

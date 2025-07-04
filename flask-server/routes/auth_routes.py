@@ -56,11 +56,9 @@ def register():
 def get_user_by_username():
     username = request.args.get('username')  
     
-    # If no username is provided, return an error
     if not username:
         return jsonify({"error": "Username is required"}), 400
 
-    # Call the service function to get user data
     user_data, status_code = get_user_by_username_service(username)
     
     return jsonify(user_data), status_code
